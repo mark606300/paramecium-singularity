@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="草履蟲奇點">
+  <defs>
+    <radialGradient id="bg" cx="40%" cy="35%" r="75%">
+      <stop offset="0" stop-color="#143c4d"/>
+      <stop offset="1" stop-color="#06121c"/>
+    </radialGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#92f5d9"/>
+      <stop offset="1" stop-color="#4a9f9f"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="181" fill="none" stroke="#5ce0c0" stroke-opacity=".16" stroke-width="3"/>
+  <circle cx="256" cy="256" r="142" fill="none" stroke="#c9a0ff" stroke-opacity=".2" stroke-width="2"/>
+  <path d="M154 311c-30-65-9-150 49-192 48-35 119-31 157 10 38 41 36 109-6 163-44 57-157 89-200 19Z" fill="url(#body)" fill-opacity=".88" stroke="#c8fff1" stroke-width="7" filter="url(#glow)"/>
+  <ellipse cx="265" cy="225" rx="43" ry="59" fill="#ff6b9d" fill-opacity=".78" transform="rotate(20 265 225)"/>
+  <circle cx="256" cy="256" r="15" fill="#fff4c6" filter="url(#glow)"/>
+  <g stroke="#8ff3dc" stroke-width="5" stroke-linecap="round" opacity=".76">
+    <path d="M160 190l-25-17M151 224l-31-5M151 258l-31 7M160 295l-27 18M183 329l-18 28M216 346l-8 32M250 350l1 34M286 344l13 32M322 328l23 26M351 300l29 15M371 265l32 5M370 226l31-9M354 188l27-19M329 151l20-27M293 128l9-32M252 120l-2-34M215 128l-12-31M181 151l-22-26"/>
+  </g>
+</svg>
