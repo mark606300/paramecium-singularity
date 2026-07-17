@@ -59,9 +59,8 @@ canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
   box-shadow:0 0 0 1px var(--line),0 0 90px -10px #0d4a58 inset,0 0 60px -30px #5ce0c0;
   touch-action:none}
 .scope-frame>.scope-meta{position:absolute;z-index:4;left:50%;bottom:clamp(.8rem,4.8%,1.8rem);transform:translateX(-50%);
-  width:min(72%,22rem);padding:.42rem .68rem;border:1px solid rgba(92,224,192,.28);border-radius:3px;
-  background:linear-gradient(90deg,rgba(5,18,28,.86),rgba(10,33,44,.78),rgba(5,18,28,.86));
-  box-shadow:0 0 24px rgba(6,18,28,.8),0 0 18px rgba(92,224,192,.04);pointer-events:none;text-align:center}
+  width:min(86%,30rem);padding:0;border:0;border-radius:0;background:none;box-shadow:none;
+  pointer-events:none;text-align:center;text-shadow:0 1px 7px var(--void),0 0 14px rgba(6,18,28,.96)}
 .scope-summary{display:block;min-width:0;width:100%}
 /* 紀元恢復為最初的顯微鏡中上讀數；定位基準是圓形視野本身。 */
 .scope-frame>.epoch{position:absolute;top:clamp(.65rem,5%,1.5rem);left:50%;z-index:2;
@@ -74,7 +73,8 @@ canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
 .identity .sn{font-size:.79rem;color:var(--glow);letter-spacing:.09em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   text-shadow:0 1px 7px var(--void)}
 .identity .scope-size-note{margin-top:.16rem;font-size:.61rem;color:rgba(143,179,196,.78);font-family:var(--font-mono);
-  letter-spacing:.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  letter-spacing:.015em;line-height:1.45;white-space:normal;overflow:hidden;text-overflow:ellipsis;text-wrap:balance;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
 .event-banner{display:flex;align-items:center;justify-content:flex-end;gap:.48rem;min-width:0;
   padding:.28rem .52rem;border:1px solid var(--nucleus);border-radius:2px;background:rgba(255,107,157,.08)}
 #scope-status-host{display:block;width:100%;padding:.45rem .62rem;border:1px solid rgba(92,224,192,.24);
@@ -537,7 +537,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .readout .unit{font-size:.64rem;letter-spacing:0}
   #langbtn{min-width:44px;min-height:44px}
   .scope-summary{display:grid;gap:.18rem}
-  .scope-frame>.scope-meta{width:min(76%,20rem);bottom:6%;padding:.38rem .55rem}
+  .scope-frame>.scope-meta{width:min(86%,24rem);bottom:6%;padding:0}
   .scope-frame>.epoch{top:.55rem;width:76%}
   .scope-frame>.epoch .n{font-size:.5rem;letter-spacing:.22em}
   .scope-frame>.epoch .t{font-size:.82rem;letter-spacing:.1em;margin-top:.08rem}
@@ -902,6 +902,41 @@ const SCALE_ANALOGIES = [
   {zh:'哈伯半徑約可首尾排下 28 個拉尼亞凱亞；其直徑約為 29 萬個銀河系。',en:'A Hubble radius spans about 28 Laniakea superclusters; its diameter is roughly 290,000 Milky Ways.'},
 ];
 function stageAnalogy(idx){ const a=SCALE_ANALOGIES[idx]; return a?(isEn()?a.en:a.zh):''; }
+/* 顯微鏡內只放最多兩行的直覺比對；完整科學說明仍留在圖鑑與躍遷橫幅。 */
+const SCALE_COMPACT_ANALOGIES = [
+  {zh:'約一滴水的 1/50,000',en:'≈ 1/50,000 of a water drop'},
+  {zh:'約一滴水的 1/50',en:'≈ 1/50 of a water drop'},
+  {zh:'約 5 粒米',en:'≈ 5 grains of rice'},
+  {zh:'約 2 毫升水',en:'≈ 2 mL of water'},
+  {zh:'約一隻成年黃金鼠',en:'≈ one adult Syrian hamster'},
+  {zh:'約 4 公升水',en:'≈ 4 L of water'},
+  {zh:'約 70 公升水',en:'≈ 70 L of water'},
+  {zh:'約 4 輛小客車',en:'≈ four compact cars'},
+  {zh:'約 100 輛小客車',en:'≈ 100 compact cars'},
+  {zh:'約 1.7 萬頭大象',en:'≈ 17,000 elephants'},
+  {zh:'約 1.7 座胡夫金字塔',en:'≈ 1.7 Great Pyramids'},
+  {zh:'約 170 座胡夫金字塔',en:'≈ 170 Great Pyramids'},
+  {zh:'約 1.7 萬座胡夫金字塔',en:'≈ 17,000 Great Pyramids'},
+  {zh:'約 5 顆哈雷彗星',en:'≈ five Halley’s Comets'},
+  {zh:'岩石密度下直徑約 18 公里',en:'at rocky density, ≈ 18 km wide'},
+  {zh:'約 1.4 個月球',en:'≈ 1.4 Moons'},
+  {zh:'約半顆木星',en:'≈ half a Jupiter'},
+  {zh:'約 16 顆木星',en:'≈ 16 Jupiters'},
+  {zh:'約 0.1 個太陽質量',en:'≈ 0.1 solar masses'},
+  {zh:'約 1 顆太陽',en:'≈ one Sun'},
+  {zh:'約 10 顆太陽',en:'≈ ten Suns'},
+  {zh:'半顆太陽壓進地球大小',en:'≈ half a Sun in an Earth-sized body'},
+  {zh:'1.4 顆太陽壓進約 20 公里',en:'≈ 1.4 Suns in a 20 km body'},
+  {zh:'假設性天體，約 1.4 個太陽質量',en:'hypothetical, ≈ 1.4 solar masses'},
+  {zh:'約 5 顆太陽',en:'≈ five Suns'},
+  {zh:'約 500 萬顆太陽',en:'≈ five million Suns'},
+  {zh:'直徑約 1 個銀河系',en:'≈ one Milky Way across'},
+  {zh:'橫跨數百萬光年',en:'spans millions of light-years'},
+  {zh:'長度超過 215 個銀河系',en:'> 215 Milky Ways end to end'},
+  {zh:'約 24 個 J0838+5327',en:'≈ 24 J0838+5327 structures'},
+  {zh:'一個半徑約 28 個拉尼亞凱亞',en:'≈ 28 Laniakea superclusters in one radius'},
+];
+function stageCompactAnalogy(idx){ const a=SCALE_COMPACT_ANALOGIES[idx]; return a?(isEn()?a.en:a.zh):''; }
 function stageMeasure(stage){ return tr(stage,'measure')||(isEn()?'Mass':'質量'); }
 
 const SINGULARITY_THR = 1e68;
@@ -5619,7 +5654,7 @@ function renderStats(){
     $('ep-t').textContent = isEn() ? EPOCHS[k].en : EPOCHS[k].t;
     const st = STAGES[S.stage];
     $('stage-name').textContent = isEn() ? `${st.nameEn} ${ui('scale')}` : `${st.name}${ui('scale')}`;
-    $('stage-mass').textContent = `${stageMeasure(st)} · ${tr(st,'mass')}`;
+    $('stage-mass').textContent = `${stageMeasure(st)} · ${tr(st,'mass')} ｜ ${stageCompactAnalogy(S.stage)}`;
   }
 
   // 飽食徽章
