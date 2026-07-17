@@ -1,4 +1,4 @@
-const CACHE='paramecium-singularity-v2';
+const CACHE='paramecium-singularity-v3';
 const BASE=new URL('./',self.location.href).pathname;
 const CORE=[BASE,`${BASE}manifest.webmanifest`,`${BASE}apple-touch-icon.svg`,`${BASE}favicon.svg`];
 self.addEventListener('install',event=>{
