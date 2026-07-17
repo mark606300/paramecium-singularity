@@ -295,6 +295,22 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
 .const-upgrade:hover:not(:disabled){border-color:var(--glow);color:var(--glow)}
 .const-upgrade:disabled{opacity:.4;cursor:not-allowed}
 .sing-stats{font-size:.72rem;color:var(--ink);line-height:1.8;margin:.4rem 0 .6rem}
+.singularity-finale{position:relative;overflow:hidden;margin:.35rem 0;padding:1.35rem 1rem 1.1rem;
+  border:1px solid rgba(92,224,192,.42);border-radius:4px;text-align:center;
+  background:radial-gradient(circle at 50% 8%,rgba(201,160,255,.13),transparent 38%),rgba(3,13,21,.72);
+  box-shadow:inset 0 0 42px rgba(92,224,192,.055),0 0 24px -16px var(--glow)}
+.singularity-finale::before{content:"";position:absolute;inset:-35%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent,rgba(92,224,192,.08),transparent 18%,transparent 50%,rgba(201,160,255,.07),transparent 68%);
+  animation:finale-turn 28s linear infinite}
+.singularity-finale>*{position:relative}.singularity-finale .finale-kicker{font-family:var(--font-mono);
+  font-size:.58rem;letter-spacing:.24em;color:var(--glow)}
+.singularity-finale h2{margin:.7rem 0 .8rem;font-size:1.18rem;font-weight:500;letter-spacing:.13em;color:var(--ink)}
+.singularity-finale blockquote{margin:0 auto .95rem;max-width:30rem;font-size:.78rem;line-height:1.95;
+  letter-spacing:.055em;color:#e4edf2}
+.singularity-finale .finale-note{margin:.2rem auto 1rem;max-width:28rem;color:var(--ink-dim);
+  font-size:.66rem;line-height:1.7}
+.singularity-finale .finale-replay{width:min(100%,20rem);margin:0 auto}
+@keyframes finale-turn{to{transform:rotate(360deg)}}
 .avpick{display:flex;gap:.4rem;margin-bottom:.6rem}
 .avpick select{flex:1;background:var(--cyto);color:var(--ink);border:1px solid var(--line);
   border-radius:2px;padding:.3rem;font-size:.72rem;font-family:inherit}
@@ -627,12 +643,9 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
       <button data-test-speed="100" onclick="DEBUG.speed(100)">×100</button>
     </div>
 
-    <h4 data-test-zh="奇點與終局" data-test-en="SINGULARITY & ENDGAME">奇點與終局</h4>
+    <h4 data-test-zh="奇點終章" data-test-en="SINGULARITY FINALE">奇點終章</h4>
     <div class="row">
-      <button onclick="DEBUG.toSingularity()" data-test-zh="直達奇點" data-test-en="JUMP TO SINGULARITY">直達奇點</button>
-      <button onclick="DEBUG.addSingularResources()" data-test-zh="補充創生資源" data-test-en="ADD GENESIS RESOURCES">補充創生資源</button>
-      <button onclick="DEBUG.maxSingularity()" data-test-zh="奇點系統全解鎖" data-test-en="UNLOCK SINGULARITY SYSTEMS">奇點系統全解鎖</button>
-      <button onclick="DEBUG.nearEnd()" data-test-zh="推至終局前" data-test-en="SET NEAR ENDING">推至終局前</button>
+      <button onclick="DEBUG.toSingularity()" data-test-zh="播放奇點終章" data-test-en="PLAY SINGULARITY FINALE">播放奇點終章</button>
     </div>
 
     <h4 data-test-zh="測試存檔" data-test-en="TEST SAVE">測試存檔</h4>
@@ -959,6 +972,11 @@ function stageMeasure(stage){ return tr(stage,'measure')||(isEn()?'Mass':'質量
 const SINGULARITY_THR = 1e68;
 const ENDING_EXP = 576;          // 「不可說不可說轉」＝終局單位
 const LIFE_FITNESS_MIN = 0.70;   // 生命化學與生命指數開始運作的最低適居度
+// 奇點後篇章完整保留在原始碼與封存包中；正式版目前以抵達奇點作為終章。
+const POST_SINGULARITY_ENABLED = false;
+const SINGULARITY_ENDING_VERSION = 1;
+function postSingularityActive(){ return POST_SINGULARITY_ENABLED && S && S.phase==='singularity'; }
+function singularityJourneyComplete(){ return !POST_SINGULARITY_ENABLED && S && S.phase==='singularity'; }
 
 /* 動詞分帶：離開 idx 階時的動詞 */
 function verbFor(idx){ return idx < 13 ? 'molt' : idx === 13 ? 'cross' : 'collapse'; }
@@ -1023,46 +1041,7 @@ const STRUCTURE_PROFILES = [
   {motif:'褐矮星',motifEn:'Brown Dwarf',names:['雲帶外殼','氣體吸積','金屬氫核心','磁暴經度','褐矮星大氣','對流脈絡','次恆星脈動','氘燃燒爐','紅外光球'],namesEn:['Cloud-Band Envelope','Gas Accretion','Metallic-Hydrogen Core','Magnetic-Storm Meridians','Brown-Dwarf Atmosphere','Convective Network','Substellar Pulse','Deuterium Furnace','Infrared Photosphere'],quip:'恆星資格考只差一題，但氘還是願意給你補考。',quipEn:'You missed the stellar entrance exam by one question, but deuterium offers a resit.'},
   {motif:'紅矮星',motifEn:'Red Dwarf',names:['暗紅光球','氫燃料層','全對流核心','磁斑網','色球層','耀斑迴路','長壽週期','質子鏈爐','磁層收集環'],namesEn:['Dim-Red Photosphere','Hydrogen Fuel Layer','Fully Convective Core','Magnetic Starspot Net','Chromosphere','Flare Loops','Trillion-Year Cycle','Proton–Proton Furnace','Magnetospheric Collector Ring'],quip:'亮度不高，待機時間一兆年；掛機玩家夢寐以求。',quipEn:'Low brightness, trillion-year idle time: the dream build for an idle player.'},
   {motif:'主序星',motifEn:'Main-Sequence Star',names:['光球','氫燃料層','靜水平衡核','日震網','磁活動帶','輻射層','對流層','質子鏈爐','日冕收集環'],namesEn:['Photosphere','Hydrogen Fuel Layer','Hydrostatic Core','Helioseismic Network','Magnetic Activity Belt','Radiative Zone','Convective Zone','Proton–Proton Furnace','Coronal Collector'],quip:'你終於是一顆標準恆星，標準到天文課本願意拿你當範例。',quipEn:'You are finally a standard star—standard enough for an astronomy textbook.'},
-  {motif:'紅超巨星',motifEn:'Red Supergiant',names:['膨脹光球','恆星風','鐵核前驅','巨型對流胞','脈動外層','氦殼層','碳氧燃燒層','洋蔥層鍛爐','塵埃風帆'],namesEn:['Swollen Photosphere','Stellar Wind','Iron-Core Seed','Giant Convection Cells','Pulsating Envelope','Helium Shell','Carbon–Oxygen Burning Shell','Onion-Shell Furnace','Dust-Wind Sail'],quip:'你把行星軌道吞進外殼，還說自己只是有點膨脹。',quipEn:'You swallow your planets’ orbits and call it a little swelling.'},
-  {motif:'白矮星',motifEn:'White Dwarf',names:['熾白光球','伴星質流','碳氧核心','自轉晶格','電子簡併殼','結晶前沿','錢德拉界線','殘熱爐','新星吸積帶'],namesEn:['White-Hot Photosphere','Companion Mass Stream','Carbon–Oxygen Core','Rotational Lattice','Electron-Degenerate Shell','Crystallization Front','Chandrasekhar Gauge','Residual-Heat Furnace','Nova Accretion Belt'],quip:'沒有燃料，仍靠餘熱工作；宇宙最硬派的加班者。',quipEn:'No fuel, still running on residual heat: the cosmos’s toughest overtime worker.'},
-  {motif:'中子星',motifEn:'Neutron Star',names:['中子地殼','回落物質','超流體核心','磁極羅盤','核義大利麵層','渦旋釘扎網','毫秒自轉','磁星發電機','磁層捕獲環','脈衝射束','簡併壓支柱'],namesEn:['Neutron Crust','Fallback Matter','Superfluid Core','Magnetic-Pole Compass','Nuclear Pasta Layer','Vortex-Pinning Network','Millisecond Spin','Magnetar Dynamo','Magnetospheric Capture Ring','Pulsar Beam','Degeneracy-Pressure Brace'],quip:'一茶匙重十億噸，但介面仍允許你一次買一百個。',quipEn:'A teaspoon weighs a billion tonnes, yet the interface still lets you buy one hundred at once.'},
-  {motif:'夸克星',motifEn:'Quark Star',names:['夸克殼','奇異物質滴','色超導核心','強作用鎖','夸克晶格','通量管網','極速自轉','奇異轉化爐','裸奇異表面','伽瑪束','強作用支柱'],namesEn:['Quark Crust','Strange-Matter Droplets','Color-Superconducting Core','Strong-Force Lock','Quark Lattice','Flux-Tube Network','Ultrafast Spin','Strange-Conversion Furnace','Bare Strange Surface','Gamma Beam','Strong-Interaction Brace'],quip:'理論上也許存在；商店已經先替你上架。',quipEn:'It may exist in theory. The shop listed it first.'},
-  {motif:'恆星黑洞',motifEn:'Stellar Black Hole',names:['光子環','潮汐捕獲流','克爾自旋','極軸','引力透鏡殼','磁通網','視界剪切','能層引擎','黑洞陰影','極軸噴流','時空曲率井','吸積盤','事件視界'],namesEn:['Photon Ring','Tidal Capture Stream','Kerr Spin','Polar Axis','Lensing Halo','Magnetic Flux Net','Horizon Shear','Ergosphere Engine','Black-Hole Shadow','Polar Jet','Curvature Well','Accretion Disk','Event Horizon'],quip:'你仍是草履蟲，只是現在「細胞膜」的逃逸速度等於光速。',quipEn:'You are still a paramecium; your “cell membrane” now merely has light-speed escape velocity.'},
-  {motif:'超大質量黑洞',motifEn:'Supermassive Black Hole',names:['黑日光子冠','恆星潮汐流','深重勢阱','自旋權杖','引力透鏡聖環','磁化冕網','視界剪切層','能層王座','黑日陰影','雙極噴流','時空扭曲井','加冕吸積盤','中央事件視界'],namesEn:['Black-Sun Photon Crown','Stellar Tidal Stream','Deep Potential Well','Spin Sceptre','Sacred Lensing Ring','Magnetized Corona','Horizon Shear Layer','Ergosphere Throne','Black-Sun Shadow','Bipolar Jets','Warped-Spacetime Well','Coronation Disk','Central Event Horizon'],quip:'你統治五百萬個太陽質量，依然用纖毛式思維處理政務。',quipEn:'You rule five million solar masses and still administer them with ciliary thinking.'},
-  {motif:'銀河系質量星系',motifEn:'Milky-Way-Mass Galaxy',names:['旋臂星潮','分子雲港','中央核球','棒狀引力矩','暗物質暈','恆星形成網','星際介質循環','恆星鍛造群','球狀星團冠','脈衝星航標','緻密天體墓園','核周吸積盤','中央黑洞聖所'],namesEn:['Spiral-Arm Star Tide','Molecular-Cloud Harbor','Central Bulge','Bar Torque','Dark-Matter Halo','Star-Formation Web','Interstellar-Medium Cycle','Stellar Forge Population','Globular-Cluster Crown','Pulsar Beacons','Compact-Object Graveyard','Circumnuclear Disk','Central Black-Hole Sanctum'],quip:'你的身體有千億顆星，但移動方式仍像草履蟲在水滴裡找細菌。',quipEn:'Your body contains a hundred billion stars, but you still move like a paramecium hunting bacteria in a droplet.'},
-  {motif:'星系團',motifEn:'Galaxy Cluster',names:['成員星系軌道','星系際氣體','暗物質勢阱','引力透鏡弧','維里化暈','宇宙網入流','併合震波','星群鍛造帶','電波暈','射電遺跡弧','緻密核心群','冷卻流','中央巨橢圓聖座'],namesEn:['Member-Galaxy Orbits','Intracluster Medium','Dark-Matter Potential Well','Gravitational-Lens Arcs','Virialized Halo','Cosmic-Web Inflow','Merger Shock','Cluster Star-Forge Belt','Radio Halo','Radio Relic Arcs','Compact-Core Population','Cooling Flow','Central Giant-Elliptical Throne'],quip:'成千上萬個星系開會，議程只有一項：繼續掉向你。',quipEn:'Thousands of galaxies hold a meeting. The only agenda item is continuing to fall toward you.'},
-  {motif:'J0838+5327',motifEn:'J0838+5327',names:['核區等離子結','核周氣體流','超大質量黑洞引擎','噴流自旋軸','活動星系核冕','磁化通道','重啟時鐘','同步輻射爐','電波橋','內層雙極噴流','外層噴流遺跡','內電波瓣','外電波瓣'],namesEn:['Nuclear Plasma Knot','Circumnuclear Gas Stream','Supermassive Black-Hole Engine','Jet Spin Axis','Active-Nucleus Corona','Magnetized Channel','Restart Clock','Synchrotron Furnace','Radio Bridge','Inner Bipolar Jets','Fossil Outer-Jet Channel','Inner Radio Lobes','Outer Radio Lobes'],quip:'你的噴流長到能排下兩百多個銀河系，草履蟲本體仍堅持自己只是游得比較遠。',quipEn:'Your jets could line up more than two hundred Milky Ways; the paramecium insists it only swam farther.'},
-  {motif:'拉尼亞凱亞超星系團',motifEn:'Laniakea Supercluster',names:['星系流線','宇宙網節點','大引力源勢阱','速度場羅盤','吸引盆地邊界','纖維網入流','星系群落潮','星海鍛造帶','超星系團光暈','流域軸線','緻密天體譜系','暗物質流','大引力源聖所'],namesEn:['Galaxy Flowlines','Cosmic-Web Nodes','Great-Attractor Potential','Peculiar-Velocity Compass','Basin-of-Attraction Boundary','Filamentary Inflow','Galaxy-Group Tide','Star-Sea Forge Belt','Supercluster Glow','Basin Axis','Compact-Object Lineages','Dark-Matter Flow','Great-Attractor Sanctum'],quip:'你不是一個物體，而是一個大家都在往裡掉的方向。',quipEn:'You are not an object so much as a direction everyone is falling toward.'},
-  {motif:'哈伯球',motifEn:'Hubble Sphere',names:['哈伯流線','退行星系標記','宇宙膨脹場','共動座標網','哈伯半徑殼','紅移梯度','尺度因子時鐘','宇宙微波背景','可觀測節點暈','逐光脈衝','因果曲率網','c/H₀ 等速面','逐光之界'],namesEn:['Hubble Flowlines','Receding-Galaxy Markers','Cosmic Expansion Field','Comoving Coordinate Grid','Hubble-Radius Shell','Redshift Gradient','Scale-Factor Clock','Cosmic Microwave Background','Observable-Node Halo','Light-Chasing Pulses','Causal-Curvature Web','c/H₀ Equal-Recession Surface','Light-Chasing Frontier'],quip:'你追上了膨脹，不等於追上了宇宙；它還在把終點往外搬。',quipEn:'You caught the expansion, not the Universe; it keeps moving the finish line outward.'},
-];
-/* 每個文字槽都與同階形態的實際機制相連；經濟 id、價格與產率仍完全取自 BUILDINGS。 */
-const STRUCTURE_STAGE_COPY = [
-  {ds:['梳動細胞表面的水膜，把細菌推向口溝。','暫存吞入的碎屑，再以酸性囊泡逐步分解。','用內共生呼吸把養分換成可用能量。','統籌代謝、修復與游動所需的大量轉錄。','撐住橢圓表膜，固定一列列纖毛的落點。'],dsEn:['Combs the surface film and drives bacteria toward the oral groove.','Holds engulfed debris while acidic vesicles digest it.','Uses endosymbiotic respiration to turn nutrients into usable energy.','Directs the heavy transcription needed for movement, repair, and metabolism.','Braces the oval pellicle and fixes each row of cilia in place.']},
-  {ds:['划動淡水，讓透明身軀躍進或急退。','像幫浦般濾過水流，把藻粒送入口器。','在沒有血管的身體裡推送血淋巴與氧。','同時追蹤光源、捕食者與下一團藻。','包住濾食腔，也替柔軟內臟擋下碰撞。'],dsEn:['Strokes freshwater to hop forward or dart away.','Pumps a feeding current and filters algae toward the mouth.','Circulates haemolymph and oxygen through a vessel-poor body.','Tracks light, predators, and the next algal patch at once.','Encloses the filter chamber and shields the soft organs from impacts.']},
-  {ds:['扣合前後翅，讓四片翅成為一副升力面。','把花蜜帶回巢內，等待工蜂接手濃縮。','以高頻收縮支撐懸停、轉向與長程採集。','讀取氣味、風向與太陽位置，校正歸巢航線。','以六角單元分配幼蟲、花粉與蜂蜜的空間。'],dsEn:['Hooks fore- and hindwings into one lifting surface.','Carries nectar home for the colony to concentrate.','Powers hovering, turning, and long foraging flights at high frequency.','Reads scent, wind, and the Sun to correct the route home.','Allocates brood, pollen, and honey among efficient hexagonal cells.']},
-  {ds:['以八字軌跡反覆翻轉，從空氣中持續取升力。','伸入花冠深處，把高糖花蜜直接送向喉部。','高速輸送氧與糖，支撐近乎不停的翼拍。','把視覺與前庭訊號即時修正成穩定懸停。','以瞬間變色的羽面宣告領域與求偶狀態。'],dsEn:['Reverses through a figure-eight stroke to harvest lift continuously.','Reaches deep corollas and channels dense nectar toward the throat.','Moves oxygen and sugar fast enough to sustain near-continuous wingbeats.','Turns visual and vestibular feedback into stable hovering corrections.','Flashes an iridescent territorial and courtship signal with each angle change.']},
-  {ds:['在黑暗巢道裡先摸出牆面、轉角與出口。','把穀粒整批搬回藏糧室，而不是當場吃完。','維持小型哺乳類的體溫，也快速消耗庫存。','記住巢穴岔路、食物藏點與安全回程。','把夜間奔跑慾轉成不離巢的持續運動。'],dsEn:['Maps walls, corners, and exits before the body enters a dark tunnel.','Hauls whole loads of grain to the cache instead of eating in place.','Maintains mammalian warmth while rapidly spending stored fuel.','Remembers burrow forks, food caches, and the safest route home.','Turns nocturnal roaming drive into continuous motion without leaving the nest.']},
-  {ds:['先讀出近身氣流與縫隙寬度，再讓身體通過。','以高酸度處理富含蛋白與脂肪的獵物。','把伏擊壓縮成一次安靜而爆發性的躍撲。','在微光中放大獵物輪廓，同時控制反光層。','以低頻振動穩住呼吸，也維繫群體接觸。'],dsEn:['Reads nearby air and gap width before the body commits.','Processes protein- and fat-rich prey in a highly acidic stomach.','Compresses an ambush into one quiet, explosive pounce.','Amplifies prey silhouettes in dim light while controlling eyeshine.','Uses low-frequency vibration to steady breathing and maintain social contact.']},
-  {ds:['精細抓握石片、種子與工具，把意圖留在物件上。','把日照、土壤與季節轉成可儲存的糧食。','以雙足長程搬運，讓雙手保持自由。','把不存在於眼前的計畫同步給其他個體。','集中食物、技術與勞力，讓分工跨越世代。'],dsEn:['Grasps stone, seed, and tool precisely enough to leave intention in objects.','Turns sunlight, soil, and seasons into food that can be stored.','Carries the body over distance while leaving both hands free.','Synchronizes plans about things not presently visible.','Concentrates food, craft, and labour so specialization survives generations.']},
-  {ds:['同時嗅探、飲水、抓取與搬運，不必低下巨軀。','連續磨碎粗硬植物，補回龐大身體的消耗。','把血液推過數公尺高差，供應耳、腦與四肢。','保存旱季水源、遷徙路線與多年社會關係。','以低鳴和足底震動共享遠方的路況。'],dsEn:['Smells, drinks, grasps, and carries without lowering the giant body.','Grinds coarse plants continuously to meet an immense energy demand.','Pushes blood across metres of height to ears, brain, and limbs.','Keeps dry-season waterholes, migration routes, and decades of social memory.','Shares distant conditions through rumbles and ground-borne vibration.']},
-  {ds:['以大幅上下拍動推動百噸身軀穿過海水。','張口濾過整片磷蝦群，再排出多餘海水。','在肌肉內儲氧，延長深潛而不必呼吸。','讓低頻歌聲穿越海盆，定位遙遠同類。','連結高緯覓食場與溫暖繁殖海域。'],dsEn:['Sweeps vertically to drive a hundred-tonne body through seawater.','Filters whole krill patches while expelling the excess ocean.','Stores oxygen inside muscle to extend a breathless dive.','Carries low songs across ocean basins to locate distant whales.','Links polar feeding grounds with warm breeding waters.']},
-  {ds:['牽起北冥水勢，為化鵬前的上升蓄力。','把海潮與巨量獵物一同納入腹中。','推動如海般的血流，維持不可丈量的身軀。','越過九萬里水天，先感到遠方風向。','把魚形的流線預先排列成鵬翼的徵兆。'],dsEn:['Gathers the North Sea into lift for the coming Peng transformation.','Takes tides and immense prey into the same mythic maw.','Drives an oceanic circulation through an immeasurable body.','Feels distant winds across ninety thousand li of sea and sky.','Prearranges the fish form into the first signs of Peng plumage.']},
-  {ds:['把步伐釘進大地，讓山岳尺度的身體不致傾覆。','消化整場盛宴，為跨越地平線的活動供能。','保存盜來的神火，讓胸腔成為長燃爐膛。','越過山脈讀取城邦、獵物與下一個落腳點。','把聚落與裝甲一起背負，形成會移動的堡壘。'],dsEn:['Pins each stride into the ground so a mountain-scale body stays upright.','Digests a feast large enough to power movement across horizons.','Keeps stolen divine fire burning inside the chest.','Looks across ranges to read cities, prey, and the next foothold.','Carries settlement and armour together as a moving citadel.']},
-  {ds:['借雲氣托起長軀，在雷雨帶中改變高度。','吞入雲水並壓縮成吐息前的燃料。','以逆鱗護住高熱核心，持續煉出龍火。','感應雷場與地脈，選擇盤旋和落地的位置。','層疊鱗甲導開衝擊，也讓身軀環山而行。'],dsEn:['Rides cloud-breath to lift a long body through storm layers.','Swallows cloud water and compresses it into fuel for the next breath.','Guards the hot heart beneath a reverse scale while dragonfire builds.','Senses thunder fields and ley lines to choose where to coil or land.','Overlapping scales shed impacts and let the body wrap around mountains.']},
-  {ds:['以巨足分散大陸重量，把震動送入深層地脈。','疏導海水與巨獸，維持甲背世界的物質循環。','把地脈熱流推向陸塊，避免背上世界冷寂。','對準天極與潮汐，校正承載世界的方向。','讓山海重量沿甲片擴散，不壓垮單一支點。'],dsEn:['Spreads continental weight through colossal feet and into deep ley lines.','Channels seas and great beasts through the world carried above.','Pumps geothermal flow toward the land so the borne world does not cool.','Aligns with pole and tide to correct the world-bearing orientation.','Distributes mountains and oceans across plates instead of one failing point.']},
-  {ds:['讓環世長軀在海壓與潮汐中保持連續。','吞吐洋流，把海面漲落變成自己的攝食節律。','將毒液送遍大洋，使海水本身成為領域。','用星圖校正環繞中庭世界的方位。','咬合首尾，封閉一次沒有終點的路徑。','把末日訊號繞行世界一周仍不失真。','維持永恆回返，讓自身同時成為起點與獵物。'],dsEn:['Keeps the world-length body continuous under tides and ocean pressure.','Swallows and releases currents until the tide becomes a feeding rhythm.','Pumps venom through the ocean until seawater itself becomes territory.','Uses the stars to correct a course around the middle world.','Closes mouth on tail and seals a path with no endpoint.','Carries the doom signal around the world without losing it.','Sustains eternal return, making the self both origin and prey.']},
-  {ds:['掃過軌道附近的鬆散碎屑，逐圈增加截獲機會。','把低速塵粒困在凹坑與多孔表面。','以放射性衰變保留微弱內熱，改造原始礦物。','固定自轉方向，讓碰撞不只留下混亂。','靠微弱自引力把石塊拼成多孔而完整的天體。','沿接觸點傳遞撞擊與鬆動，重排碎石堆。','在軌道交會時選擇追上、避開或併入。'],dsEn:['Sweeps loose orbital debris and raises the capture chance each circuit.','Traps slow dust inside pits and porous regolith.','Keeps a faint radiogenic heat that alters primitive minerals.','Stabilizes spin so collisions leave more than random tumbling.','Uses weak self-gravity to assemble rubble into one porous body.','Passes impacts through contact points and rearranges the pile.','Chooses whether an orbital encounter becomes pursuit, escape, or merger.']},
-  {ds:['排出撞擊熱，讓熔融表面逐步凝成地殼。','擴大重力與幾何截面，截住穿越原行星盤的物質。','讓鐵鎳下沉、矽酸鹽上浮，分出核與幔。','以流動金屬生成磁場，標記自轉與恆星風方向。','留住水、碳與氮，建立後續化學的外層庫存。','在地幔中搬運熱與元素，反覆翻新表面。','清掃鄰近軌道，把餵食區變成自己的疆域。'],dsEn:['Radiates impact heat until a molten surface can crust over.','Enlarges the gravitational and geometric cross-section through the disk.','Sinks iron and raises silicate until core and mantle separate.','Generates a magnetic field from moving metal and marks the spin direction.','Retains water, carbon, and nitrogen for later atmospheric chemistry.','Moves heat and elements through a mantle that repeatedly resurfaces.','Clears neighbouring paths and turns the feeding zone into territory.']},
-  {ds:['把高速緯向風分成明暗雲帶，搬運內部熱量。','用長壽渦旋捲入氣體、冰粒與小型衛星碎屑。','讓導電金屬氫旋轉，驅動龐大行星磁場。','擋下恆星風，也把帶電粒子導向極區。','依共振與粒徑整理冰石，形成薄而廣的環。','從深層把形成餘熱送上雲頂。','讓一場風暴跨越世紀仍維持形狀與能量。'],dsEn:['Separates fast zonal winds into bright and dark heat-carrying bands.','Uses a long-lived vortex to gather gas, ice, and moonlet debris.','Rotates conducting metallic hydrogen to drive a giant dynamo.','Deflects stellar wind and funnels charged particles toward the poles.','Sorts ice and rock by resonance and size into a broad thin ring.','Convects formation heat from the deep interior to the cloud tops.','Keeps one storm coherent and powered across centuries.']},
-  {ds:['讓礦物雲層在紅外光下顯出風帶與天氣。','續收周圍氣體，補充次恆星大氣與角動量。','以金屬氫導電層維持強磁場。','標記磁暴經度，追蹤反覆爆發的活動區。','用分子吸收線記錄低溫大氣的成分。','把核心殘熱送過整顆褐矮星而不需輻射層。','讓半徑與亮度隨內熱緩慢呼吸。','短暫點燃氘，補上未能持續燃氫的能量。','把形成餘熱主要以紅外線送向宇宙。'],dsEn:['Reveals mineral clouds, bands, and weather in infrared light.','Adds surrounding gas to the substellar atmosphere and angular momentum.','Maintains a strong dynamo inside conducting metallic hydrogen.','Tracks active longitudes where magnetic storms repeatedly erupt.','Records the cool atmosphere through molecular absorption bands.','Moves core heat through the whole dwarf without a radiative zone.','Lets radius and luminosity breathe slowly with internal heat.','Burns deuterium briefly to supplement the missing hydrogen sequence.','Releases formation heat mainly through an infrared photosphere.']},
-  {ds:['以暗紅光球緩慢放出核心融合能。','把長壽命氫庫送入可持續燃燒的內部。','讓整顆星完全對流，把新氫帶回核心。','記錄磁斑聚集處，預告下一次耀斑。','在光球上方加熱稀薄氣體並產生發射線。','沿磁力線突然釋能，短暫照亮周圍行星。','以極低耗氫率維持兆年尺度的主序生命。','透過質子鏈把氫穩定轉為氦。','截留恆星風帶出的粒子與磁能。'],dsEn:['Releases core fusion slowly through a dim red photosphere.','Feeds a long-lived hydrogen reserve into the burning interior.','Convects the entire star and returns fresh hydrogen to the core.','Maps starspot concentrations that foretell the next flare.','Heats thin gas above the photosphere into an emitting chromosphere.','Releases magnetic energy suddenly along flare loops.','Maintains a trillion-year main-sequence life through frugal hydrogen use.','Converts hydrogen steadily into helium through the proton–proton chain.','Captures particles and magnetic energy carried by the stellar wind.']},
-  {ds:['在可見表面把內部能量轉成穩定星光。','調度核心可用氫，維持主序燃燒。','讓向內重力與向外壓力長期相抵。','用全星振盪探測看不見的內部結構。','追蹤星斑、耀斑與磁場反轉的活動週期。','以光子隨機漫步將核心能量向外傳遞。','讓外層物質翻騰，把熱送到光球。','以質子鏈持續建立氦核心。','從高溫日冕與恆星風回收外逸能量。'],dsEn:['Turns interior energy into stable starlight at the visible surface.','Meters core hydrogen into sustained main-sequence burning.','Balances inward gravity against outward pressure for stellar lifetimes.','Uses global oscillations to probe the hidden stellar interior.','Tracks the cycle of spots, flares, and magnetic reversals.','Carries core energy outward through a photon random walk.','Convects the outer envelope and delivers heat to the photosphere.','Builds a helium core through continuous proton–proton fusion.','Recovers escaping energy from the hot corona and stellar wind.']},
-  {ds:['膨脹到行星軌道尺度，以低溫紅光包住核心。','拋出富重元素氣體，為未來星際塵埃播種。','累積融合灰燼，逼近無法再取能的鐵核心。','以巨型對流胞把深層元素翻到表面。','讓外層週期脹縮，推動質量流失。','在核心外把氦熔成碳與氧。','沿更深殼層繼續燃燒碳、氧與更重燃料。','把多層融合殼排成通往核心的元素階梯。','讓新凝結塵粒乘恆星風離開。'],dsEn:['Expands to planetary-orbit scale and wraps the core in cool red light.','Ejects metal-rich gas that will seed future interstellar dust.','Accumulates fusion ash toward an iron core that yields no energy.','Uses colossal convection cells to dredge deep elements upward.','Pulsates the envelope and drives continuing mass loss.','Fuses helium into carbon and oxygen in a shell around the core.','Burns carbon, oxygen, and heavier fuels in successively deeper shells.','Arranges nested fusion shells as an elemental staircase to the core.','Lets newly condensed grains ride the stellar wind away.']},
-  {ds:['從小半徑放出殘熱，逐步由白轉暗。','從伴星拉取氣體，累積新星或爆燃的燃料。','以碳氧灰燼保存前身恆星的核反應歷史。','在結晶物質中保存自轉與磁場的排列。','用電子簡併壓抵抗重力，不再依靠融合。','讓冷卻核心由內向外逐步結晶。','監看質量是否逼近錢德拉塞卡上限。','把不可再融合的熱庫慢慢換成光。','讓落下氫氣在表面壓縮並週期性爆發。'],dsEn:['Radiates residual heat from a small radius and slowly fades from white.','Draws gas from a companion to fuel novae or a larger runaway.','Preserves the nuclear history of the progenitor in carbon–oxygen ash.','Stores spin and magnetic order inside crystallizing matter.','Uses electron degeneracy, not fusion, to resist gravity.','Advances crystallization outward as the core cools.','Monitors whether added mass approaches the Chandrasekhar limit.','Converts a finite non-fusing heat reservoir into fading light.','Compresses incoming hydrogen until the surface erupts periodically.']},
-  {ds:['以中子化物質形成堅硬薄殼，承受極端重力。','接住超新星後回落的物質與角動量。','讓中子超流體在幾乎無黏滯下儲存自轉。','以磁極決定粒子束與輻射掃過方向。','把原子核拉成麵條與薄片般的高密度相。','將超流體渦旋釘在地殼，累積星震前的張力。','把坍縮留下的角動量壓成毫秒週期。','以超強磁場把自轉能換成高能活動。','捕捉帶電粒子並導向磁極。','每次自轉都讓窄束掃過宇宙。','以中子簡併與核力托住整顆緻密星。'],dsEn:['Forms a rigid thin crust of neutron-rich matter under extreme gravity.','Catches fallback material and angular momentum after the supernova.','Stores rotation in a nearly inviscid neutron superfluid.','Sets the sweep direction of particle beams with the magnetic poles.','Stretches nuclei into dense pasta-like rods and sheets.','Pins superfluid vortices to the crust until a starquake releases them.','Compresses collapse angular momentum into millisecond periods.','Turns rotational energy into violent activity through an immense magnetic field.','Captures charged particles and guides them toward the poles.','Sweeps a narrow beam across the cosmos on every rotation.','Supports the compact star with neutron degeneracy and nuclear forces.']},
-  {ds:['以解禁夸克物質構成假設性的最外殼。','讓奇異物質滴侵入普通核物質並改變其相態。','用色超導配對降低核心的耗散。','以強作用力鎖住比原子核更緊密的結構。','排列夸克相與缺陷，保存高密度固態秩序。','沿量子化通量管傳遞磁場與應力。','在更小轉動慣量下保存極高速自轉。','把普通物質轉為奇異相並釋出結合能。','讓無原子外殼的表面直接放出高能粒子。','把轉化能沿磁軸束成伽瑪射線。','用夸克簡併與強作用共同抵抗坍縮。'],dsEn:['Builds a hypothetical outer shell from deconfined quark matter.','Lets strange-matter droplets seed a new phase in nuclear matter.','Pairs colour charge superconductively to reduce core dissipation.','Uses the strong interaction to bind structures denser than nuclei.','Orders quark phases and defects into a high-density lattice.','Carries magnetic flux and stress through quantized tubes.','Preserves ultrafast rotation with a smaller moment of inertia.','Converts ordinary matter to a strange phase and releases binding energy.','Emits energetic particles directly from a surface without atoms.','Collimates conversion energy into gamma rays along the magnetic axis.','Resists collapse through quark degeneracy and strong interactions together.']},
-  {ds:['讓繞行光子描出黑洞陰影外的明亮細環。','撕裂近旁物質並送入旋轉吸積流。','把坍縮角動量保存為克爾時空的自旋。','固定吸積盤與雙極噴流的共同方向。','彎折背景星光，顯出視界周圍的曲率。','把落入等離子體的磁通堆積在視界附近。','從差動旋轉與視界剪切中抽取可用能量。','在能層內以磁場耦合黑洞自旋。','以缺光輪廓標記不可直接看見的本體。','沿極軸把吸積能送往遠方星際介質。','把靠近中心的路徑壓成不可逆的內落。','讓落入氣體在消失前加熱到耀眼。','越過此界後，所有未來路徑都指向內部。'],dsEn:['Lets orbiting photons trace a bright ring around the black-hole shadow.','Tears apart nearby matter and feeds it into a rotating inflow.','Stores collapse angular momentum as Kerr spacetime spin.','Fixes the shared direction of the disk and bipolar jets.','Bends background starlight to reveal curvature around the horizon.','Piles magnetic flux from the plasma against the horizon.','Extracts usable power from differential rotation and horizon shear.','Couples magnetic fields to black-hole spin inside the ergosphere.','Marks the invisible body by the silhouette of missing light.','Carries accretion power into the interstellar medium along the poles.','Forces near-centre trajectories into irreversible inward paths.','Heats infalling gas to brilliance before it disappears.','Makes every future-directed path point inward once crossed.']},
-  {ds:['把強重力繞行光加冕成中央黑日的光冠。','將整顆恆星拉成潮汐流，餵入活動星系核。','支配數百萬太陽質量的深重力勢阱。','以自旋軸統一冕區、吸積盤與雙極噴流。','把背景星系扭成聖環，顯示空間被彎曲的程度。','在核區累積磁通，控制冕區重聯與閃耀。','把視界附近的差動轉動轉成高能耗散。','從能層抽取黑洞自旋，供應活動核功率。','以巨大陰影界定看不見的中央質量。','讓相對論噴流穿出宿主星系並點亮電波瓣。','扭曲周圍軌道、時間與來自背後的光。','讓巨量氣體在加冕吸積盤中釋出最後光芒。','把整個活動核的因果終點固定在中央。'],dsEn:['Crowns strongly lensed orbiting light around the central black sun.','Stretches whole stars into tidal streams that feed the active nucleus.','Dominates a deep potential containing millions of solar masses.','Aligns corona, accretion disk, and bipolar jets with the spin axis.','Warps background galaxies into sacred rings that expose the curvature.','Accumulates nuclear magnetic flux and governs coronal reconnection.','Turns differential motion near the horizon into high-energy dissipation.','Taps black-hole spin from the ergosphere to power the active nucleus.','Defines the unseen central mass through an immense dark silhouette.','Drives relativistic jets beyond the host galaxy into radio lobes.','Warps nearby orbits, clocks, and light arriving from behind.','Lets vast gas supplies release their final light in the coronation disk.','Anchors the causal endpoint of the active nucleus at the centre.']},
+  {motif:'紅超巨星',motifEn:'Red Supergiant',names:['膨脹光球','恆星風','鐵核前驅','巨型對流胞','脈動外層','氦殼層','碳氧燃燒層','洋蔥層鍛爐','塵埃風帆'],namesEn:['Swollen Photosphere','Stellar Wind','Iron-Core Seed','Giant Convection Cells','Pulsating Envelope','Helium Shell','Carbon–Oxygen Bu…7297 tokens truncated…冠。','將整顆恆星拉成潮汐流，餵入活動星系核。','支配數百萬太陽質量的深重力勢阱。','以自旋軸統一冕區、吸積盤與雙極噴流。','把背景星系扭成聖環，顯示空間被彎曲的程度。','在核區累積磁通，控制冕區重聯與閃耀。','把視界附近的差動轉動轉成高能耗散。','從能層抽取黑洞自旋，供應活動核功率。','以巨大陰影界定看不見的中央質量。','讓相對論噴流穿出宿主星系並點亮電波瓣。','扭曲周圍軌道、時間與來自背後的光。','讓巨量氣體在加冕吸積盤中釋出最後光芒。','把整個活動核的因果終點固定在中央。'],dsEn:['Crowns strongly lensed orbiting light around the central black sun.','Stretches whole stars into tidal streams that feed the active nucleus.','Dominates a deep potential containing millions of solar masses.','Aligns corona, accretion disk, and bipolar jets with the spin axis.','Warps background galaxies into sacred rings that expose the curvature.','Accumulates nuclear magnetic flux and governs coronal reconnection.','Turns differential motion near the horizon into high-energy dissipation.','Taps black-hole spin from the ergosphere to power the active nucleus.','Defines the unseen central mass through an immense dark silhouette.','Drives relativistic jets beyond the host galaxy into radio lobes.','Warps nearby orbits, clocks, and light arriving from behind.','Lets vast gas supplies release their final light in the coronation disk.','Anchors the causal endpoint of the active nucleus at the centre.']},
   {ds:['以密度波整理恆星與氣體，維持旋臂圖樣。','把冷分子氣體聚成可誕生新星的港灣。','集中老年恆星，建立星系中央的核球。','用棒狀結構搬運角動量並餵養核區。','以暗物質重力維持遠端恆星的高速公轉。','讓氣體雲跨越旋臂時成批坍縮成星。','回收恆星風與超新星拋出的元素。','在不同年代持續建立恆星族群。','以古老緻密星團標記星系早期形成史。','用規律脈衝為星際尺度提供時鐘與航標。','收納白矮星、中子星與黑洞的殘骸族群。','把氣體送入中央數秒差距的旋轉盤。','以超大質量黑洞調節核區吸積與回饋。'],dsEn:['Organizes stars and gas with density waves that preserve spiral patterns.','Condenses cold molecular gas into harbours of new star formation.','Concentrates old stars into the central bulge.','Moves angular momentum with a bar and feeds the nuclear region.','Uses a dark-matter halo to sustain fast outer stellar orbits.','Collapses gas clouds in batches as they cross spiral arms.','Recycles elements expelled by stellar winds and supernovae.','Builds successive stellar populations across galactic time.','Marks the galaxy’s early assembly with ancient compact clusters.','Provides interstellar clocks and beacons through regular pulsars.','Collects white dwarfs, neutron stars, and black holes as a remnant population.','Feeds gas into a rotating disk within the central parsecs.','Regulates nuclear accretion and feedback through the central supermassive black hole.']},
   {ds:['讓成員星系在共同重力勢中維持高速軌道。','以熾熱稀薄氣體保存多數可見重子物質。','用暗物質建立比任何單一星系更深的勢阱。','把背景天體拉成弧線，量測不可見質量。','經維里化把隨機運動與重力束縛平衡。','沿宇宙網纖維持續接收星系與氣體。','在星系團併合時加熱氣體並重排暗物質。','讓受壓氣體在特定區域重新形成恆星。','以瀰漫同步輻射標記全團磁場與高能粒子。','在外圍留下併合震波的弧形電波遺跡。','累積各星系帶來的黑洞與緻密天體核心。','讓低熵氣體朝中心流動並可能重新冷卻。','以中央巨橢圓星系統領團心與回饋。'],dsEn:['Keeps member galaxies on fast orbits inside one shared potential.','Stores most visible baryons in hot diffuse intracluster plasma.','Builds a potential deeper than any member galaxy with dark matter.','Stretches background sources into arcs that weigh unseen mass.','Virializes random motion against the cluster’s gravitational binding.','Receives galaxies and gas continuously along cosmic filaments.','Heats plasma and rearranges dark matter during cluster mergers.','Restarts star formation where merger pressure compresses gas.','Maps cluster-wide fields and energetic particles with diffuse synchrotron light.','Leaves arc-shaped radio relics where merger shocks reach the outskirts.','Accumulates black holes and compact cores delivered by member galaxies.','Lets low-entropy gas drift inward and possibly cool again.','Places a giant elliptical galaxy at the centre of cluster feedback.']},
   {ds:['在活動核附近壓縮等離子體，標出當次噴流起點。','把核周氣體送向中央黑洞與新一輪活動。','將吸積與自旋轉成可跨越億光年的噴流功率。','固定內外兩代電波結構的共同方向。','以熱冕與高能粒子包住重新點亮的活動核。','沿有序磁場為相對論粒子開出低耗散通道。','記錄沉寂與重啟，分隔兩對電波瓣的年齡。','讓高速電子在磁場中放出同步輻射。','以微弱電波連起核區、內瓣與古老外瓣。','宣告第二次活動，建立較年輕的內層雙瓣。','保存上一次噴流穿越星際介質留下的路徑。','積存新一輪噴流能量，顯出較短的年輕電波瓣。','讓古老電漿在遠端繼續低頻發光。'],dsEn:['Compresses plasma near the active nucleus and marks the newest jet launch.','Feeds circumnuclear gas toward the black hole and its next active cycle.','Converts accretion and spin into jets spanning hundreds of millions of light-years.','Aligns the inner and outer generations of radio structure.','Wraps the restarted nucleus in a hot corona of energetic particles.','Opens a low-loss channel for relativistic particles along ordered fields.','Separates dormancy from restart and dates the two pairs of lobes.','Makes fast electrons radiate synchrotron light in magnetic fields.','Faintly links nucleus, inner lobes, and ancient outer lobes by radio emission.','Declares the second active episode as a younger inner bipolar pair.','Preserves the channel cut through intergalactic gas by the earlier jets.','Stores the renewed jet power in the shorter, younger radio lobes.','Keeps ancient plasma glowing at low frequency far from the nucleus.']},
@@ -1381,6 +1360,17 @@ const ACHIEVEMENT_MILESTONES = [
   {count:24,title:'無外見證者',titleEn:'Witness of Scale',color:'#ff94bd',colorName:'見證粉',colorNameEn:'Witness Rose'},
   {count:30,title:'永游之魂',titleEn:'Still Swimming',color:'#f4f1df',colorName:'長游白',colorNameEn:'Endless-Swim White'},
 ];
+const ARCHIVED_POST_ACHIEVEMENT_IDS=new Set([
+  'first_law','stars_here','life_window','dust_long_road','life_anchor','swim_with_self','all_forms','one_universe_later','book_closes',
+  'silence_not_failure','dust_did_not_wake','one_body_many_forms',
+]);
+function activeAchievementDefs(){
+  return POST_SINGULARITY_ENABLED?ACHIEVEMENTS:ACHIEVEMENTS.filter(a=>!ARCHIVED_POST_ACHIEVEMENT_IDS.has(a.id));
+}
+function activeAchievementMilestones(){
+  const total=activeAchievementDefs().length;
+  return ACHIEVEMENT_MILESTONES.filter(m=>m.count<=total);
+}
 function freshAchievementState(){
   return {
     version:ACHIEVEMENT_VERSION,
@@ -1517,7 +1507,7 @@ function freshState(){
     gen:0, universeStage:0, lifeExp:0, uniAge:0, singShop:{}, locked:{}, ended:false, lifeUniverses:0,
     heroStage:0, heroCustom:{}, avatars:[], genesisStage:-1, formSchema:2,
     ach:freshAchievementState(),
-    lang:'zh', seenCine:false,
+    lang:'zh', seenCine:false, singularityEndingVersion:0,
     t:Date.now(), started:Date.now(),
   };
 }
@@ -1733,18 +1723,21 @@ function ensureAchievementState(){
 }
 function achievementDef(id){ return ACHIEVEMENTS.find(a=>a.id===id); }
 function achievementUnlocked(id){ return !!ensureAchievementState().unlocked[id]; }
-function achievementCount(){ return Object.keys(ensureAchievementState().unlocked).length; }
+function achievementCount(){
+  const unlocked=ensureAchievementState().unlocked;
+  return activeAchievementDefs().reduce((count,a)=>count+(unlocked[a.id]?1:0),0);
+}
 function achievementStageIndex(nameEn){ return STAGES.findIndex(s=>s.nameEn===nameEn); }
 function achievementUniverseIndex(id){ return UNIVERSE_STAGES.findIndex(s=>s.id===id); }
 function achievementGenesisIndex(id){ return LIFE_GENESIS.findIndex(s=>s.id===id); }
 function achievementPopcount(n){ n=(Number(n)||0)>>>0; let c=0; while(n){n&=n-1;c++;} return c; }
 function achievementCurrentMilestone(){
   const count=achievementCount();
-  return ACHIEVEMENT_MILESTONES.filter(m=>count>=m.count).pop()||null;
+  return activeAchievementMilestones().filter(m=>count>=m.count).pop()||null;
 }
 function achievementSwatches(){
   const count=achievementCount();
-  return ACHIEVEMENT_MILESTONES.filter(m=>count>=m.count).map(m=>({
+  return activeAchievementMilestones().filter(m=>count>=m.count).map(m=>({
     hex:m.color,zh:`成就色票 · ${m.colorName}`,en:`Achievement swatch · ${m.colorNameEn}`
   }));
 }
@@ -1771,7 +1764,7 @@ function unlockAchievement(id,options){
   if (achievementBatch) achievementBatch.push(id);
   let notice='';
   if (!options.silent && !achievementBatch){
-    const milestone=ACHIEVEMENT_MILESTONES.find(m=>m.count===achievementCount());
+    const milestone=activeAchievementMilestones().find(m=>m.count===achievementCount());
     const base=isEn()?`Achievement unlocked: ${def.nameEn}. Echo Sigil earned.`:`成就解鎖：「${def.name}」。獲得一枚回聲徽記。`;
     const reward=milestone
       ? (isEn()?` Title “${milestone.titleEn}” and a new Morph Workshop swatch are now yours.`:` 稱號「${milestone.title}」與一枚形態工房色票也已解鎖。`)
@@ -1844,7 +1837,7 @@ function recordAchievementEvent(type,data){
       stats.maxSatiety=Math.max(stats.maxSatiety,Number(data.stacks)||0);
       if (stats.maxSatiety>=6) unlockAchievement('sixfold_sated');
       break;
-    case 'singularity': ach.flags.enteredSingularity=true; unlockAchievement('no_outside'); break;
+    case 'singularity': ach.flags.enteredSingularity=true; unlockAchievement('no_outside'); checkLegacyAchievements(); break;
     case 'constant': stats.constantsRaised++; unlockAchievement('first_law'); checkCreationObjectiveAchievements(); break;
     case 'universe': stats.universeHigh=Math.max(stats.universeHigh,S.universeStage||0); checkCreationObjectiveAchievements(); break;
     case 'genesis': stats.genesisHigh=Math.max(stats.genesisHigh,genesisStage()); checkCreationObjectiveAchievements(); break;
@@ -1898,6 +1891,9 @@ function retroactiveAchievementCheck(){
 
 /* ── 躍遷（蛻變 / 渡 / 坍縮）── */
 function canCollapse(){ return S.earned >= (STAGES[S.stage].thr||0) && S.stage < STAGES.length-1; }
+function canEnterSingularity(){
+  return S.phase==='mortal' && S.stage>=STAGES.length-1 && S.lifetime>=SINGULARITY_THR;
+}
 function cosmicReconstructionMult(stageIdx=S.stage){
   return stageIdx>=COSMIC_IDX.galaxy && stageIdx<=COSMIC_IDX.laniakea
     ? 1+(stageIdx-COSMIC_IDX.galaxy+1)*0.25 : 1;
@@ -1995,7 +1991,11 @@ function tickMerge(dt){
 /* ── 進入奇點 ── */
 function enterSingularity(options){
   options=options||{};
+  if (!options.force && !canEnterSingularity()) return false;
   S.phase='singularity';
+  // 每次真正跨入奇點都是一個新的結局事件，不能被舊存檔的 seenCine 略過。
+  S.seenCine=false;
+  S.singularityEndingVersion=0;
   activeEvent=null; afterEffect=null;
   S.freedom += 10;
   S.materials = 0;
@@ -2012,26 +2012,32 @@ function enterSingularity(options){
   if (typeof renderScaleCodex==='function') renderScaleCodex();
   say(isEn() ? 'You are the singularity itself. No outside; nothing larger.' : '你成為奇點。「外面」二字，自此失去意義——沒有容你之物，也沒有大於你的尺度。', true);
   const finalLegacy=LEGACY.find(l=>l.unlockOnSingularity);
-  if (finalLegacy) say(isEn()
-    ? `Epochal legacy awakened: ${finalLegacy.nameEn} — ${finalLegacy.dsEn}`
-    : `遺澤覺醒：「${finalLegacy.name}」——${finalLegacy.ds}`, true);
-  say(isEn()
-    ? 'So you stop growing — and start creating. Grow matter from a quark sea, reveal physics one law at a time, then recast what remains.'
-    : '生長到此為止，創造自此開始。從夸克海養出基本物質，讓物理一條條顯現，再從宇宙殘骸中重來。');
+  if (finalLegacy) say(POST_SINGULARITY_ENABLED
+    ? (isEn()?`Epochal legacy awakened: ${finalLegacy.nameEn} — ${finalLegacy.dsEn}`:`遺澤覺醒：「${finalLegacy.name}」——${finalLegacy.ds}`)
+    : (isEn()?`Epochal legacy remembered: ${finalLegacy.nameEn}. The completed journey is now recorded.`:`遺澤銘記：「${finalLegacy.name}」。尺度之路的完成已被永久記錄。`), true);
+  say(POST_SINGULARITY_ENABLED
+    ? (isEn()
+      ? 'So you stop growing — and start creating. Grow matter from a quark sea, reveal physics one law at a time, then recast what remains.'
+      : '生長到此為止，創造自此開始。從夸克海養出基本物質，讓物理一條條顯現，再從宇宙殘骸中重來。')
+    : (isEn()
+      ? 'The journey of scale is complete. The genesis beyond the singularity is archived for a later chapter.'
+      : '尺度之路至此完成。奇點之後的創生篇章已封存，留待日後展開。'));
   const revealSingularity=()=>{
-    if (typeof startSingCinematic==='function' && !S.seenCine) startSingCinematic();
-    else if (typeof onSingularity==='function') onSingularity();
+    if (typeof startSingCinematic==='function') startSingCinematic();
+    else if (typeof finishSingularityArrival==='function') finishSingularityArrival();
   };
   if (options.skipCinematic){
     S.seenCine=true;
-    revealSingularity();
+    S.singularityEndingVersion=SINGULARITY_ENDING_VERSION;
+    if (typeof finishSingularityArrival==='function') finishSingularityArrival();
     save();
-    return;
+    return true;
   }
   // 橫幅先讀完再啟動電影，避免透明全頁層遮住後方關鍵動畫；點擊可立即接續。
   if (typeof showBanner==='function') showBanner('singularity',S.stage,revealSingularity);
   else revealSingularity();
   save();
+  return true;
 }
 
 /* ── 奇點層經濟 ── */
@@ -2657,7 +2663,7 @@ async function load(){
         let n = Math.min(Math.floor(away/mergeInterval()), 6);
         while (n-->0 && S.lifetime<SINGULARITY_THR) doMerge(10);
       }
-    } else {
+    } else if (postSingularityActive()) {
       S.materials += materialRate()*away*0.6;
       S.freedom += freedomRate()*away*0.6;
       S.lifeExp += expRate()*away*0.6;
@@ -2719,22 +2725,33 @@ const DEBUG = {
     this.touch('test-singularity');
     if(S.phase!=='singularity'){
       S.stage=STAGES.length-1; S.maxStage=S.stage; S.lifetime=SINGULARITY_THR;
-      enterSingularity({skipCinematic:true});
+      enterSingularity({force:true});
+      save();
+      return;
     }
-    if(typeof onSingularity==='function') onSingularity(); renderAll(); save();
+    replaySingularityCinematic();
   },
   addSingularResources(){
-    this.touch('test-singularity-resource'); if(S.phase!=='singularity') this.toSingularity();
+    this.touch('test-singularity-resource');
+    if(S.phase!=='singularity'){
+      S.stage=STAGES.length-1; S.maxStage=S.stage; S.lifetime=SINGULARITY_THR;
+      enterSingularity({skipCinematic:true,force:true});
+    }
     S.materials+=1e6; S.freedom+=1e5; S.remnants+=1e4; renderAll(); save();
   },
   maxSingularity(){
-    this.touch('test-singularity-unlock'); if(S.phase!=='singularity') this.toSingularity();
+    this.touch('test-singularity-unlock');
+    if(S.phase!=='singularity'){
+      S.stage=STAGES.length-1; S.maxStage=S.stage; S.lifetime=SINGULARITY_THR;
+      enterSingularity({skipCinematic:true,force:true});
+    }
     S.universeStage=UNIVERSE_STAGES.length-1;
     S.materials=Math.max(S.materials,1e9); S.freedom=Math.max(S.freedom,1e6); S.remnants=Math.max(S.remnants,1e4);
     CONSTANTS.forEach(c=>{ S.constLevels[c.id]=CONST_MAX_LEVEL; S.consts[c.id]=c.sweet; });
     S.genesisStage=LIFE_GENESIS.length-1; S.lifeUniverses=Math.max(1,Math.floor(Number(S.lifeUniverses)||0));
     S.heroStage=STAGES.length-1;
-    if(typeof pondInit==='function') pondInit(); if(typeof onSingularity==='function') onSingularity(); renderAll(); save();
+    if(postSingularityActive() && typeof pondInit==='function') pondInit();
+    if(typeof onSingularity==='function') onSingularity(); renderAll(); save();
   },
   nearEnd(){
     this.touch('test-ending'); this.maxSingularity(); S.lifeExp=ENDING_EXP-1; S.ended=false;
@@ -2742,9 +2759,9 @@ const DEBUG = {
   },
   timeWarp(sec){
     this.touch('test-time'); sec=Math.max(0,Number(sec)||0);
-    if(S.phase==='singularity'){
+    if(postSingularityActive()){
       S.materials+=materialRate()*sec; S.freedom+=freedomRate()*sec; S.lifeExp+=expRate()*sec; S.uniAge+=sec;
-    } else {
+    } else if(S.phase==='mortal'){
       const g=rate()*sec; S.bio+=g;S.earned+=g;S.lifetime+=g;
     }
     say(isEn()?`Test settlement: +${sec}s.`:`測試結算：+${sec} 秒。`); renderAll(); save();
@@ -2925,15 +2942,17 @@ function initCanvas(canvas){
   initParticles();
   cv.addEventListener('pointerdown', e=>{
     if (e.pointerType==='touch' && e.cancelable) e.preventDefault();
-    if (cine){ cineSkip(); return; }
+    // 手機整片畫布不再是隱形「略過」鍵，避免一次誤觸讓結局看似消失。
+    if (cine){ if (e.pointerType!=='touch') cineSkip(); return; }
     const rect=cv.getBoundingClientRect();
     const x=(e.clientX-rect.left)/rect.width*W;
     const y=(e.clientY-rect.top)/rect.height*W;
     if (Math.hypot(x-CX,y-CY)>R) return;
-    if (S.phase==='singularity'){
+    if (postSingularityActive()){
       handlePondClick(x,y);
       return;
     }
+    if (singularityJourneyComplete()) return;
     handleFieldClick(x,y);
   });
 }
@@ -2956,7 +2975,8 @@ function setTarget(x,y){
 /* ── 主分派 ── */
 function draw(t, raw){
   if (cine){ drawCine(t, raw); return; }
-  if (S.phase==='singularity'){ drawPond(t, raw); return; }
+  if (postSingularityActive()){ drawPond(t, raw); return; }
+  if (singularityJourneyComplete()){ drawSingularityFinale(t); return; }
   drawMortal(t,raw);
 }
 
@@ -3825,12 +3845,12 @@ function naturalCoreColor(idx){
   return RIM_COLOR[idx]||'#ffdcB4';
 }
 
-/* 構造外觀只讀取「當前尺度這一輪」買到的構造；躍遷後歸零，絕不把舊尺度特效帶來疊加。
-   1／25／50／100 個構造形成四段熟練度；除了輕量構造紋樣，也用來逐步組裝該尺度
-   原有的纖毛、延伸物、表面圖騰、核心、氣場與伴生物，滿階才回到既有完成體。 */
+/* 構造外觀只讀取「當前尺度這一輪」解鎖的構造；躍遷後歸零，絕不把舊尺度特效帶來疊加。
+   每項構造持有第一個時，該構造負責的纖毛、延伸物、圖騰、核心、氣場或伴生物
+   就直接以完整強度出現；往後增加數量只強化產出，不再讓同一特效分段缺血。 */
 function structureVisualRank(value){
   const n=Math.max(0,Math.floor(Number(value)||0));
-  return n>=100?4:n>=50?3:n>=25?2:n>0?1:0;
+  return n>0?4:0;
 }
 function structureVisualState(stageIdx,ownedOverride,forceFull){
   const idx=Math.max(0,Math.min(STAGES.length-1,Math.floor(Number(stageIdx)||0)));
@@ -3842,8 +3862,8 @@ function structureVisualState(stageIdx,ownedOverride,forceFull){
   for (const b of BUILDINGS) ranks[b.id]=available.includes(b)?(full?4:structureVisualRank(owned[b.id])):0;
   const acquired=available.reduce((sum,b)=>sum+(ranks[b.id]>0?1:0),0);
   const mastery=full?1:available.reduce((sum,b)=>sum+ranks[b.id],0)/Math.max(1,available.length*4);
-  // Quantity mastery controls the shared adornment tier.  Merely buying one
-  // of every structure must not jump a new scale straight to its final crown.
+  // Shared adornment follows how many distinct structures have been acquired;
+  // the quantity of any one unlocked structure no longer changes its intensity.
   const tier=full?4:(mastery>0?Math.min(4,Math.ceil(mastery*4)):0);
   return {tier,mastery,ranks,available:available.map(b=>b.id),acquired,full};
 }
@@ -5022,8 +5042,21 @@ function cineSkip(){
 }
 function endCine(){
   cine=null; S.seenCine=true;
-  pondInit();
-  if (typeof onSingularity==='function') onSingularity();
+  S.singularityEndingVersion=SINGULARITY_ENDING_VERSION;
+  finishSingularityArrival();
+  save();
+}
+function finishSingularityArrival(){
+  if (postSingularityActive()){
+    pondInit();
+    if (typeof onSingularity==='function') onSingularity();
+  } else if (typeof onSingularityFinale==='function') onSingularityFinale();
+}
+function replaySingularityCinematic(){
+  if (!S || S.phase!=='singularity') return;
+  S.seenCine=false;
+  S.singularityEndingVersion=0;
+  startSingCinematic();
   save();
 }
 const CINE_DUR=[1.2, 4.2, 2.2, 3.0, 2.6];
@@ -5098,6 +5131,39 @@ function caption(txt,a){
   cx.textAlign='center';
   cx.fillText(txt, CX, W*0.88);
   cx.restore();
+}
+
+/* 抵達奇點後的靜態終章。只有觀賞性脈衝，不含封存中的創生經濟。 */
+function drawSingularityFinale(t){
+  cx.clearRect(0,0,W,W);
+  cx.save();
+  cx.beginPath(); cx.arc(CX,CY,R,0,6.2832); cx.clip();
+  cx.fillStyle='#01030a'; cx.fillRect(0,0,W,W);
+  const time=(Number(t)||0)/1000, breathe=reduce?0.5:(Math.sin(time*.72)+1)/2;
+  const bg=cx.createRadialGradient(CX,CY,0,CX,CY,R);
+  bg.addColorStop(0,'rgba(224,244,255,.13)');
+  bg.addColorStop(.16,'rgba(96,126,190,.045)');
+  bg.addColorStop(1,'rgba(1,3,10,0)');
+  cx.fillStyle=bg; cx.fillRect(0,0,W,W);
+  for (let i=0;i<4;i++){
+    const p=(time*.055+i*.25)%1;
+    cx.strokeStyle=`rgba(152,205,234,${(1-p)*(.12+i*.012)})`;
+    cx.lineWidth=.65+(1-p)*1.2;
+    cx.beginPath(); cx.arc(CX,CY,R*(.08+p*.86),0,6.2832); cx.stroke();
+  }
+  cx.save(); cx.globalCompositeOperation='screen';
+  for (let i=0;i<32;i++){
+    const a=i/32*6.2832+time*.015, inner=13+breathe*3, outer=R*(.33+(i%5)*.045);
+    cx.strokeStyle=`rgba(${i%3?170:224},${i%3?204:236},255,${.025+(i%4)*.008})`;
+    cx.lineWidth=i%7===0?1.25:.55;
+    cx.beginPath(); cx.moveTo(CX+Math.cos(a)*inner,CY+Math.sin(a)*inner);
+    cx.lineTo(CX+Math.cos(a)*outer,CY+Math.sin(a)*outer); cx.stroke();
+  }
+  const core=cx.createRadialGradient(CX,CY,0,CX,CY,18+breathe*3);
+  core.addColorStop(0,'rgba(255,255,255,1)'); core.addColorStop(.22,'rgba(218,239,255,.92)');
+  core.addColorStop(.58,'rgba(136,173,230,.26)'); core.addColorStop(1,'rgba(91,116,190,0)');
+  cx.fillStyle=core; cx.beginPath(); cx.arc(CX,CY,21+breathe*3,0,6.2832); cx.fill();
+  cx.restore(); cx.restore(); ring(1);
 }
 
 /* ═══ 池塘模式（軌跡分化、食物加量減速）═══ */
@@ -5791,7 +5857,7 @@ let buyAmt = '1';   // '1' | '10' | '100' | 'max'
 /* ── 手機升級抽屜：不寫入存檔，只整理既有系統的入口與可購買數量 ── */
 const mobileDrawerUI={
   open:false, initialized:false, signature:'', suppressClick:false,
-  panel:{mortal:'mortal-structures',singularity:'sing-progress'}, drag:null,
+  panel:{mortal:'mortal-structures',singularity:'sing-finale'}, drag:null,
 };
 function mobileDrawerMode(){
   if (typeof matchMedia!=='function') return false;
@@ -5799,21 +5865,26 @@ function mobileDrawerMode(){
 }
 function mobileDrawerPhase(){ return S.phase==='singularity'?'singularity':'mortal'; }
 function mobileDrawerDefinitions(){
-  return mobileDrawerPhase()==='singularity'
-    ? [
+  if (mobileDrawerPhase()==='singularity'){
+    if (singularityJourneyComplete()) return [
+      {key:'sing-finale',label:isEn()?'Finale':'終章'},
+      {key:'records',label:ui('records')},
+    ];
+    return [
       {key:'sing-progress',label:ui('creation')},
       {key:'sing-economy',label:ui('laws')},
       {key:'sing-permanent',label:ui('mobileRemnants')},
       {key:'sing-forms',label:ui('shoal')},
       {key:'records',label:ui('records')},
-    ]
-    : [
+    ];
+  }
+  return [
       {key:'mortal-transition',label:ui('progress')},
       {key:'mortal-structures',label:ui('mobileStructures')},
       {key:'mortal-spores',label:ui('mobileSpore')},
       {key:'mortal-legacy',label:ui('legacy')},
       {key:'records',label:ui('records')},
-    ];
+  ];
 }
 function mobileMortalStructureCount(){
   return BUILDINGS.reduce((count,b)=>{
@@ -5853,9 +5924,10 @@ function mobileSingFormsCount(){
   return cap>0 && S.avatars.length<cap && S.freedom>=avatarCost()?1:0;
 }
 function mobileDrawerCounts(){
+  if (singularityJourneyComplete()) return {'sing-finale':0,records:0};
   return mobileDrawerPhase()==='singularity'
     ? {'sing-progress':mobileSingProgressCount(),'sing-economy':mobileSingLawCount(),'sing-permanent':mobileSingPermanentCount(),'sing-forms':mobileSingFormsCount(),records:0}
-    : {'mortal-transition':canCollapse()?1:0,'mortal-structures':mobileMortalStructureCount(),'mortal-spores':mobileSporeUpgradeCount(),'mortal-legacy':0,records:0};
+    : {'mortal-transition':(canCollapse()||canEnterSingularity())?1:0,'mortal-structures':mobileMortalStructureCount(),'mortal-spores':mobileSporeUpgradeCount(),'mortal-legacy':0,records:0};
 }
 function setMobileDrawerOpen(open){
   mobileDrawerUI.open=!!open;
@@ -5876,7 +5948,7 @@ function renderMobileUpgradeDrawer(){
   if (!drawer || !nav || !S) return;
   const phase=mobileDrawerPhase(),defs=mobileDrawerDefinitions();
   if (!defs.some(def=>def.key===mobileDrawerUI.panel[phase])) mobileDrawerUI.panel[phase]=defs[0].key;
-  const signature=`${phase}|${isEn()?'en':'zh'}`;
+  const signature=`${phase}|${singularityJourneyComplete()?'finale':'play'}|${isEn()?'en':'zh'}`;
   if (signature!==mobileDrawerUI.signature){
     nav.innerHTML=defs.map(def=>`<button type="button" data-mobile-tab="${def.key}" aria-selected="false"><span>${def.label}</span><b class="mobile-category-badge">0</b></button>`).join('');
     if (typeof nav.querySelectorAll==='function') for (const button of nav.querySelectorAll('[data-mobile-tab]')){
@@ -5884,6 +5956,7 @@ function renderMobileUpgradeDrawer(){
     }
     mobileDrawerUI.signature=signature;
   }
+  nav.style.gridTemplateColumns=`repeat(${defs.length},minmax(0,1fr))`;
   const active=mobileDrawerUI.panel[phase],counts=mobileDrawerCounts();
   const total=defs.reduce((sum,def)=>sum+(counts[def.key]||0),0);
   if (typeof nav.querySelectorAll==='function') for (const button of nav.querySelectorAll('[data-mobile-tab]')){
@@ -5896,8 +5969,10 @@ function renderMobileUpgradeDrawer(){
     panel.classList.toggle('mobile-panel-active',panel.dataset.mobilePanel===active);
   }
   const title=$('mobile-drawer-title'),ready=$('mobile-ready-total'),hint=$('mobile-drawer-hint'),head=$('mobile-drawer-head');
-  if (title) title.textContent=ui('upgradePanel');
-  if (ready) ready.textContent=total?(isEn()?`${total} upgrade${total===1?'':'s'} ready`:`可升級 ${total} 項`):ui('noUpgrade');
+  if (title) title.textContent=singularityJourneyComplete()?(isEn()?'Journey Finale':'尺度終章'):ui('upgradePanel');
+  if (ready) ready.textContent=singularityJourneyComplete()
+    ? (isEn()?'Singularity reached':'已抵達奇點')
+    : (total?(isEn()?`${total} upgrade${total===1?'':'s'} ready`:`可升級 ${total} 項`):ui('noUpgrade'));
   if (hint) hint.textContent=mobileDrawerUI.open?ui('closeHint'):ui('pullHint');
   if (head && typeof head.setAttribute==='function') head.setAttribute('aria-label',mobileDrawerUI.open
     ? (isEn()?'Close Evolution Nexus':'收合演化中樞')
@@ -6002,7 +6077,20 @@ function updateLifeReadout(_value,markup){
   if (markup!==lastLifeMarkup){ el.innerHTML=markup; lastLifeMarkup=markup; }
 }
 function renderStats(){
-  if (S.phase==='singularity'){
+  if (singularityJourneyComplete()){
+    $('lb-bio').textContent = isEn()?'Cumulative life-force':'累積生命力';
+    updateLifeReadout(S.lifetime,liveLifeFmt(Math.max(S.lifetime,SINGULARITY_THR),0));
+    $('bio-unit').innerHTML = huayanByExp(68);
+    $('lb-rate').textContent = isEn()?'State':'狀態';
+    $('rate').textContent = isEn()?'Complete':'終章';
+    $('spore-wrap').style.display='none';
+    $('ep-n').textContent = isEn()?'FINAL EPOCH':'最終紀元';
+    $('ep-t').textContent = isEn()?'No Outside':'無外之境';
+    $('stage-name').textContent = isEn()?'Singularity Scale':'奇點尺度';
+    $('stage-mass').textContent = isEn()
+      ? 'No containing scale remains; nothing larger is defined.'
+      : '再無容納你的尺度，也不再定義更大的「外面」。';
+  } else if (S.phase==='singularity'){
     // 低速時自動加深精度；尚未形成載生宇宙時，生命指數會明確顯示為零成長。
     $('lb-bio').textContent = ui('lifeindex');
     updateLifeReadout(S.lifeExp,`10<sup>${lifeExpText()}</sup>`);
@@ -6040,11 +6128,11 @@ function renderStats(){
     sb.innerHTML = `${ui('sated')} ×${satietyMult().toFixed(1)} <span class="num">${Math.ceil(satiety.time)}s</span>`;
   } else sb.style.display='none';
 
-  if (S.phase==='singularity'){
+  if (postSingularityActive()){
     $('freedom-wrap').style.display='';
     $('freedom').textContent = fmt(Math.floor(S.freedom));
     $('lb-freedom').textContent = ui('freedom');
-  }
+  } else $('freedom-wrap').style.display='none';
 }
 
 /* ── 構造商店 ── */
@@ -6305,12 +6393,13 @@ function renderScaleCodex(){
   let legacyText;
   if (event&&legacy){
     const awakened=legacyOn(legacy);
+    const archivedMemorial=!POST_SINGULARITY_ENABLED&&legacy.unlockOnSingularity;
     if (isEn()){
       const gate=legacy.unlockOnSingularity?'after becoming the singularity':'after passing this form';
-      legacyText=`Event “${event.nameEn}”: ${event.dsEn} ${awakened?'Epochal legacy awakened':`Epochal legacy available ${gate}`}: “${legacy.nameEn}” — ${legacy.dsEn}`;
+      legacyText=`Event “${event.nameEn}”: ${event.dsEn} ${awakened?'Epochal legacy awakened':`Epochal legacy available ${gate}`}: “${legacy.nameEn}” — ${archivedMemorial?'a permanent record of completing the journey of scale':legacy.dsEn}`;
     } else {
       const gate=legacy.unlockOnSingularity?'成為奇點後':'越過此形態後';
-      legacyText=`階段事件「${event.name}」：${event.ds}${awakened?'已覺醒紀元遺澤':`${gate}可承接紀元遺澤`}「${legacy.name}」——${legacy.ds}`;
+      legacyText=`階段事件「${event.name}」：${event.ds}${awakened?'已覺醒紀元遺澤':`${gate}可承接紀元遺澤`}「${legacy.name}」——${archivedMemorial?'永久記錄尺度之路的完成':legacy.ds}`;
     }
   } else if (event){
     legacyText=isEn()?`Stage event “${event.nameEn}” — ${event.dsEn}`:`階段事件「${event.name}」——${event.ds}`;
@@ -6398,7 +6487,7 @@ function resetAchievementToastQueue(){
 function renderAchievements(){
   const list=$('achievement-list'), summary=$('achievement-summary');
   if (!list || !summary || !S) return;
-  const ach=ensureAchievementState(), total=ACHIEVEMENTS.length, count=achievementCount();
+  const ach=ensureAchievementState(),active=activeAchievementDefs(),total=active.length,count=achievementCount();
   summary.textContent=isEn()
     ? `Achievements ${count}/${total} · Echo Sigils ${count}`
     : `成就 ${count}/${total} · 回聲徽記 ${count}`;
@@ -6408,8 +6497,8 @@ function renderAchievements(){
     : (isEn()?'Title · not yet awakened':'稱號 · 尚未甦醒');
   const note=$('achievement-note');
   if (note) note.textContent=isEn()
-    ? 'Complete journey goals to unlock achievements. Each grants one Echo Sigil, which records progress without increasing output. At 5, 10, 15, 20, 24, and 30 Sigils, new titles and Morph Workshop swatches awaken.'
-    : '完成旅程目標即可解鎖成就；每項成就會獲得一枚回聲徽記。徽記只記錄進度，不會提高產出；累積 5、10、15、20、24、30 枚時，會解鎖新稱號與形態工房色票。';
+    ? 'Complete journey goals to unlock achievements. Each grants one Echo Sigil, which records progress without increasing output. At 5, 10, and 15 Sigils, new titles awaken.'
+    : '完成旅程目標即可解鎖成就；每項成就會獲得一枚回聲徽記。徽記只記錄進度，不會提高產出；累積 5、10、15 枚時，會解鎖新稱號。';
   const shell=$('achievement-shell');
   if (shell && typeof shell.setAttribute==='function') shell.setAttribute('aria-label',isEn()?'Achievements':'成就');
   const integrity=$('achievement-integrity');
@@ -6422,7 +6511,8 @@ function renderAchievements(){
       : '';
   }
   list.innerHTML=ACHIEVEMENT_CATEGORIES.map(cat=>{
-    const items=ACHIEVEMENTS.filter(a=>a.cat===cat.id);
+    const items=active.filter(a=>a.cat===cat.id);
+    if (!items.length) return '';
     const done=items.filter(a=>ach.unlocked[a.id]).length;
     const cards=items.map(a=>{
       const unlocked=!!ach.unlocked[a.id], concealed=a.hidden&&!unlocked;
@@ -6438,7 +6528,7 @@ function renderAchievements(){
     return `<section class="achievement-group"><div class="achievement-group-h"><span>${isEn()?cat.nameEn:cat.name}</span><span class="num">${done}/${items.length}</span></div>${cards}</section>`;
   }).join('');
   const rewards=$('achievement-milestones');
-  if (rewards) rewards.innerHTML=ACHIEVEMENT_MILESTONES.map(m=>{
+  if (rewards) rewards.innerHTML=activeAchievementMilestones().map(m=>{
     const on=count>=m.count;
     return `<span class="achievement-milestone ${on?'on':''}" title="${isEn()?m.colorNameEn:m.colorName}">
       <span class="achievement-dot" style="--reward-color:${on?m.color:'#314452'}"></span>
@@ -6460,7 +6550,7 @@ function renderTransitionBrief(mode,next,thr,reconstruction){
   const current=STAGES[S.stage];
   if (mode==='ready'){
     setTransitionProgress(brief,'100%');
-    brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'FINAL SCALE':'最終尺度'}</span><span class="to">${isEn()?'Singularity':'奇點'}</span><span class="threshold">10<sup>68</sup> · ${isEn()?'journey complete':'尺度之路完成'}</span><div class="transition-power-gap"><strong>10<sup>68</sup> → 10<sup>68</sup></strong><span>${isEn()?'Exponent goal reached':'次方達標'}</span></div></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'NEXT':'下一步',isEn()?'Creation replaces growth':'以創造取代生長','reward')}${transitionFact(isEn()?'PRESERVED':'永遠保留',isEn()?'Epochal legacy · Codex · achievements':'紀元遺澤 · 圖鑑 · 成就')}${transitionFact(isEn()?'FORM':'形態',isEn()?'All discovered memories remain':'已發現形態皆保留')}${transitionFact(isEn()?'RESET':'轉化',isEn()?'Mortal structures end here':'凡人構造在此終結')}</div>`;
+    brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'FINAL SCALE':'最終尺度'}</span><span class="to">${isEn()?'Singularity':'奇點'}</span><span class="threshold">10<sup>68</sup> · ${isEn()?'journey complete':'尺度之路完成'}</span><div class="transition-power-gap"><strong>10<sup>68</sup> → 10<sup>68</sup></strong><span>${isEn()?'Exponent goal reached':'次方達標'}</span></div></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'NEXT':'下一步',isEn()?'Witness the singularity finale':'觀看奇點終章','reward')}${transitionFact(isEn()?'PRESERVED':'永遠保留',isEn()?'Epochal legacy · Codex · achievements':'紀元遺澤 · 圖鑑 · 成就')}${transitionFact(isEn()?'FORM':'形態',isEn()?'All discovered memories remain':'已發現形態皆保留')}${transitionFact(isEn()?'ENDING':'終點',isEn()?'This version ends at the singularity':'本版本止於奇點')}</div>`;
     return;
   }
   if (mode==='fold'){
@@ -6502,11 +6592,11 @@ function renderCollapse(){
   secH.textContent = ui('transition');
 
   // 就緒：成為奇點
-  if (S.stage>=STAGES.length-1 && S.lifetime>=SINGULARITY_THR && S.phase==='mortal'){
+  if (canEnterSingularity()){
     btn.className='collapse singularity-ready';
     btn.disabled=false;
     btn.textContent=ui('ready');
-    btn.onclick=()=>{ if(confirm(isEn()?'Become the singularity itself? You will no longer grow — you will create.':'成為奇點？此後生長止息，創造開始。')) enterSingularity(); };
+    btn.onclick=()=>{ if(confirm(isEn()?'Become the singularity and complete this journey of scale?':'成為奇點，完成這一輪尺度之旅？')) enterSingularity(); };
     $('collapse-note').innerHTML = isEn()
       ? `Cumulative life-force has reached 「Immeasurable」. There is no larger scale ahead.`
       : `累積生命力已抵「無量大數」。尺度之路，至此走盡。`;
@@ -6565,6 +6655,22 @@ const MORPH_PALETTE=[
   {hex:'#9cc8ff',zh:'噴流藍',en:'Jet blue'}, {hex:'#ff5638',zh:'巨星紅',en:'Supergiant red'},
   {hex:'#ffdcB4',zh:'AGN 象牙',en:'AGN ivory'}, {hex:'#e8e0ff',zh:'電波瓣紫',en:'Radio-lobe violet'},
 ];
+function buildSingularityFinale(){
+  const wrap=$('sing-panel'); if (!wrap) return;
+  wrap.innerHTML=`<section class="mobile-panel-group" id="sing-finale-panel" data-mobile-panel="sing-finale">
+    <div class="singularity-finale">
+      <div class="finale-kicker">${isEn()?'SINGULARITY · SCALE FINALE':'SINGULARITY · 尺度終章'}</div>
+      <h2>${isEn()?'The journey of scale is complete':'尺度之路，至此完成'}</h2>
+      <blockquote>${isEn()
+        ? 'You become the singularity. “Outside” has ceased to mean anything—nothing contains you, and no greater scale remains.'
+        : '你成為奇點。「外面」二字，自此失去意義——沒有容你之物，也沒有大於你的尺度。'}</blockquote>
+      <p class="finale-note">${isEn()
+        ? 'The genesis chapter beyond the singularity has been archived for now. This version ends here while the pre-singularity journey is refined.'
+        : '奇點之後的創生篇章已暫時封存。本版本以抵達奇點作為終點，先專心完善奇點前的旅程。'}</p>
+      <button type="button" class="collapse singularity-ready finale-replay" onclick="replaySingularityCinematic()">${isEn()?'Replay becoming the singularity':'重看成為奇點'}</button>
+    </div>
+  </section>`;
+}
 function availableMorphPalette(){ return MORPH_PALETTE.concat(achievementSwatches()); }
 function morphPaletteMarkup(){
   return availableMorphPalette().map(p=>`<button type="button" class="morph-swatch" data-color="${p.hex}" title="${isEn()?p.en:p.zh}" aria-label="${isEn()?p.en:p.zh}" style="--swatch:${p.hex}"></button>`).join('');
@@ -6751,6 +6857,7 @@ function updateMorphPanel(){
 }
 
 function buildSingularity(){
+  if (singularityJourneyComplete()){ buildSingularityFinale(); return; }
   const wrap=$('sing-panel');
   wrap.innerHTML=`
     <section class="mobile-panel-group" id="sing-progress-panel" data-mobile-panel="sing-progress">
@@ -6889,7 +6996,7 @@ function buildSingularity(){
 }
 
 function renderSing(){
-  if (S.phase!=='singularity') return;
+  if (!postSingularityActive()) return;
   const stageIndex=S.universeStage||0;
   const u=currentUniverseStage();
   const next=nextUniverseStage();
@@ -7140,7 +7247,8 @@ function toggleLang(){
   $('langbtn').textContent = isEn()?'中':'EN';
   say(isEn()?'English interface enabled. New observation-log entries will appear in English.':'已切換為繁體中文；新的觀測日誌訊息將以中文顯示。');
   buildShop(); buildSporeShop(); buildBuyAmt();
-  if (S.phase==='singularity') buildSingularity();
+  if (postSingularityActive()) buildSingularity();
+  else if (singularityJourneyComplete()) buildSingularityFinale();
   mobileDrawerUI.signature='';
   renderStaticLanguage();
   renderAll(); save();
@@ -7161,6 +7269,7 @@ function hidePanels(){
   const drawer=$('upgrade-drawer'); if (drawer) drawer.classList.add('drawer-suspended');
 }
 function onSingularity(){
+  if (singularityJourneyComplete()){ onSingularityFinale(); return; }
   $('mortal-view').style.display='none';
   $('sing-view').style.display='';
   $('freedom-wrap').style.display='';
@@ -7168,6 +7277,16 @@ function onSingularity(){
   const host=$('scope-status-host'); if (host) host.style.display='';
   const drawer=$('upgrade-drawer'); if (drawer) drawer.classList.remove('drawer-suspended');
   renderSing();
+  renderMobileUpgradeDrawer();
+}
+function onSingularityFinale(){
+  $('mortal-view').style.display='none';
+  $('sing-view').style.display='';
+  $('freedom-wrap').style.display='none';
+  buildSingularityFinale();
+  const host=$('scope-status-host'); if (host) host.style.display='';
+  const drawer=$('upgrade-drawer'); if (drawer) drawer.classList.remove('drawer-suspended');
+  mobileDrawerUI.signature='';
   renderMobileUpgradeDrawer();
 }
 
@@ -7183,7 +7302,8 @@ function renderAll(){
     const host=$('scope-status-host'); if (host) host.style.display='';
     renderShop(); renderSporeShop(); renderCollapse(); renderLegacy();
   } else if (!cine){
-    renderSing();
+    if (postSingularityActive()) renderSing();
+    else onSingularityFinale();
   }
   renderLog(); renderEvent();
   renderMobileUpgradeDrawer();
@@ -7266,13 +7386,14 @@ function loop(now){
       tickEvent(dt);
       tickMerge(dt);
       if (has('automolt') && canCollapse()) doCollapse();
-    } else {
+    } else if (postSingularityActive()) {
       tickSing(dt);
     }
   }
 
-  draw(now, raw*spd);
-  if (S.phase==='singularity' && genesisComplete()){
+  // 電影固定使用真實時間；測試倍率不會再把 13 秒壓成一閃而過。
+  draw(now, cine?raw:raw*spd);
+  if (postSingularityActive() && genesisComplete()){
     morphPreviewAcc+=raw;
     if (morphPreviewAcc>(reduce?.28:.09)){
       drawMorphPreview(now);
@@ -7293,7 +7414,7 @@ function loop(now){
     renderStats();
     if (!cine){
       if (S.phase==='mortal'){ renderShop(); renderCollapse(); }
-      else renderSing();
+      else if (postSingularityActive()) renderSing();
     }
     renderEvent();
     renderMobileUpgradeDrawer();
@@ -7319,7 +7440,14 @@ async function boot(){
   document.getElementById('langbtn').textContent = isEn()?'中':'EN';
   if (isEn()){ buildShop(); buildSporeShop(); buildBuyAmt(); }
 
-  if (S.phase==='singularity'){ pondInit(); onSingularity(); }
+  if (S.phase==='singularity'){
+    if (postSingularityActive()){
+      pondInit(); onSingularity();
+    } else if (!S.seenCine || (Number(S.singularityEndingVersion)||0)<SINGULARITY_ENDING_VERSION){
+      // 橫幅／電影期間被 iPhone 回收時，下一次載入會從電影開頭重播。
+      startSingCinematic();
+    } else onSingularityFinale();
+  }
   initMobileUpgradeDrawer();
   renderAll();
   requestAnimationFrame(loop);
