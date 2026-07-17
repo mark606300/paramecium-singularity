@@ -121,20 +121,20 @@ aside::-webkit-scrollbar-thumb{background:var(--line)}
 .item:disabled{opacity:.68;cursor:not-allowed}
 .item:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .item .nm{font-size:.9rem;letter-spacing:.05em}
-.item .qty{font-size:.85rem;color:var(--glow);text-align:right}
+.item .qty{font-size:.66rem;color:var(--ink-dim);text-align:right;white-space:nowrap}
+.item .qty strong{font-size:.82rem;color:var(--glow);font-family:var(--font-mono)}
 .item .pips{font-size:.6rem;color:var(--amber);letter-spacing:.05em}
-.item .ds{font-size:.66rem;color:var(--ink-dim)}
-.item .stat{font-size:.63rem;color:var(--ink-dim);grid-column:1/-1;font-family:var(--font-mono);opacity:.8}
-.item .price{font-size:.8rem;color:var(--amber);grid-column:1/-1;text-align:right;margin-top:-.85rem}
-.item .structure-power-gap{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
-  gap:.2rem .5rem;margin-top:.18rem;padding:.31rem .42rem;border:1px solid rgba(255,196,107,.28);border-radius:2px;
-  background:rgba(255,196,107,.055);font-family:var(--font-mono);font-size:.63rem;line-height:1.4;color:var(--ink)}
-.item .structure-power-gap .exp-route,.item .structure-power-gap .exp-state{white-space:nowrap}
-.item .structure-power-gap .exp-route{color:#ffe0a6;font-size:.7rem;font-weight:600}
-.item .structure-power-gap sup{font-size:.88em;color:#fff0c8;font-weight:700}
-.item .structure-power-gap .exp-state{color:var(--amber)}
-.item .structure-power-gap.ready{border-color:rgba(92,224,192,.4);background:rgba(92,224,192,.065)}
-.item .structure-power-gap.ready .exp-state{color:var(--glow)}
+.item .ds{font-size:.66rem;color:var(--ink-dim);grid-column:1/-1;line-height:1.55;margin:.08rem 0 .2rem}
+.item .price,.item .stat{min-width:0;padding:.34rem .42rem;border:1px solid rgba(29,74,99,.72);
+  border-radius:2px;background:rgba(6,18,28,.48);font-size:.63rem;white-space:nowrap}
+.item .price{grid-column:1;color:var(--ink-dim)}
+.item .stat{grid-column:2;color:var(--ink-dim);text-align:right}
+.item .price strong,.item .stat strong{font-family:var(--font-mono);font-size:.76rem;font-weight:600}
+.item .price strong{color:var(--amber)}
+.item .stat strong{color:var(--glow)}
+.item .structure-power-gap{grid-column:1/-1;margin-top:.06rem;color:var(--amber);font-family:var(--font-mono);
+  font-size:.61rem;line-height:1.35;text-align:right}
+.item .structure-power-gap[hidden]{display:none}
 .item .bar{position:absolute;inset:auto 0 0 0;height:2px;background:var(--glow);opacity:.5}
 
 .collapse{width:100%;border:1px solid var(--nucleus);background:transparent;
@@ -549,13 +549,15 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .readout .val.small{font-size:.9rem}
   .readout .unit{font-size:.64rem;letter-spacing:0}
   .scope-summary{display:grid;gap:.18rem}
-  .scope-frame>.scope-meta{width:min(86%,24rem);bottom:6%;padding:0}
+  /* 手機的尺度讀數固定在圓形視野約七成高處，避免貼著下緣看起來像視野外資訊。 */
+  .scope-frame>.scope-meta{width:min(86%,24rem);bottom:20%;padding:0}
   .scope-frame>.epoch{top:.55rem;width:76%}
   .scope-frame>.epoch .n{font-size:.5rem;letter-spacing:.22em}
   .scope-frame>.epoch .t{font-size:.82rem;letter-spacing:.1em;margin-top:.08rem}
   .identity .sn{font-size:.72rem}
-  .item .structure-power-gap{padding:.38rem .44rem;font-size:.66rem;line-height:1.5}
-  .item .structure-power-gap .exp-route{font-size:.74rem}
+  .item .price,.item .stat{padding:.38rem .4rem;font-size:.62rem}
+  .item .price strong,.item .stat strong{font-size:.72rem}
+  .item .structure-power-gap{font-size:.64rem}
   #scope-status-host{padding:.4rem .5rem}
   #scope-status-host .log{max-height:clamp(5.4rem,13dvh,7.4rem)}
   .scale-codex-grid{grid-template-columns:1fr;max-height:10.5rem}
@@ -2949,6 +2951,7 @@ function draw(t, raw){
 /* ═══ 凡人層 ═══ */
 function drawMortal(t,raw){
   const idx=S.stage, bd=band(idx);
+  const visual=structureVisualState(idx);
   cx.clearRect(0,0,W,W);
   cx.save();
   cx.beginPath(); cx.arc(CX,CY,R,0,6.2832); cx.clip();
@@ -2957,9 +2960,9 @@ function drawMortal(t,raw){
   drawRipples();
   drawFood(t);
   moveParamecium(idx,raw);
-  drawRetinue(idx,t,'back');
-  drawParamecium(idx,bd,t);
-  drawRetinue(idx,t,'front');
+  drawRetinue(idx,t,'back',1,1,visual);
+  drawParamecium(idx,bd,t,undefined,undefined,undefined,1,null,1,visual);
+  drawRetinue(idx,t,'front',1,1,visual);
   drawFloats();
   drawEventOverlay(t);
   cx.restore();
@@ -3811,7 +3814,8 @@ function naturalCoreColor(idx){
 }
 
 /* 構造外觀只讀取「當前尺度這一輪」買到的構造；躍遷後歸零，絕不把舊尺度特效帶來疊加。
-   1／25／50／100 個構造形成四段熟練度，最多只開啟紋樣、核心環、光暈、節點四類輕量層。 */
+   1／25／50／100 個構造形成四段熟練度；除了輕量構造紋樣，也用來逐步組裝該尺度
+   原有的纖毛、延伸物、表面圖騰、核心、氣場與伴生物，滿階才回到既有完成體。 */
 function structureVisualRank(value){
   const n=Math.max(0,Math.floor(Number(value)||0));
   return n>=100?4:n>=50?3:n>=25?2:n>0?1:0;
@@ -3825,9 +3829,69 @@ function structureVisualState(stageIdx,ownedOverride,forceFull){
   const owned=hasOverride?ownedOverride:(isLive&&S.owned||{}), ranks={};
   for (const b of BUILDINGS) ranks[b.id]=available.includes(b)?(full?4:structureVisualRank(owned[b.id])):0;
   const acquired=available.reduce((sum,b)=>sum+(ranks[b.id]>0?1:0),0);
-  const tier=full?4:(acquired?Math.min(4,Math.ceil(acquired/Math.max(1,available.length)*4)):0);
   const mastery=full?1:available.reduce((sum,b)=>sum+ranks[b.id],0)/Math.max(1,available.length*4);
+  // Quantity mastery controls the shared adornment tier.  Merely buying one
+  // of every structure must not jump a new scale straight to its final crown.
+  const tier=full?4:(mastery>0?Math.min(4,Math.ceil(mastery*4)):0);
   return {tier,mastery,ranks,available:available.map(b=>b.id),acquired,full};
+}
+
+/* A scale now begins as a proto-form, not as the finished illustration with
+   decorations placed over it.  Each structure family reveals one of the
+   components that already belongs to that scale's final design.  Candidate
+   lists are ordered: when a specialised late-game structure is unavailable
+   (for example, White Dwarf precedes the degeneracy layer), the first
+   available fallback keeps the form completable. */
+const STRUCTURE_COMPONENT_SOURCES = {
+  bio:{
+    cilia:['cilia'], appendage:['vac'], motif:['mito'], core:['nuc'], aura:['colo'], retinue:['mind','colo'],
+  },
+  planet:{
+    cilia:['cilia'], appendage:['nerve','vac'], motif:['mito'], core:['nuc'], aura:['colo'], retinue:['mind','colo'],
+  },
+  star:{
+    cilia:['cilia'], appendage:['nerve','vac'], motif:['forge','mito'], core:['nuc'], aura:['colo'], retinue:['dyson','mind'],
+  },
+  degen:{
+    cilia:['cilia'], appendage:['pulse','nerve','vac'], motif:['mito'], core:['degen','nuc'], aura:['colo'], retinue:['mind','colo'],
+  },
+  horizon:{
+    cilia:['cilia'], appendage:['disk','nerve','vac'], motif:['mito'], core:['core','nuc'], aura:['colo'], retinue:['disk','mind'],
+  },
+};
+function structureComponentProgress(stageIdx,visual,component){
+  const idx=Math.max(0,Math.min(STAGES.length-1,Math.floor(Number(stageIdx)||0)));
+  visual=visual&&typeof visual==='object'?visual:structureVisualState(idx,null,true);
+  if (visual.full) return 1;
+  // Dragon wings and its dorsal energy ridge have their own explicit sources
+  // inside drawAppendages/drawCilia; the wrapper must not hide either one.
+  if (idx===11 && component==='appendage'){
+    return Math.max(visual.ranks.cilia||0,visual.ranks.nuc||0)/4;
+  }
+  if (idx===11 && component==='cilia'){
+    return Math.max(visual.ranks.cilia||0,visual.ranks.colo||0)/4;
+  }
+  const family=STRUCTURE_COMPONENT_SOURCES[band(idx)]||STRUCTURE_COMPONENT_SOURCES.bio;
+  const candidates=family[component]||[];
+  const source=candidates.find(id=>visual.available.includes(id))||visual.available[0];
+  const rank=source?Number(visual.ranks[source])||0:0;
+  return Math.max(0,Math.min(rank/4,1));
+}
+function drawStructureComponent(progress,drawComponent,growth){
+  const p=Math.max(0,Math.min(Number(progress)||0,1));
+  if (!p || typeof drawComponent!=='function') return false;
+  // At mastery call the established renderer directly.  Besides avoiding
+  // pointless canvas state work, this guarantees the finished form is the
+  // exact pre-progression design rather than a near-identical recreation.
+  if (p>=1){ drawComponent(1); return true; }
+  growth=growth===undefined?.16:Math.max(0,Math.min(Number(growth)||0,.35));
+  cx.save();
+  cx.globalAlpha=.3+.7*p;
+  const s=1-growth*(1-p);
+  cx.scale(s,s);
+  drawComponent(p);
+  cx.restore();
+  return true;
 }
 function drawStructureAdornment(idx,t,rw,rh,color,detail,layer,visual){
   visual=visual||structureVisualState(idx,null,true);
@@ -3909,7 +3973,13 @@ function drawParamecium(idx,bd,t,px,py,pa,scale,custom,detail,structureOverride)
   cx.save();
   cx.translate(px,py); cx.rotate(pa); cx.scale(scale,scale);
   const rw=W*0.069, rh=W*0.029*(bodyIdx===4?1.09:1);
+  const ciliaFormation=structureComponentProgress(ciliaIdx,structureVisual,'cilia');
+  const appendageFormation=structureComponentProgress(appendageIdx,structureVisual,'appendage');
+  const motifFormation=structureComponentProgress(motifIdx,structureVisual,'motif');
+  const coreFormation=structureComponentProgress(coreIdx,structureVisual,'core');
+  const auraFormation=structureComponentProgress(auraIdx,structureVisual,'aura');
 
+  drawStructureComponent(appendageFormation,()=>{
   if (appendageIdx===22 || appendageIdx===COSMIC_IDX.j0838){ // 中子星／巨型電波星系：只保留一組嚴格反向的雙極束
     const magneticAxis=Math.PI/2+(reduce?0:Math.sin(t/900)*.08);
     const jetLen=appendageIdx===COSMIC_IDX.j0838?(detail<.4?94:150):74;
@@ -3942,14 +4012,17 @@ function drawParamecium(idx,bd,t,px,py,pa,scale,custom,detail,structureOverride)
     }
     cx.restore();
   }
+  },.2);
 
   drawStructureAdornment(bodyIdx,t,rw,rh,adornmentColor,detail,'outer',structureVisual);
-  drawMythicAura(auraIdx,t,rw,rh,custom&&custom.auraColor,detail);
-  drawAppendages(appendageIdx,t,rw,rh,appendageColor,structureVisual);
-  drawCilia(ciliaIdx,band(ciliaIdx),t,rw,rh,ciliaColor,ciliaIdx/(STAGES.length-1),structureVisual);
+  drawStructureComponent(auraFormation,p=>drawMythicAura(auraIdx,t,rw,rh,custom&&custom.auraColor,detail*(.3+.7*p)),.12);
+  drawStructureComponent(appendageFormation,()=>drawAppendages(appendageIdx,t,rw,rh,appendageColor,structureVisual),.18);
+  drawStructureComponent(ciliaFormation,()=>drawCilia(ciliaIdx,band(ciliaIdx),t,rw,rh,ciliaColor,ciliaIdx/(STAGES.length-1),structureVisual),.1);
 
   // 膜
-  const glow = bodyIdx===14?5 : bd==='bio'?0 : bd==='planet'?8 : bd==='star'?26 : bd==='degen'?20 : 14;
+  const completeShell=structureVisual.full?1:(.18+.82*structureVisual.mastery);
+  const fullGlow=bodyIdx===14?5 : bd==='bio'?0 : bd==='planet'?8 : bd==='star'?26 : bd==='degen'?20 : 14;
+  const glow=fullGlow*completeShell;
   const fill=cx.createLinearGradient(-rw,0,rw,0);
   if (custom&&custom.bodyColor){
     fill.addColorStop(0,hexA(body,.22+p*.18));
@@ -3989,10 +4062,10 @@ function drawParamecium(idx,bd,t,px,py,pa,scale,custom,detail,structureOverride)
     const breathe=1+Math.sin(t/1250+motifIdx*.4)*.018;
     cx.scale(breathe,2-breathe);
   }
-  drawMotif(motifIdx,band(motifIdx),t,rw,rh);
+  drawStructureComponent(motifFormation,()=>drawMotif(motifIdx,band(motifIdx),t,rw,rh),.08);
   cx.restore();
   drawStructureAdornment(bodyIdx,t,rw,rh,adornmentColor,detail,'inner',structureVisual);
-  drawCore(coreIdx,band(coreIdx),t,rw,rh,custom&&custom.coreColor);
+  drawStructureComponent(coreFormation,()=>drawCore(coreIdx,band(coreIdx),t,rw,rh,custom&&custom.coreColor),.1);
   cx.restore();
 
   cx.restore();
@@ -4481,13 +4554,18 @@ function drawRelativisticDisk(px,py,angle,rx,ry,intensity,detail,part){
 }
 
 /* ── 環繞層 ── */
-function drawRetinue(idx,t,phase,scale,detail){
+function drawRetinue(idx,t,phase,scale,detail,visual){
   if (idx<14) return;
   scale=scale===undefined?1:scale;
   detail=detail===undefined?1:Math.max(0,Math.min(detail,1));
+  visual=visual&&typeof visual==='object'?visual:structureVisualState(idx,null,true);
+  const formation=structureComponentProgress(idx,visual,'retinue');
+  if (!formation) return;
+  if (formation<1) detail*=.3+.7*formation;
   const px=para.x, py=para.y;
   const tilt=-0.42;
   cx.save();
+  if (formation<1) cx.globalAlpha=.28+.72*formation;
   cx.translate(px,py); cx.scale(scale,scale); cx.translate(-px,-py);
   function orbiter(rx,ry,speed,ph,sz,color){
     const a=t/1000*speed+ph;
@@ -5983,9 +6061,9 @@ function buildShop(){
     el.innerHTML=`
       <span class="nm">${tr(view,'name')}</span><span class="qty num"></span>
       <span class="ds">${tr(view,'ds')}</span>
-      <span class="stat num"></span>
       <span class="price num"></span>
-      <span class="structure-power-gap"></span>
+      <span class="stat num"></span>
+      <span class="structure-power-gap" hidden></span>
       <span class="bar"></span>`;
     el.onclick=()=>{
       const k = buyAmt==='max' ? Math.max(maxBuy(b),0) : parseInt(buyAmt);
@@ -6006,9 +6084,9 @@ function buildShop(){
 }
 
 function renderShop(){
-  const total = rate()||1;
   for (const b of BUILDINGS){
     const el=bNodes[b.id];
+    const view=stageStructurePresentation(b,S.stage);
     const layerOK = S.stage >= (LAYER_UNLOCK[b.layer]-1);
     const h=$('layer-'+b.layer);
     if (h) h.style.display = layerOK?'':'none';
@@ -6025,26 +6103,23 @@ function renderShop(){
     const owned=S.owned[b.id];
     const mm=mileMult(b);
     const each=b.rate*mm*outMult();
-    const sub=owned*each;
-    const pct=sub/total*100;
-    // 里程碑釘
-    let pips='';
-    const reached=MILESTONES.filter(m=>owned>=m).length;
-    if (owned>0) pips=' '+ '●'.repeat(reached)+'○'.repeat(MILESTONES.length-reached);
-    el.querySelector('.qty').innerHTML=(owned||'')+`<span class="pips">${pips}</span>`;
-    el.querySelector('.stat').innerHTML =
-      `${fmt(each)}/s · ${fmt(sub)}/s · ${pct<0.1?'<0.1':pct.toFixed(1)}%` + (mm>1?` · ×${mm}`:'');
-    el.querySelector('.price').innerHTML =
-      (buyAmt==='max' ? `×${k} · `:(buyAmt!=='1'?`×${kShow} · `:'')) + fmt(c);
+    const purchaseGain=each*kShow;
+    el.querySelector('.qty').innerHTML = `${isEn()?'OWNED':'持有'} <strong>${owned}</strong>`;
+    el.querySelector('.price').innerHTML = isEn()
+      ? `PRICE${kShow>1?` ×${kShow}`:''} <strong>${fmt(c)}</strong>`
+      : `價格${kShow>1?` ×${kShow}`:''} <strong>${fmt(c)}</strong>`;
+    el.querySelector('.stat').innerHTML = isEn()
+      ? `<strong>+${fmt(purchaseGain)}</strong> / SEC`
+      : `每秒 <strong>+${fmt(purchaseGain)}</strong>`;
     const exp=structureExponentStatus(S.bio,c,each);
-    const gapState=exp.affordable
-      ? (isEn()?`AFFORDABLE · OUTPUT 10<sup>${exp.outputExp}</sup>/s`:`可購買 · 產出 10<sup>${exp.outputExp}</sup>/s`)
-      : exp.gap>0
-        ? (isEn()?`${exp.gap} POWER${exp.gap===1?'':'S'} TO GO · OUTPUT 10<sup>${exp.outputExp}</sup>/s`:`尚差 ${exp.gap} 次方 · 產出 10<sup>${exp.outputExp}</sup>/s`)
-        : (isEn()?`SAME POWER · NOT ENOUGH · OUTPUT 10<sup>${exp.outputExp}</sup>/s`:`同次方 · 尚未足額 · 產出 10<sup>${exp.outputExp}</sup>/s`);
     const powerGap=el.querySelector('.structure-power-gap');
-    powerGap.classList.toggle('ready',exp.affordable);
-    powerGap.innerHTML=`<span class="exp-route">${isEn()?'LIFE':'生命'} 10<sup>${exp.currentExp}</sup> → ${isEn()?'COST':'價格'} 10<sup>${exp.priceExp}</sup></span><span class="exp-state">${gapState}</span>`;
+    powerGap.hidden=exp.affordable;
+    powerGap.textContent=exp.affordable?'':exp.gap>0
+      ? (isEn()?`${exp.gap} POWER${exp.gap===1?'':'S'} TO GO`:`尚差 ${exp.gap} 次方`)
+      : (isEn()?`NEED ${plain(Math.max(0,c-S.bio))} MORE`:`還差 ${plain(Math.max(0,c-S.bio))} 生命力`);
+    el.setAttribute('aria-label',isEn()
+      ? `${tr(view,'name')}. Owned ${owned}. Price ${plain(c)}. Plus ${plain(purchaseGain)} per second.`
+      : `${tr(view,'name')}。持有 ${owned}。價格 ${plain(c)}。每秒增加 ${plain(purchaseGain)}。`);
     el.querySelector('.bar').style.width = Math.min(S.bio/c*100,100)+'%';
   }
 }
@@ -6269,9 +6344,10 @@ function drawScaleCodexPreview(t){
     cx=pcx; W=model; R=model*.49; CX=model*.5; CY=model*.5;
     para.x=CX; para.y=CY; para.a=-.12;
     const scale=scaleCodexPortraitScale(idx);
-    drawRetinue(idx,t||0,'back',scale,1);
-    drawParamecium(idx,band(idx),t||0,CX,CY,-.12,scale,null,1);
-    drawRetinue(idx,t||0,'front',scale,1);
+    const fullVisual=structureVisualState(idx,null,true);
+    drawRetinue(idx,t||0,'back',scale,1,fullVisual);
+    drawParamecium(idx,band(idx),t||0,CX,CY,-.12,scale,null,1,fullVisual);
+    drawRetinue(idx,t||0,'front',scale,1,fullVisual);
   } finally {
     pcx.restore();
     cx=old.cx; W=old.W; R=old.R; CX=old.CX; CY=old.CY;
@@ -6621,9 +6697,10 @@ function drawMorphPreview(t){
     cx=pcx; W=pw; R=Math.min(pw,ph)*.49; CX=pw*.5; CY=ph*.5;
     para.x=CX; para.y=CY; para.a=-.12;
     const idx=target.stage, look=target.custom||{}, retinueIdx=customPartStage(look,'retinueStage',idx);
-    drawRetinue(retinueIdx,t||0,'back',.72,.9);
-    drawParamecium(idx,band(idx),t||0,CX,CY,-.12,.72,look,.9);
-    drawRetinue(retinueIdx,t||0,'front',.72,.9);
+    const fullVisual=structureVisualState(idx,null,true);
+    drawRetinue(retinueIdx,t||0,'back',.72,.9,fullVisual);
+    drawParamecium(idx,band(idx),t||0,CX,CY,-.12,.72,look,.9,fullVisual);
+    drawRetinue(retinueIdx,t||0,'front',.72,.9,fullVisual);
   } finally {
     cx=old.cx; W=old.W; R=old.R; CX=old.CX; CY=old.CY;
     para.x=old.x; para.y=old.y; para.a=old.a;
