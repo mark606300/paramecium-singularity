@@ -22,13 +22,16 @@
   --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{height:100%;-webkit-text-size-adjust:100%;background:var(--void)}
-body{height:100%;min-height:100dvh}
+html{height:100%;-webkit-text-size-adjust:100%;background:var(--void);touch-action:manipulation}
+body{height:100%;min-height:100dvh;touch-action:manipulation}
 body{background:var(--void);color:var(--ink);font-family:var(--font-display);
   -webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior-y:none}
 .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 sup{font-size:.62em;vertical-align:super}
-button{font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button,summary{font-family:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+@media (hover:none) and (pointer:coarse){
+  button,summary{-webkit-user-select:none;user-select:none}
+}
 
 header{display:flex;align-items:baseline;gap:1.3rem;flex-wrap:wrap;
   padding:.85rem max(1.4rem,env(safe-area-inset-right)) .85rem max(1.4rem,env(safe-area-inset-left));border-bottom:1px solid var(--line);
@@ -56,7 +59,7 @@ canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
 .scope-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.42rem .65rem;align-items:center;
   width:100%;padding:.48rem .62rem;border:1px solid rgba(29,74,99,.7);border-radius:2px;
   background:linear-gradient(90deg,rgba(11,34,48,.82),rgba(9,25,39,.72))}
-.scope-summary{display:flex;align-items:baseline;gap:.65rem;min-width:0}
+.scope-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.35rem .65rem;min-width:0;width:100%}
 /* 紀元恢復為最初的顯微鏡中上讀數；定位基準是圓形視野本身。 */
 .scope-frame>.epoch{position:absolute;top:clamp(.65rem,5%,1.5rem);left:50%;z-index:2;
   transform:translateX(-50%);width:min(76%,18rem);text-align:center;pointer-events:none;
@@ -66,8 +69,9 @@ canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
 .scope-frame>.epoch .t{font-size:1.05rem;color:var(--ink);letter-spacing:.14em;margin-top:.15rem}
 .identity{min-width:0}
 .identity .sn{font-size:.79rem;color:var(--glow);letter-spacing:.09em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.scope-details{grid-column:1/-1;border-top:1px dashed rgba(79,116,136,.36);padding-top:.34rem;color:var(--ink-dim)}
-.scope-details summary{cursor:pointer;font-size:.6rem;letter-spacing:.12em;color:var(--ink-dim);list-style-position:inside}
+.scope-details{min-width:0;color:var(--ink-dim)}
+.scope-details summary{cursor:pointer;font-size:.6rem;letter-spacing:.12em;color:var(--ink-dim);list-style-position:inside;white-space:nowrap}
+.scope-details[open]{grid-column:1/-1;width:100%;border-top:1px dashed rgba(79,116,136,.36);padding-top:.34rem}
 .scope-details .sm{font-size:.64rem;font-family:var(--font-mono);margin-top:.35rem}
 .scope-details .sa{font-size:.62rem;color:var(--amber);letter-spacing:.035em;margin-top:.22rem;line-height:1.45}
 .event-banner{display:flex;align-items:center;justify-content:flex-end;gap:.48rem;min-width:0;
@@ -77,6 +81,9 @@ canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
   box-shadow:0 12px 28px -24px var(--glow)}
 .acquisition-title{display:block;margin-bottom:.2rem;font-family:var(--font-display);font-size:.57rem;
   letter-spacing:.2em;color:var(--glow);text-transform:uppercase}
+.journal-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.3rem .65rem;margin-bottom:.22rem}
+.journal-head .acquisition-title{margin-bottom:0}
+.journal-head .scope-details[open]{grid-column:1/-1}
 .sing-stats-title{display:block;margin-bottom:.18rem;font-family:var(--font-display);font-size:.58rem;
   letter-spacing:.22em;color:var(--glow);text-transform:uppercase}
 .ev-nm{color:var(--nucleus);font-size:.9rem;letter-spacing:.14em}
@@ -226,7 +233,11 @@ aside::-webkit-scrollbar-thumb{background:var(--line)}
   font-size:1.15rem;color:var(--glow);text-shadow:0 0 14px var(--glow)}
 .achievement-toast.show{max-height:7rem;opacity:1;padding:.72rem .85rem .72rem 2.7rem;border-width:1px;transform:translateY(0)}
 
-.log{font-size:.66rem;color:var(--ink-dim);line-height:1.52;min-height:1em}
+.log{font-size:.66rem;color:var(--ink-dim);line-height:1.52;min-height:1em;max-height:6.4rem;overflow-y:auto;
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding-right:.2rem;
+  scrollbar-width:thin;scrollbar-color:rgba(92,224,192,.32) transparent}
+.log::-webkit-scrollbar{width:4px}
+.log::-webkit-scrollbar-thumb{background:rgba(92,224,192,.28);border-radius:4px}
 .log div{opacity:.7;margin-bottom:.15rem}
 .log div:first-child{opacity:1;color:var(--ink)}
 .log b{color:var(--glow);font-weight:400}
@@ -416,11 +427,12 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .avpick select,.morph-field select,input[type=color]{font-size:16px;min-height:44px}
 }
 @media (max-width:900px) and (min-height:521px), (max-width:560px) and (orientation:portrait){
+  :root{--mobile-drawer-peek:7.35rem}
   body{display:grid;grid-template-rows:auto minmax(0,1fr);height:100dvh;min-height:100dvh;overflow:hidden;overscroll-behavior:none}
   main{display:grid;grid-template-columns:1fr;grid-template-rows:minmax(0,1fr);height:auto;min-height:0}
-  .field{min-height:0;overflow:hidden;padding:.6rem .5rem max(.65rem,env(safe-area-inset-bottom))}
+  .field{min-height:0;overflow:hidden;padding:.6rem .5rem calc(var(--mobile-drawer-peek) + env(safe-area-inset-bottom) + .55rem)}
   .scope-stack{width:min(94vw,52dvh);max-height:100%}
-  aside#upgrade-drawer{--drawer-peek:7.35rem;position:fixed;z-index:70;left:0;right:0;bottom:0;
+  aside#upgrade-drawer{--drawer-peek:var(--mobile-drawer-peek);position:fixed;z-index:70;left:0;right:0;bottom:0;
     display:flex;flex-direction:column;height:min(76dvh,48rem);min-height:19rem;overflow:hidden;padding:0;
     border:1px solid rgba(92,224,192,.34);border-bottom:0;border-radius:14px 14px 0 0;
     background:linear-gradient(180deg,rgba(12,35,49,.985),rgba(6,18,28,.995));
@@ -431,7 +443,8 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   aside#upgrade-drawer.drawer-dragging{transition:none}
   aside#upgrade-drawer.drawer-suspended{visibility:hidden;pointer-events:none}
   .mobile-drawer-head{display:grid;grid-template-columns:1fr auto;gap:.12rem .6rem;align-items:center;
-    position:relative;flex:0 0 auto;width:100%;min-height:3.25rem;padding:.82rem 1rem .55rem;
+    position:relative;flex:0 0 auto;width:100%;min-height:3.25rem;
+    padding:.82rem max(1rem,env(safe-area-inset-right)) .55rem max(1rem,env(safe-area-inset-left));
     border:0;border-bottom:1px solid rgba(29,74,99,.52);background:transparent;color:var(--ink);text-align:left;cursor:grab;touch-action:none}
   .mobile-drawer-head:active{cursor:grabbing}
   .mobile-drawer-head::before{content:'';position:absolute;top:.35rem;left:50%;width:2.7rem;height:3px;
@@ -439,15 +452,16 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .mobile-drawer-title{font-size:.72rem;letter-spacing:.16em;color:var(--glow)}
   .mobile-ready-total{font-family:var(--font-mono);font-size:.6rem;color:var(--amber);white-space:nowrap}
   .mobile-drawer-hint{grid-column:1/-1;font-size:.54rem;line-height:1.25;color:var(--ink-dim);letter-spacing:.06em}
-  .mobile-category-nav{display:flex;flex:0 0 auto;gap:.35rem;width:100%;overflow-x:auto;padding:.38rem .7rem .5rem;
+  .mobile-category-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));flex:0 0 auto;gap:.28rem;width:100%;min-width:0;overflow:hidden;
+    padding:.38rem max(.6rem,env(safe-area-inset-right)) .5rem max(.6rem,env(safe-area-inset-left));
     scrollbar-width:none;border-bottom:1px solid rgba(29,74,99,.45);background:rgba(3,13,21,.38)}
   .mobile-category-nav::-webkit-scrollbar{display:none}
-  .mobile-category-nav button{position:relative;display:grid;place-items:center;flex:0 0 auto;min-width:4.5rem;min-height:42px;
-    padding:.35rem .6rem;border:1px solid rgba(29,74,99,.82);border-radius:999px;background:rgba(16,48,63,.62);
-    color:var(--ink-dim);font-size:.64rem;letter-spacing:.05em;cursor:pointer}
+  .mobile-category-nav button{position:relative;display:grid;place-items:center;width:100%;min-width:0;min-height:42px;
+    padding:.35rem .18rem;border:1px solid rgba(29,74,99,.82);border-radius:999px;background:rgba(16,48,63,.62);
+    color:var(--ink-dim);font-size:clamp(.52rem,2.45vw,.62rem);line-height:1.1;letter-spacing:.025em;white-space:nowrap;cursor:pointer}
   .mobile-category-nav button[aria-selected="true"]{border-color:var(--glow);color:var(--glow);background:rgba(92,224,192,.09)}
   .mobile-category-nav button.ready:not([aria-selected="true"]){border-color:rgba(255,196,107,.72);color:var(--amber)}
-  .mobile-category-badge{display:none;position:absolute;top:-.32rem;right:-.18rem;min-width:1.15rem;height:1.15rem;padding:0 .25rem;
+  .mobile-category-badge{display:none;position:absolute;top:-.22rem;right:.02rem;min-width:1.15rem;height:1.15rem;padding:0 .25rem;
     place-items:center;border-radius:999px;background:var(--amber);color:#17202a;font:700 .52rem/1 var(--font-mono);box-shadow:0 0 12px rgba(255,196,107,.42)}
   .mobile-category-nav button.ready .mobile-category-badge{display:grid}
   .mobile-drawer-content{display:block;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
@@ -474,7 +488,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .scope-frame>.epoch .t{font-size:.82rem;letter-spacing:.1em;margin-top:.08rem}
   .identity .sn{font-size:.72rem}
   #scope-status-host{padding:.4rem .5rem}
-  #scope-status-host .log div:nth-child(n+3){display:none}
+  #scope-status-host .log{max-height:4.35rem}
   .scale-codex-grid{grid-template-columns:1fr;max-height:10.5rem}
 }
 @media(max-height:520px) and (orientation:landscape){
@@ -482,7 +496,8 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   header{padding-top:max(.4rem,env(safe-area-inset-top));padding-bottom:.4rem}
   .brand{flex-basis:auto;margin-bottom:0}
   main{grid-template-columns:minmax(0,1fr) minmax(18rem,40vw);grid-template-rows:auto;min-height:0}
-  .field{position:sticky;top:0;align-self:start;padding:.4rem .4rem .4rem calc(.4rem + env(safe-area-inset-left,0px))}
+  .field{position:sticky;top:0;align-self:start;
+    padding:.4rem calc(.4rem + env(safe-area-inset-right,0px)) .4rem calc(.4rem + env(safe-area-inset-left,0px))}
   .scope-stack{width:min(48vw,60dvh)}
   aside{border-top:none;border-left:1px solid var(--line)}
 }
@@ -552,15 +567,17 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
           <div class="identity"><div class="sn" id="stage-name">草履蟲尺度</div></div>
         </div>
         <div class="event-banner" id="event-banner" style="display:none"></div>
-        <details class="scope-details">
-          <summary id="scope-details-summary">尺度資訊</summary>
-          <div class="sm" id="stage-mass">質量 · 10⁻⁹ kg</div>
-          <div class="sa" id="stage-analogy"></div>
-        </details>
       </div>
-      <div id="scope-status-host" data-section="acquisition-status" aria-live="polite">
-        <span class="acquisition-title" id="acquisition-status-title">獲取狀態</span>
-        <div class="log" id="log"></div>
+      <div id="scope-status-host" data-section="observation-log">
+        <div class="journal-head">
+          <span class="acquisition-title" id="acquisition-status-title">觀測日誌</span>
+          <details class="scope-details">
+            <summary id="scope-details-summary">尺度資訊</summary>
+            <div class="sm" id="stage-mass">質量 · 10⁻⁹ kg</div>
+            <div class="sa" id="stage-analogy"></div>
+          </details>
+        </div>
+        <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions" tabindex="0" aria-label="觀測日誌記錄"></div>
       </div>
     </div>
   </section>
@@ -1150,7 +1167,8 @@ const UI_STR = {
     constants:'物理常數', singShop:'宇宙殘骸 · 永久強化', matter:'基本物質', materials:'創生質', mps:'創生質/秒', remnants:'殘骸', transition:'尺度躍遷',
     fitGood:'宜居', fitMid:'臨界', fitBad:'死寂', epoch:'紀元', owned:'已擁有', sated:'飽食',
     upgradePanel:'升級面板', noUpgrade:'目前無可升級項目', pullHint:'點一下或向上拉以展開', closeHint:'點一下或向下拉以收合',
-    progress:'躍遷', creation:'創生', laws:'定律', remains:'殘骸', shoal:'群游', records:'紀錄',
+    progress:'躍遷', creation:'創生', laws:'定律', remains:'殘骸', shoal:'群游', records:'日誌',
+    mobileStructures:'構造', mobileSpore:'孢', mobileRemnants:'殘骸', observationLog:'觀測日誌',
   },
   en:{
     lifeforce:'Life-force', persec:'/sec', spore:'Spores', freedom:'Freedom', fps:'Freedom/s',
@@ -1160,7 +1178,8 @@ const UI_STR = {
     constants:'Physical Constants', singShop:'Cosmic Remnants · Permanent', matter:'Fundamental Matter', materials:'Genesis Matter', mps:'Genesis Matter/s', remnants:'Remnants', transition:'Scale Transition',
     fitGood:'habitable', fitMid:'marginal', fitBad:'dead', epoch:'Epoch', owned:'Owned', sated:'Sated',
     upgradePanel:'Upgrades', noUpgrade:'Nothing affordable yet', pullHint:'Tap or pull up to open', closeHint:'Tap or pull down to close',
-    progress:'Progress', creation:'Genesis', laws:'Laws', remains:'Remnants', shoal:'Shoal', records:'Records',
+    progress:'Scale', creation:'Genesis', laws:'Laws', remains:'Remnants', shoal:'Shoal', records:'Log',
+    mobileStructures:'Build', mobileSpore:'Spore', mobileRemnants:'Remnant', observationLog:'Observation Log',
   },
 };
 
@@ -1242,6 +1261,7 @@ function freshState(){
   };
 }
 
+const LOG_HISTORY_LIMIT = 80;
 let logs = [];
 let activeEvent = null;       // {id, remain, ...}（dt 制，受除錯速度影響）
 let afterEffect = null;       // {mult, delay, remain}
@@ -1368,7 +1388,7 @@ function plain(n){ return fmt(n).replace(/<sup>(.*?)<\/sup>/,'^$1'); }
 
 function say(msg, gold){
   logs.unshift(gold?`<b>${msg}</b>`:msg);
-  logs = logs.slice(0,6);
+  logs = logs.slice(0,LOG_HISTORY_LIMIT);
   if (typeof renderLog==='function') renderLog();
 }
 
@@ -2297,7 +2317,7 @@ async function load(){
         else S.constLevels[c.id]=Math.min(CONST_MAX_LEVEL,Math.floor(lv));
       }
     });
-    if (Array.isArray(d.logs)) logs=d.logs;
+    if (Array.isArray(d.logs)) logs=d.logs.slice(0,LOG_HISTORY_LIMIT);
     ensureStageEventSkill();
     const retroAdded=retroactiveAchievementCheck();
     // 離線結算
@@ -5075,14 +5095,14 @@ function mobileDrawerDefinitions(){
     ? [
       {key:'sing-progress',label:ui('creation')},
       {key:'sing-economy',label:ui('laws')},
-      {key:'sing-permanent',label:ui('remains')},
+      {key:'sing-permanent',label:ui('mobileRemnants')},
       {key:'sing-forms',label:ui('shoal')},
       {key:'records',label:ui('records')},
     ]
     : [
       {key:'mortal-transition',label:ui('progress')},
-      {key:'mortal-structures',label:ui('structures')},
-      {key:'mortal-spores',label:ui('spore')},
+      {key:'mortal-structures',label:ui('mobileStructures')},
+      {key:'mortal-spores',label:ui('mobileSpore')},
       {key:'mortal-legacy',label:ui('legacy')},
       {key:'records',label:ui('records')},
     ];
@@ -5173,6 +5193,27 @@ function renderMobileUpgradeDrawer(){
   if (hint) hint.textContent=mobileDrawerUI.open?ui('closeHint'):ui('pullHint');
   drawer.classList.toggle('drawer-suspended',!!cine);
 }
+function drawerTranslateY(element){
+  if (!element || typeof getComputedStyle!=='function') return 0;
+  const value=getComputedStyle(element).transform;
+  if (!value || value==='none') return 0;
+  const open=value.indexOf('('),parts=open>=0?value.slice(open+1,-1).split(',').map(Number):[];
+  const y=value.startsWith('matrix3d')?parts[13]:parts[5];
+  return Number.isFinite(y)?Math.max(0,y):0;
+}
+function mobileDrawerClosedOffset(drawer,fallback){
+  if (!drawer || !drawer.classList.contains('drawer-open')){
+    const current=drawerTranslateY(drawer);
+    return current>0?current:fallback;
+  }
+  const previousTransition=drawer.style.transition;
+  drawer.style.transition='none';
+  drawer.classList.remove('drawer-open');
+  const closed=drawerTranslateY(drawer)||fallback;
+  drawer.classList.add('drawer-open');
+  drawer.style.transition=previousTransition;
+  return closed;
+}
 function initMobileUpgradeDrawer(){
   if (mobileDrawerUI.initialized) return;
   const drawer=$('upgrade-drawer'),head=$('mobile-drawer-head'),nav=$('mobile-category-nav');
@@ -5185,8 +5226,11 @@ function initMobileUpgradeDrawer(){
   head.addEventListener('pointerdown',event=>{
     if (!mobileDrawerMode()) return;
     const visible=(head.offsetHeight||52)+(nav.offsetHeight||58);
-    const closed=Math.max(0,(drawer.offsetHeight||0)-visible);
-    mobileDrawerUI.drag={id:event.pointerId,startY:event.clientY,startOffset:mobileDrawerUI.open?0:closed,closed,current:mobileDrawerUI.open?0:closed,moved:false};
+    const fallbackClosed=Math.max(0,(drawer.offsetHeight||0)-visible);
+    const actualOffset=drawerTranslateY(drawer);
+    const closed=mobileDrawerClosedOffset(drawer,fallbackClosed);
+    const startOffset=Math.max(0,Math.min(closed,actualOffset));
+    mobileDrawerUI.drag={id:event.pointerId,startY:event.clientY,startOffset,closed,current:startOffset,moved:false};
     drawer.classList.add('drawer-dragging');
     if (typeof head.setPointerCapture==='function') head.setPointerCapture(event.pointerId);
   });
@@ -5225,6 +5269,8 @@ function renderStaticLanguage(){
     c:en?'Microscope and cosmic field':'培養皿與宇宙視野',
     'upgrade-drawer':en?'Upgrade panel':'升級面板',
     'mobile-category-nav':en?'Upgrade categories':'升級分類',
+    'scope-status-host':en?'Observation log':'觀測日誌',
+    log:en?'Observation log entries':'觀測日誌記錄',
     'scale-codex-shell':en?'Scale encyclopedia':'尺度圖鑑',
     'scale-codex-preview':en?'Scale encyclopedia illustration':'尺度圖鑑插圖',
     'scale-codex-grid':en?'Encyclopedia entries':'圖鑑條目',
@@ -6240,12 +6286,20 @@ function renderSing(){
 /* ── 日誌 / 事件 ── */
 function renderLog(){
   const title=$('acquisition-status-title');
-  if (title) title.textContent=isEn()?'Acquisition Status':'獲取狀態';
+  if (title) title.textContent=ui('observationLog');
   const log=$('log');
   const hideMeta=s=>String(s)
     .replace(/（(?:真實機制|真實結構|真實尺度)／神話化視覺）/g,'')
     .replace(/\s*[（(](?:real mechanism|real structure|real scale)\s*\/\s*mythic visualization[）)]/gi,'');
-  if (log) log.innerHTML=logs.slice(0,3).map(l=>`<div>${hideMeta(l)}</div>`).join('');
+  if (log){
+    const entries=logs.map(hideMeta),signature=`${isEn()?'en':'zh'}|${entries.join('\u0001')}`;
+    if (log.dataset.signature!==signature){
+      const oldTop=log.scrollTop,oldHeight=log.scrollHeight,wasReadingHistory=oldTop>4;
+      log.innerHTML=entries.map(l=>`<div>${l}</div>`).join('');
+      log.dataset.signature=signature;
+      log.scrollTop=wasReadingHistory?oldTop+Math.max(0,log.scrollHeight-oldHeight):0;
+    }
+  }
 }
 function renderEvent(){
   const el=$('event-banner');
@@ -6305,8 +6359,7 @@ function showBanner(kind, stageIdx, onDone){
 function toggleLang(){
   S.lang = isEn()?'zh':'en';
   $('langbtn').textContent = isEn()?'中':'EN';
-  logs=[];
-  say(isEn()?'English interface enabled. New acquisition messages will appear in English.':'已切換為繁體中文；新的獲取訊息將以中文顯示。');
+  say(isEn()?'English interface enabled. New observation-log entries will appear in English.':'已切換為繁體中文；新的觀測日誌訊息將以中文顯示。');
   buildShop(); buildSporeShop(); buildBuyAmt();
   if (S.phase==='singularity') buildSingularity();
   mobileDrawerUI.signature='';
@@ -6435,8 +6488,6 @@ async function boot(){
 
   const loaded=await load();
   if (!loaded){ logs=[]; say('一隻草履蟲在原始湯裡睜開眼。點擊視野開始攝食。'); }
-  else if (isEn() && logs.some(line=>/[\u3400-\u9fff]/.test(String(line)))) logs=['Save restored. New acquisition messages will appear in English.'];
-  else if (!isEn() && logs.some(line=>/[A-Za-z]{4}/.test(String(line)))) logs=['存檔已恢復；新的獲取訊息將以中文顯示。'];
   buildScaleCodex();
   ensureStageEventSkill();
   document.getElementById('langbtn').textContent = isEn()?'中':'EN';
