@@ -118,7 +118,7 @@ aside::-webkit-scrollbar-thumb{background:var(--line)}
   cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s,transform .05s}
 .item:hover:not(:disabled){border-color:var(--glow)}
 .item:active:not(:disabled){transform:translateY(1px)}
-.item:disabled{opacity:.4;cursor:not-allowed}
+.item:disabled{opacity:.68;cursor:not-allowed}
 .item:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
 .item .nm{font-size:.9rem;letter-spacing:.05em}
 .item .qty{font-size:.85rem;color:var(--glow);text-align:right}
@@ -126,6 +126,15 @@ aside::-webkit-scrollbar-thumb{background:var(--line)}
 .item .ds{font-size:.66rem;color:var(--ink-dim)}
 .item .stat{font-size:.63rem;color:var(--ink-dim);grid-column:1/-1;font-family:var(--font-mono);opacity:.8}
 .item .price{font-size:.8rem;color:var(--amber);grid-column:1/-1;text-align:right;margin-top:-.85rem}
+.item .structure-power-gap{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:.2rem .5rem;margin-top:.18rem;padding:.31rem .42rem;border:1px solid rgba(255,196,107,.28);border-radius:2px;
+  background:rgba(255,196,107,.055);font-family:var(--font-mono);font-size:.63rem;line-height:1.4;color:var(--ink)}
+.item .structure-power-gap .exp-route,.item .structure-power-gap .exp-state{white-space:nowrap}
+.item .structure-power-gap .exp-route{color:#ffe0a6;font-size:.7rem;font-weight:600}
+.item .structure-power-gap sup{font-size:.88em;color:#fff0c8;font-weight:700}
+.item .structure-power-gap .exp-state{color:var(--amber)}
+.item .structure-power-gap.ready{border-color:rgba(92,224,192,.4);background:rgba(92,224,192,.065)}
+.item .structure-power-gap.ready .exp-state{color:var(--glow)}
 .item .bar{position:absolute;inset:auto 0 0 0;height:2px;background:var(--glow);opacity:.5}
 
 .collapse{width:100%;border:1px solid var(--nucleus);background:transparent;
@@ -454,7 +463,8 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
 
 @media(max-width:900px){
   body{height:auto;min-height:100dvh;overflow-y:auto;overscroll-behavior-y:auto}
-  header{gap:.42rem .85rem;padding-top:max(.65rem,env(safe-area-inset-top));padding-bottom:.65rem}
+  header{position:relative;gap:.42rem .85rem;padding-top:max(.65rem,env(safe-area-inset-top));
+    padding-right:max(3.35rem,calc(env(safe-area-inset-right) + 3rem));padding-bottom:.65rem}
   main{grid-template-columns:1fr;grid-template-rows:auto auto;height:auto;min-height:calc(100dvh - 4rem)}
   .field{padding:.65rem .5rem;min-height:auto}
   .scope-stack{width:min(94vw,52dvh);max-width:100%;max-height:none}
@@ -467,7 +477,10 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .event-banner{justify-content:flex-start}
   .scope-summary{justify-content:space-between}
   .collapse,.item,.sitem,.const-upgrade,.avpick button,.scale-codex-nav button,.scale-codex-entry,.achievement-panel>summary,.scale-codex>summary{min-height:44px}
-  #langbtn,.buyamt button,.matter-advance,.morph-reset,.morph-swatch{min-width:44px;min-height:44px}
+  .buyamt button,.matter-advance,.morph-reset,.morph-swatch{min-width:44px;min-height:44px}
+  #langbtn{position:absolute;z-index:6;top:max(.45rem,env(safe-area-inset-top));right:max(.55rem,env(safe-area-inset-right));
+    width:2rem;height:2rem;min-width:2rem;min-height:2rem;padding:0;border-color:rgba(29,74,99,.78);
+    background:rgba(6,18,28,.72);font-size:.58rem;line-height:1;letter-spacing:.06em}
   .avpick select,.morph-field select,input[type=color]{font-size:16px;min-height:44px}
 }
 @media (max-width:900px) and (min-height:521px), (max-width:560px) and (orientation:portrait){
@@ -529,19 +542,20 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
 }
 @media(max-width:560px){
   header{align-items:center}
-  .brand{flex-basis:100%;margin-bottom:.08rem}
+  .brand{flex-basis:100%;margin-bottom:.08rem;padding-right:2.25rem}
   .readout{gap:.3rem}
   .readout .label{font-size:.58rem;letter-spacing:.13em}
   .readout .val{font-size:1rem}
   .readout .val.small{font-size:.9rem}
   .readout .unit{font-size:.64rem;letter-spacing:0}
-  #langbtn{min-width:44px;min-height:44px}
   .scope-summary{display:grid;gap:.18rem}
   .scope-frame>.scope-meta{width:min(86%,24rem);bottom:6%;padding:0}
   .scope-frame>.epoch{top:.55rem;width:76%}
   .scope-frame>.epoch .n{font-size:.5rem;letter-spacing:.22em}
   .scope-frame>.epoch .t{font-size:.82rem;letter-spacing:.1em;margin-top:.08rem}
   .identity .sn{font-size:.72rem}
+  .item .structure-power-gap{padding:.38rem .44rem;font-size:.66rem;line-height:1.5}
+  .item .structure-power-gap .exp-route{font-size:.74rem}
   #scope-status-host{padding:.4rem .5rem}
   #scope-status-host .log{max-height:clamp(5.4rem,13dvh,7.4rem)}
   .scale-codex-grid{grid-template-columns:1fr;max-height:10.5rem}
@@ -997,7 +1011,7 @@ const STRUCTURE_PROFILES = [
   {motif:'藍鯨',motifEn:'Blue Whale',names:['尾鰭','鯨鬚濾板','深潛血紅素','低頻歌聲','洄游航線'],namesEn:['Tail Fluke','Baleen Rack','Diving Myoglobin','Infrasonic Song','Migration Route'],quip:'最大動物的終局配裝：升級嘴巴，吃更小的東西。',quipEn:'The largest-animal build: upgrade the mouth and eat smaller things.'},
   {motif:'鯤',motifEn:'Kun',names:['扶搖巨鰭','北冥吞口','滄海心室','九萬里感知','化鵬羽兆'],namesEn:['Skyward Fins','North-Sea Maw','Oceanic Heart','Ninety-Thousand-Li Sense','Peng-Transformation Plumage'],quip:'系統仍叫它構造，因為「幾千里長的魚」塞不進欄位。',quipEn:'The system still calls these structures because “a fish thousands of li long” will not fit in the field.'},
   {motif:'巨人',motifEn:'Giant',names:['擎天足','山岳胃','盜火胸腔','遠眺之眼','巨人城寨'],namesEn:['Sky-Pillar Feet','Mountain Stomach','Fire-Bearing Chest','Far-Seeing Eye','Giant Citadel'],quip:'你終於大到能踩到地圖邊界，地圖只好再畫大一點。',quipEn:'You are finally large enough to step on the map boundary, so the map gets redrawn.'},
-  {motif:'龍',motifEn:'Dragon',names:['騰雲翼','吞雲龍口','逆鱗心爐','龍角天線','盤山鱗甲'],namesEn:['Cloudborne Wings','Cloud-Swallowing Maw','Reverse-Scale Heart-Furnace','Dragon-Horn Antennae','Mountain-Coiling Scales'],quip:'沒有生物學家願意審稿，神話學家倒是全票通過。',quipEn:'No biologist will review this build; the mythologists approve unanimously.'},
+  {motif:'龍',motifEn:'Dragon',names:['騰雲翼','吞雲龍口','逆鱗心爐','分岔龍角','盤山鱗甲'],namesEn:['Cloudborne Wings','Cloud-Swallowing Maw','Reverse-Scale Heart-Furnace','Branched Dragon Horns','Mountain-Coiling Scales'],quip:'沒有生物學家願意審稿，神話學家倒是全票通過。',quipEn:'No biologist will review this build; the mythologists approve unanimously.'},
   {motif:'世界龜',motifEn:'World Turtle',names:['擎陸巨足','鎮海巨喙','地脈心室','背甲羅盤','載世甲殼'],namesEn:['Land-Bearing Limbs','Sea-Anchoring Beak','Leyline Heart','Carapace Compass','World-Bearing Shell'],quip:'你的移動速度是零；幸好這一階的工作就是別動。',quipEn:'Your movement speed is zero. Fortunately, this stage’s job is not to move.'},
   {motif:'耶夢加得',motifEn:'Jörmungandr',names:['環世鱗帶','吞潮巨口','毒海心腔','蛇瞳星圖','銜尾之環','末日神經','循環意志'],namesEn:['World-Girdling Scales','Tidal Maw','Venom-Sea Heart','Serpent-Eye Star Map','Tail-Biting Ring','Doom Nerves','Cyclic Will'],quip:'長到咬住自己尾巴後，路徑尋找變成一個哲學問題。',quipEn:'Once you are long enough to bite your own tail, pathfinding becomes a philosophical problem.'},
   {motif:'微行星',motifEn:'Planetesimal',names:['自轉碎屑帶','捕塵坑','放射性熱核','自轉軸','碎石堆結構','微重力脈絡','軌道本能'],namesEn:['Rotating Debris Band','Dust-Catching Pits','Radiogenic Core','Spin Axis','Rubble-Pile Frame','Microgravity Network','Orbital Instinct'],quip:'離開地球後，你首先進化成一顆很有想法的石頭。',quipEn:'After leaving Earth, your first evolution is a rock with opinions.'},
@@ -1018,6 +1032,40 @@ const STRUCTURE_PROFILES = [
   {motif:'拉尼亞凱亞超星系團',motifEn:'Laniakea Supercluster',names:['星系流線','宇宙網節點','大引力源勢阱','速度場羅盤','吸引盆地邊界','纖維網入流','星系群落潮','星海鍛造帶','超星系團光暈','流域軸線','緻密天體譜系','暗物質流','大引力源聖所'],namesEn:['Galaxy Flowlines','Cosmic-Web Nodes','Great-Attractor Potential','Peculiar-Velocity Compass','Basin-of-Attraction Boundary','Filamentary Inflow','Galaxy-Group Tide','Star-Sea Forge Belt','Supercluster Glow','Basin Axis','Compact-Object Lineages','Dark-Matter Flow','Great-Attractor Sanctum'],quip:'你不是一個物體，而是一個大家都在往裡掉的方向。',quipEn:'You are not an object so much as a direction everyone is falling toward.'},
   {motif:'哈伯球',motifEn:'Hubble Sphere',names:['哈伯流線','退行星系標記','宇宙膨脹場','共動座標網','哈伯半徑殼','紅移梯度','尺度因子時鐘','宇宙微波背景','可觀測節點暈','逐光脈衝','因果曲率網','c/H₀ 等速面','逐光之界'],namesEn:['Hubble Flowlines','Receding-Galaxy Markers','Cosmic Expansion Field','Comoving Coordinate Grid','Hubble-Radius Shell','Redshift Gradient','Scale-Factor Clock','Cosmic Microwave Background','Observable-Node Halo','Light-Chasing Pulses','Causal-Curvature Web','c/H₀ Equal-Recession Surface','Light-Chasing Frontier'],quip:'你追上了膨脹，不等於追上了宇宙；它還在把終點往外搬。',quipEn:'You caught the expansion, not the Universe; it keeps moving the finish line outward.'},
 ];
+/* 每個文字槽都與同階形態的實際機制相連；經濟 id、價格與產率仍完全取自 BUILDINGS。 */
+const STRUCTURE_STAGE_COPY = [
+  {ds:['梳動細胞表面的水膜，把細菌推向口溝。','暫存吞入的碎屑，再以酸性囊泡逐步分解。','用內共生呼吸把養分換成可用能量。','統籌代謝、修復與游動所需的大量轉錄。','撐住橢圓表膜，固定一列列纖毛的落點。'],dsEn:['Combs the surface film and drives bacteria toward the oral groove.','Holds engulfed debris while acidic vesicles digest it.','Uses endosymbiotic respiration to turn nutrients into usable energy.','Directs the heavy transcription needed for movement, repair, and metabolism.','Braces the oval pellicle and fixes each row of cilia in place.']},
+  {ds:['划動淡水，讓透明身軀躍進或急退。','像幫浦般濾過水流，把藻粒送入口器。','在沒有血管的身體裡推送血淋巴與氧。','同時追蹤光源、捕食者與下一團藻。','包住濾食腔，也替柔軟內臟擋下碰撞。'],dsEn:['Strokes freshwater to hop forward or dart away.','Pumps a feeding current and filters algae toward the mouth.','Circulates haemolymph and oxygen through a vessel-poor body.','Tracks light, predators, and the next algal patch at once.','Encloses the filter chamber and shields the soft organs from impacts.']},
+  {ds:['扣合前後翅，讓四片翅成為一副升力面。','把花蜜帶回巢內，等待工蜂接手濃縮。','以高頻收縮支撐懸停、轉向與長程採集。','讀取氣味、風向與太陽位置，校正歸巢航線。','以六角單元分配幼蟲、花粉與蜂蜜的空間。'],dsEn:['Hooks fore- and hindwings into one lifting surface.','Carries nectar home for the colony to concentrate.','Powers hovering, turning, and long foraging flights at high frequency.','Reads scent, wind, and the Sun to correct the route home.','Allocates brood, pollen, and honey among efficient hexagonal cells.']},
+  {ds:['以八字軌跡反覆翻轉，從空氣中持續取升力。','伸入花冠深處，把高糖花蜜直接送向喉部。','高速輸送氧與糖，支撐近乎不停的翼拍。','把視覺與前庭訊號即時修正成穩定懸停。','以瞬間變色的羽面宣告領域與求偶狀態。'],dsEn:['Reverses through a figure-eight stroke to harvest lift continuously.','Reaches deep corollas and channels dense nectar toward the throat.','Moves oxygen and sugar fast enough to sustain near-continuous wingbeats.','Turns visual and vestibular feedback into stable hovering corrections.','Flashes an iridescent territorial and courtship signal with each angle change.']},
+  {ds:['在黑暗巢道裡先摸出牆面、轉角與出口。','把穀粒整批搬回藏糧室，而不是當場吃完。','維持小型哺乳類的體溫，也快速消耗庫存。','記住巢穴岔路、食物藏點與安全回程。','把夜間奔跑慾轉成不離巢的持續運動。'],dsEn:['Maps walls, corners, and exits before the body enters a dark tunnel.','Hauls whole loads of grain to the cache instead of eating in place.','Maintains mammalian warmth while rapidly spending stored fuel.','Remembers burrow forks, food caches, and the safest route home.','Turns nocturnal roaming drive into continuous motion without leaving the nest.']},
+  {ds:['先讀出近身氣流與縫隙寬度，再讓身體通過。','以高酸度處理富含蛋白與脂肪的獵物。','把伏擊壓縮成一次安靜而爆發性的躍撲。','在微光中放大獵物輪廓，同時控制反光層。','以低頻振動穩住呼吸，也維繫群體接觸。'],dsEn:['Reads nearby air and gap width before the body commits.','Processes protein- and fat-rich prey in a highly acidic stomach.','Compresses an ambush into one quiet, explosive pounce.','Amplifies prey silhouettes in dim light while controlling eyeshine.','Uses low-frequency vibration to steady breathing and maintain social contact.']},
+  {ds:['精細抓握石片、種子與工具，把意圖留在物件上。','把日照、土壤與季節轉成可儲存的糧食。','以雙足長程搬運，讓雙手保持自由。','把不存在於眼前的計畫同步給其他個體。','集中食物、技術與勞力，讓分工跨越世代。'],dsEn:['Grasps stone, seed, and tool precisely enough to leave intention in objects.','Turns sunlight, soil, and seasons into food that can be stored.','Carries the body over distance while leaving both hands free.','Synchronizes plans about things not presently visible.','Concentrates food, craft, and labour so specialization survives generations.']},
+  {ds:['同時嗅探、飲水、抓取與搬運，不必低下巨軀。','連續磨碎粗硬植物，補回龐大身體的消耗。','把血液推過數公尺高差，供應耳、腦與四肢。','保存旱季水源、遷徙路線與多年社會關係。','以低鳴和足底震動共享遠方的路況。'],dsEn:['Smells, drinks, grasps, and carries without lowering the giant body.','Grinds coarse plants continuously to meet an immense energy demand.','Pushes blood across metres of height to ears, brain, and limbs.','Keeps dry-season waterholes, migration routes, and decades of social memory.','Shares distant conditions through rumbles and ground-borne vibration.']},
+  {ds:['以大幅上下拍動推動百噸身軀穿過海水。','張口濾過整片磷蝦群，再排出多餘海水。','在肌肉內儲氧，延長深潛而不必呼吸。','讓低頻歌聲穿越海盆，定位遙遠同類。','連結高緯覓食場與溫暖繁殖海域。'],dsEn:['Sweeps vertically to drive a hundred-tonne body through seawater.','Filters whole krill patches while expelling the excess ocean.','Stores oxygen inside muscle to extend a breathless dive.','Carries low songs across ocean basins to locate distant whales.','Links polar feeding grounds with warm breeding waters.']},
+  {ds:['牽起北冥水勢，為化鵬前的上升蓄力。','把海潮與巨量獵物一同納入腹中。','推動如海般的血流，維持不可丈量的身軀。','越過九萬里水天，先感到遠方風向。','把魚形的流線預先排列成鵬翼的徵兆。'],dsEn:['Gathers the North Sea into lift for the coming Peng transformation.','Takes tides and immense prey into the same mythic maw.','Drives an oceanic circulation through an immeasurable body.','Feels distant winds across ninety thousand li of sea and sky.','Prearranges the fish form into the first signs of Peng plumage.']},
+  {ds:['把步伐釘進大地，讓山岳尺度的身體不致傾覆。','消化整場盛宴，為跨越地平線的活動供能。','保存盜來的神火，讓胸腔成為長燃爐膛。','越過山脈讀取城邦、獵物與下一個落腳點。','把聚落與裝甲一起背負，形成會移動的堡壘。'],dsEn:['Pins each stride into the ground so a mountain-scale body stays upright.','Digests a feast large enough to power movement across horizons.','Keeps stolen divine fire burning inside the chest.','Looks across ranges to read cities, prey, and the next foothold.','Carries settlement and armour together as a moving citadel.']},
+  {ds:['借雲氣托起長軀，在雷雨帶中改變高度。','吞入雲水並壓縮成吐息前的燃料。','以逆鱗護住高熱核心，持續煉出龍火。','感應雷場與地脈，選擇盤旋和落地的位置。','層疊鱗甲導開衝擊，也讓身軀環山而行。'],dsEn:['Rides cloud-breath to lift a long body through storm layers.','Swallows cloud water and compresses it into fuel for the next breath.','Guards the hot heart beneath a reverse scale while dragonfire builds.','Senses thunder fields and ley lines to choose where to coil or land.','Overlapping scales shed impacts and let the body wrap around mountains.']},
+  {ds:['以巨足分散大陸重量，把震動送入深層地脈。','疏導海水與巨獸，維持甲背世界的物質循環。','把地脈熱流推向陸塊，避免背上世界冷寂。','對準天極與潮汐，校正承載世界的方向。','讓山海重量沿甲片擴散，不壓垮單一支點。'],dsEn:['Spreads continental weight through colossal feet and into deep ley lines.','Channels seas and great beasts through the world carried above.','Pumps geothermal flow toward the land so the borne world does not cool.','Aligns with pole and tide to correct the world-bearing orientation.','Distributes mountains and oceans across plates instead of one failing point.']},
+  {ds:['讓環世長軀在海壓與潮汐中保持連續。','吞吐洋流，把海面漲落變成自己的攝食節律。','將毒液送遍大洋，使海水本身成為領域。','用星圖校正環繞中庭世界的方位。','咬合首尾，封閉一次沒有終點的路徑。','把末日訊號繞行世界一周仍不失真。','維持永恆回返，讓自身同時成為起點與獵物。'],dsEn:['Keeps the world-length body continuous under tides and ocean pressure.','Swallows and releases currents until the tide becomes a feeding rhythm.','Pumps venom through the ocean until seawater itself becomes territory.','Uses the stars to correct a course around the middle world.','Closes mouth on tail and seals a path with no endpoint.','Carries the doom signal around the world without losing it.','Sustains eternal return, making the self both origin and prey.']},
+  {ds:['掃過軌道附近的鬆散碎屑，逐圈增加截獲機會。','把低速塵粒困在凹坑與多孔表面。','以放射性衰變保留微弱內熱，改造原始礦物。','固定自轉方向，讓碰撞不只留下混亂。','靠微弱自引力把石塊拼成多孔而完整的天體。','沿接觸點傳遞撞擊與鬆動，重排碎石堆。','在軌道交會時選擇追上、避開或併入。'],dsEn:['Sweeps loose orbital debris and raises the capture chance each circuit.','Traps slow dust inside pits and porous regolith.','Keeps a faint radiogenic heat that alters primitive minerals.','Stabilizes spin so collisions leave more than random tumbling.','Uses weak self-gravity to assemble rubble into one porous body.','Passes impacts through contact points and rearranges the pile.','Chooses whether an orbital encounter becomes pursuit, escape, or merger.']},
+  {ds:['排出撞擊熱，讓熔融表面逐步凝成地殼。','擴大重力與幾何截面，截住穿越原行星盤的物質。','讓鐵鎳下沉、矽酸鹽上浮，分出核與幔。','以流動金屬生成磁場，標記自轉與恆星風方向。','留住水、碳與氮，建立後續化學的外層庫存。','在地幔中搬運熱與元素，反覆翻新表面。','清掃鄰近軌道，把餵食區變成自己的疆域。'],dsEn:['Radiates impact heat until a molten surface can crust over.','Enlarges the gravitational and geometric cross-section through the disk.','Sinks iron and raises silicate until core and mantle separate.','Generates a magnetic field from moving metal and marks the spin direction.','Retains water, carbon, and nitrogen for later atmospheric chemistry.','Moves heat and elements through a mantle that repeatedly resurfaces.','Clears neighbouring paths and turns the feeding zone into territory.']},
+  {ds:['把高速緯向風分成明暗雲帶，搬運內部熱量。','用長壽渦旋捲入氣體、冰粒與小型衛星碎屑。','讓導電金屬氫旋轉，驅動龐大行星磁場。','擋下恆星風，也把帶電粒子導向極區。','依共振與粒徑整理冰石，形成薄而廣的環。','從深層把形成餘熱送上雲頂。','讓一場風暴跨越世紀仍維持形狀與能量。'],dsEn:['Separates fast zonal winds into bright and dark heat-carrying bands.','Uses a long-lived vortex to gather gas, ice, and moonlet debris.','Rotates conducting metallic hydrogen to drive a giant dynamo.','Deflects stellar wind and funnels charged particles toward the poles.','Sorts ice and rock by resonance and size into a broad thin ring.','Convects formation heat from the deep interior to the cloud tops.','Keeps one storm coherent and powered across centuries.']},
+  {ds:['讓礦物雲層在紅外光下顯出風帶與天氣。','續收周圍氣體，補充次恆星大氣與角動量。','以金屬氫導電層維持強磁場。','標記磁暴經度，追蹤反覆爆發的活動區。','用分子吸收線記錄低溫大氣的成分。','把核心殘熱送過整顆褐矮星而不需輻射層。','讓半徑與亮度隨內熱緩慢呼吸。','短暫點燃氘，補上未能持續燃氫的能量。','把形成餘熱主要以紅外線送向宇宙。'],dsEn:['Reveals mineral clouds, bands, and weather in infrared light.','Adds surrounding gas to the substellar atmosphere and angular momentum.','Maintains a strong dynamo inside conducting metallic hydrogen.','Tracks active longitudes where magnetic storms repeatedly erupt.','Records the cool atmosphere through molecular absorption bands.','Moves core heat through the whole dwarf without a radiative zone.','Lets radius and luminosity breathe slowly with internal heat.','Burns deuterium briefly to supplement the missing hydrogen sequence.','Releases formation heat mainly through an infrared photosphere.']},
+  {ds:['以暗紅光球緩慢放出核心融合能。','把長壽命氫庫送入可持續燃燒的內部。','讓整顆星完全對流，把新氫帶回核心。','記錄磁斑聚集處，預告下一次耀斑。','在光球上方加熱稀薄氣體並產生發射線。','沿磁力線突然釋能，短暫照亮周圍行星。','以極低耗氫率維持兆年尺度的主序生命。','透過質子鏈把氫穩定轉為氦。','截留恆星風帶出的粒子與磁能。'],dsEn:['Releases core fusion slowly through a dim red photosphere.','Feeds a long-lived hydrogen reserve into the burning interior.','Convects the entire star and returns fresh hydrogen to the core.','Maps starspot concentrations that foretell the next flare.','Heats thin gas above the photosphere into an emitting chromosphere.','Releases magnetic energy suddenly along flare loops.','Maintains a trillion-year main-sequence life through frugal hydrogen use.','Converts hydrogen steadily into helium through the proton–proton chain.','Captures particles and magnetic energy carried by the stellar wind.']},
+  {ds:['在可見表面把內部能量轉成穩定星光。','調度核心可用氫，維持主序燃燒。','讓向內重力與向外壓力長期相抵。','用全星振盪探測看不見的內部結構。','追蹤星斑、耀斑與磁場反轉的活動週期。','以光子隨機漫步將核心能量向外傳遞。','讓外層物質翻騰，把熱送到光球。','以質子鏈持續建立氦核心。','從高溫日冕與恆星風回收外逸能量。'],dsEn:['Turns interior energy into stable starlight at the visible surface.','Meters core hydrogen into sustained main-sequence burning.','Balances inward gravity against outward pressure for stellar lifetimes.','Uses global oscillations to probe the hidden stellar interior.','Tracks the cycle of spots, flares, and magnetic reversals.','Carries core energy outward through a photon random walk.','Convects the outer envelope and delivers heat to the photosphere.','Builds a helium core through continuous proton–proton fusion.','Recovers escaping energy from the hot corona and stellar wind.']},
+  {ds:['膨脹到行星軌道尺度，以低溫紅光包住核心。','拋出富重元素氣體，為未來星際塵埃播種。','累積融合灰燼，逼近無法再取能的鐵核心。','以巨型對流胞把深層元素翻到表面。','讓外層週期脹縮，推動質量流失。','在核心外把氦熔成碳與氧。','沿更深殼層繼續燃燒碳、氧與更重燃料。','把多層融合殼排成通往核心的元素階梯。','讓新凝結塵粒乘恆星風離開。'],dsEn:['Expands to planetary-orbit scale and wraps the core in cool red light.','Ejects metal-rich gas that will seed future interstellar dust.','Accumulates fusion ash toward an iron core that yields no energy.','Uses colossal convection cells to dredge deep elements upward.','Pulsates the envelope and drives continuing mass loss.','Fuses helium into carbon and oxygen in a shell around the core.','Burns carbon, oxygen, and heavier fuels in successively deeper shells.','Arranges nested fusion shells as an elemental staircase to the core.','Lets newly condensed grains ride the stellar wind away.']},
+  {ds:['從小半徑放出殘熱，逐步由白轉暗。','從伴星拉取氣體，累積新星或爆燃的燃料。','以碳氧灰燼保存前身恆星的核反應歷史。','在結晶物質中保存自轉與磁場的排列。','用電子簡併壓抵抗重力，不再依靠融合。','讓冷卻核心由內向外逐步結晶。','監看質量是否逼近錢德拉塞卡上限。','把不可再融合的熱庫慢慢換成光。','讓落下氫氣在表面壓縮並週期性爆發。'],dsEn:['Radiates residual heat from a small radius and slowly fades from white.','Draws gas from a companion to fuel novae or a larger runaway.','Preserves the nuclear history of the progenitor in carbon–oxygen ash.','Stores spin and magnetic order inside crystallizing matter.','Uses electron degeneracy, not fusion, to resist gravity.','Advances crystallization outward as the core cools.','Monitors whether added mass approaches the Chandrasekhar limit.','Converts a finite non-fusing heat reservoir into fading light.','Compresses incoming hydrogen until the surface erupts periodically.']},
+  {ds:['以中子化物質形成堅硬薄殼，承受極端重力。','接住超新星後回落的物質與角動量。','讓中子超流體在幾乎無黏滯下儲存自轉。','以磁極決定粒子束與輻射掃過方向。','把原子核拉成麵條與薄片般的高密度相。','將超流體渦旋釘在地殼，累積星震前的張力。','把坍縮留下的角動量壓成毫秒週期。','以超強磁場把自轉能換成高能活動。','捕捉帶電粒子並導向磁極。','每次自轉都讓窄束掃過宇宙。','以中子簡併與核力托住整顆緻密星。'],dsEn:['Forms a rigid thin crust of neutron-rich matter under extreme gravity.','Catches fallback material and angular momentum after the supernova.','Stores rotation in a nearly inviscid neutron superfluid.','Sets the sweep direction of particle beams with the magnetic poles.','Stretches nuclei into dense pasta-like rods and sheets.','Pins superfluid vortices to the crust until a starquake releases them.','Compresses collapse angular momentum into millisecond periods.','Turns rotational energy into violent activity through an immense magnetic field.','Captures charged particles and guides them toward the poles.','Sweeps a narrow beam across the cosmos on every rotation.','Supports the compact star with neutron degeneracy and nuclear forces.']},
+  {ds:['以解禁夸克物質構成假設性的最外殼。','讓奇異物質滴侵入普通核物質並改變其相態。','用色超導配對降低核心的耗散。','以強作用力鎖住比原子核更緊密的結構。','排列夸克相與缺陷，保存高密度固態秩序。','沿量子化通量管傳遞磁場與應力。','在更小轉動慣量下保存極高速自轉。','把普通物質轉為奇異相並釋出結合能。','讓無原子外殼的表面直接放出高能粒子。','把轉化能沿磁軸束成伽瑪射線。','用夸克簡併與強作用共同抵抗坍縮。'],dsEn:['Builds a hypothetical outer shell from deconfined quark matter.','Lets strange-matter droplets seed a new phase in nuclear matter.','Pairs colour charge superconductively to reduce core dissipation.','Uses the strong interaction to bind structures denser than nuclei.','Orders quark phases and defects into a high-density lattice.','Carries magnetic flux and stress through quantized tubes.','Preserves ultrafast rotation with a smaller moment of inertia.','Converts ordinary matter to a strange phase and releases binding energy.','Emits energetic particles directly from a surface without atoms.','Collimates conversion energy into gamma rays along the magnetic axis.','Resists collapse through quark degeneracy and strong interactions together.']},
+  {ds:['讓繞行光子描出黑洞陰影外的明亮細環。','撕裂近旁物質並送入旋轉吸積流。','把坍縮角動量保存為克爾時空的自旋。','固定吸積盤與雙極噴流的共同方向。','彎折背景星光，顯出視界周圍的曲率。','把落入等離子體的磁通堆積在視界附近。','從差動旋轉與視界剪切中抽取可用能量。','在能層內以磁場耦合黑洞自旋。','以缺光輪廓標記不可直接看見的本體。','沿極軸把吸積能送往遠方星際介質。','把靠近中心的路徑壓成不可逆的內落。','讓落入氣體在消失前加熱到耀眼。','越過此界後，所有未來路徑都指向內部。'],dsEn:['Lets orbiting photons trace a bright ring around the black-hole shadow.','Tears apart nearby matter and feeds it into a rotating inflow.','Stores collapse angular momentum as Kerr spacetime spin.','Fixes the shared direction of the disk and bipolar jets.','Bends background starlight to reveal curvature around the horizon.','Piles magnetic flux from the plasma against the horizon.','Extracts usable power from differential rotation and horizon shear.','Couples magnetic fields to black-hole spin inside the ergosphere.','Marks the invisible body by the silhouette of missing light.','Carries accretion power into the interstellar medium along the poles.','Forces near-centre trajectories into irreversible inward paths.','Heats infalling gas to brilliance before it disappears.','Makes every future-directed path point inward once crossed.']},
+  {ds:['把強重力繞行光加冕成中央黑日的光冠。','將整顆恆星拉成潮汐流，餵入活動星系核。','支配數百萬太陽質量的深重力勢阱。','以自旋軸統一冕區、吸積盤與雙極噴流。','把背景星系扭成聖環，顯示空間被彎曲的程度。','在核區累積磁通，控制冕區重聯與閃耀。','把視界附近的差動轉動轉成高能耗散。','從能層抽取黑洞自旋，供應活動核功率。','以巨大陰影界定看不見的中央質量。','讓相對論噴流穿出宿主星系並點亮電波瓣。','扭曲周圍軌道、時間與來自背後的光。','讓巨量氣體在加冕吸積盤中釋出最後光芒。','把整個活動核的因果終點固定在中央。'],dsEn:['Crowns strongly lensed orbiting light around the central black sun.','Stretches whole stars into tidal streams that feed the active nucleus.','Dominates a deep potential containing millions of solar masses.','Aligns corona, accretion disk, and bipolar jets with the spin axis.','Warps background galaxies into sacred rings that expose the curvature.','Accumulates nuclear magnetic flux and governs coronal reconnection.','Turns differential motion near the horizon into high-energy dissipation.','Taps black-hole spin from the ergosphere to power the active nucleus.','Defines the unseen central mass through an immense dark silhouette.','Drives relativistic jets beyond the host galaxy into radio lobes.','Warps nearby orbits, clocks, and light arriving from behind.','Lets vast gas supplies release their final light in the coronation disk.','Anchors the causal endpoint of the active nucleus at the centre.']},
+  {ds:['以密度波整理恆星與氣體，維持旋臂圖樣。','把冷分子氣體聚成可誕生新星的港灣。','集中老年恆星，建立星系中央的核球。','用棒狀結構搬運角動量並餵養核區。','以暗物質重力維持遠端恆星的高速公轉。','讓氣體雲跨越旋臂時成批坍縮成星。','回收恆星風與超新星拋出的元素。','在不同年代持續建立恆星族群。','以古老緻密星團標記星系早期形成史。','用規律脈衝為星際尺度提供時鐘與航標。','收納白矮星、中子星與黑洞的殘骸族群。','把氣體送入中央數秒差距的旋轉盤。','以超大質量黑洞調節核區吸積與回饋。'],dsEn:['Organizes stars and gas with density waves that preserve spiral patterns.','Condenses cold molecular gas into harbours of new star formation.','Concentrates old stars into the central bulge.','Moves angular momentum with a bar and feeds the nuclear region.','Uses a dark-matter halo to sustain fast outer stellar orbits.','Collapses gas clouds in batches as they cross spiral arms.','Recycles elements expelled by stellar winds and supernovae.','Builds successive stellar populations across galactic time.','Marks the galaxy’s early assembly with ancient compact clusters.','Provides interstellar clocks and beacons through regular pulsars.','Collects white dwarfs, neutron stars, and black holes as a remnant population.','Feeds gas into a rotating disk within the central parsecs.','Regulates nuclear accretion and feedback through the central supermassive black hole.']},
+  {ds:['讓成員星系在共同重力勢中維持高速軌道。','以熾熱稀薄氣體保存多數可見重子物質。','用暗物質建立比任何單一星系更深的勢阱。','把背景天體拉成弧線，量測不可見質量。','經維里化把隨機運動與重力束縛平衡。','沿宇宙網纖維持續接收星系與氣體。','在星系團併合時加熱氣體並重排暗物質。','讓受壓氣體在特定區域重新形成恆星。','以瀰漫同步輻射標記全團磁場與高能粒子。','在外圍留下併合震波的弧形電波遺跡。','累積各星系帶來的黑洞與緻密天體核心。','讓低熵氣體朝中心流動並可能重新冷卻。','以中央巨橢圓星系統領團心與回饋。'],dsEn:['Keeps member galaxies on fast orbits inside one shared potential.','Stores most visible baryons in hot diffuse intracluster plasma.','Builds a potential deeper than any member galaxy with dark matter.','Stretches background sources into arcs that weigh unseen mass.','Virializes random motion against the cluster’s gravitational binding.','Receives galaxies and gas continuously along cosmic filaments.','Heats plasma and rearranges dark matter during cluster mergers.','Restarts star formation where merger pressure compresses gas.','Maps cluster-wide fields and energetic particles with diffuse synchrotron light.','Leaves arc-shaped radio relics where merger shocks reach the outskirts.','Accumulates black holes and compact cores delivered by member galaxies.','Lets low-entropy gas drift inward and possibly cool again.','Places a giant elliptical galaxy at the centre of cluster feedback.']},
+  {ds:['在活動核附近壓縮等離子體，標出當次噴流起點。','把核周氣體送向中央黑洞與新一輪活動。','將吸積與自旋轉成可跨越億光年的噴流功率。','固定內外兩代電波結構的共同方向。','以熱冕與高能粒子包住重新點亮的活動核。','沿有序磁場為相對論粒子開出低耗散通道。','記錄沉寂與重啟，分隔兩對電波瓣的年齡。','讓高速電子在磁場中放出同步輻射。','以微弱電波連起核區、內瓣與古老外瓣。','宣告第二次活動，建立較年輕的內層雙瓣。','保存上一次噴流穿越星際介質留下的路徑。','積存新一輪噴流能量，顯出較短的年輕電波瓣。','讓古老電漿在遠端繼續低頻發光。'],dsEn:['Compresses plasma near the active nucleus and marks the newest jet launch.','Feeds circumnuclear gas toward the black hole and its next active cycle.','Converts accretion and spin into jets spanning hundreds of millions of light-years.','Aligns the inner and outer generations of radio structure.','Wraps the restarted nucleus in a hot corona of energetic particles.','Opens a low-loss channel for relativistic particles along ordered fields.','Separates dormancy from restart and dates the two pairs of lobes.','Makes fast electrons radiate synchrotron light in magnetic fields.','Faintly links nucleus, inner lobes, and ancient outer lobes by radio emission.','Declares the second active episode as a younger inner bipolar pair.','Preserves the channel cut through intergalactic gas by the earlier jets.','Stores the renewed jet power in the shorter, younger radio lobes.','Keeps ancient plasma glowing at low frequency far from the nucleus.']},
+  {ds:['用星系的特殊速度描出共同落向大引力源的路徑。','在纖維交會處聚集星系群與暗物質。','以大引力源代表流域內最深的速度勢。','從相對宇宙膨脹的偏差推回物質流向。','以速度流分水嶺界定拉尼亞凱亞，而非實體外殼。','沿宇宙網把星系群持續送入吸引盆地。','讓多個星系群共同形成更大尺度的流動。','以成員星系內的造星活動照亮整片流域。','把稀疏星系分布疊成超星系團的微弱光暈。','校準流域主軸，連接鄰近纖維與團塊。','追蹤各星系攜帶的黑洞與恆星殘骸族譜。','讓暗物質沿大尺度勢梯度匯入。','以大引力源作為整個吸引盆地的方向核心。'],dsEn:['Uses galaxy peculiar velocities to trace shared paths toward the Great Attractor.','Concentrates galaxy groups and dark matter where filaments intersect.','Represents the deepest velocity potential in the basin with the Great Attractor.','Infers matter flow from departures relative to cosmic expansion.','Defines Laniakea by a velocity watershed rather than a material shell.','Carries galaxy groups into the basin continuously along the cosmic web.','Combines many group-scale motions into one larger flow.','Illuminates the basin through star formation inside its member galaxies.','Stacks sparse galaxy light into a faint supercluster glow.','Aligns the basin axis across neighbouring filaments and knots.','Tracks the lineages of black holes and stellar remnants carried by galaxies.','Lets dark matter drain down the large-scale potential gradient.','Makes the Great Attractor the directional centre of the whole basin.']},
+  {ds:['描出距離愈遠、退行愈快的哈伯流。','以星系紅移標記各處退行速度與方向。','把尺度因子的增長轉成全空間的距離變化。','讓隨膨脹移動的座標不被局部速度混淆。','標出當下退行速度等於光速的半徑。','用波長拉伸量測光在膨脹宇宙中的旅程。','記錄尺度因子隨宇宙時間的演化。','保存早期宇宙釋放的近均勻微波底圖。','把可觀測星系與宇宙網節點排進同一膨脹場。','持續向外傳遞追光脈衝，顯出退行梯度。','連結光錐、曲率與膨脹下仍可交換訊息的路徑。','維持 c/H₀ 的等速面，提醒它不是實體邊界。','把逐光終點固定在自己周圍，然後看它隨宇宙演化。'],dsEn:['Traces a Hubble flow in which more distant regions recede faster.','Uses galaxy redshifts to mark recession speed and direction.','Turns growth of the scale factor into changing distances throughout space.','Keeps comoving positions distinct from local peculiar velocities.','Marks the present radius where recession equals light speed.','Measures a photon’s expanding-universe journey through wavelength stretch.','Records how the scale factor changes with cosmic time.','Preserves the nearly uniform microwave map released by the early Universe.','Places observable galaxies and web nodes inside one expansion field.','Sends light-chasing pulses outward to reveal the recession gradient.','Relates light cones, curvature, and paths that can still exchange signals.','Maintains the c/H₀ equal-recession surface without pretending it is a shell.','Anchors the light-chasing frontier around the observer and watches it evolve.']},
+];
 function stageStructureProfile(stageIdx){
   const idx=Math.max(0,Math.min(STRUCTURE_PROFILES.length-1,Math.floor(Number(stageIdx)||0)));
   return STRUCTURE_PROFILES[idx];
@@ -1028,10 +1076,12 @@ function stageStructurePresentation(b,idx){
   const slot=Math.max(0,BUILDINGS.findIndex(item=>item.id===b.id));
   const fallback=STRUCTURE_FALLBACK_ROLES[slot]||[b.name,b.nameEn];
   const copy=STRUCTURE_SLOT_COPY[b.id]||{ds:b.ds,dsEn:b.dsEn};
+  const stageCopy=STRUCTURE_STAGE_COPY[idx]||{};
   return {
     name:profile.names[slot]||`${profile.motif} · ${fallback[0]}`,
     nameEn:profile.namesEn[slot]||`${profile.motifEn} · ${fallback[1]}`,
-    ds:copy.ds,dsEn:copy.dsEn,
+    ds:(stageCopy.ds&&stageCopy.ds[slot])||copy.ds,
+    dsEn:(stageCopy.dsEn&&stageCopy.dsEn[slot])||copy.dsEn,
   };
 }
 const LAYER_UNLOCK = {cell:1, life:14, star:18, degen:23, horizon:25};
@@ -1161,7 +1211,7 @@ const CONSTANTS = [
   {id:'c', sym:'c', unlockStage:0, name:'光速', nameEn:'Speed of Light', real:'因果傳遞上限', realEn:'Causality\u2019s speed limit', effect:'世界流速', effectEn:'World speed', start:0.18, sweet:0.62},
   {id:'mu', sym:'μ', unlockStage:1, name:'質子電子質量比', nameEn:'Proton\u2013Electron Mass Ratio', real:'原子能否成立', realEn:'Whether atoms hold', effect:'食物生成', effectEn:'Food spawn', start:0.84, sweet:0.44},
   {id:'G', sym:'G', unlockStage:2, name:'引力常數', nameEn:'Gravitational Constant', real:'物質聚攏快慢', realEn:'How fast matter clumps', effect:'食物引力', effectEn:'Food gravity', start:0.78, sweet:0.28},
-  {id:'lambda', sym:'Λ', unlockStage:3, name:'宇宙學常數', nameEn:'Cosmological Constant', real:'膨脹率', realEn:'Expansion rate', effect:'外漂速度', effectEn:'Outward drift', start:0.16, sweet:0.71},
+  {id:'lambda', sym:'Λ', unlockStage:3, name:'宇宙學常數', nameEn:'Cosmological Constant', real:'膨脹率', realEn:'Expansion rate', effect:'局部漂移流速', effectEn:'Local drift current', start:0.16, sweet:0.71},
   {id:'alpha', sym:'α', unlockStage:4, name:'精細結構常數', nameEn:'Fine-Structure Constant', real:'化學鍵強度', realEn:'Chemical bond strength', effect:'池水色調', effectEn:'Pond tint', start:0.82, sweet:0.35},
 ];
 
@@ -1615,6 +1665,21 @@ function huayanByExp(exp){
   return `「${unitName(best)}」`;
 }
 function plain(n){ return fmt(n).replace(/<sup>(.*?)<\/sup>/,'^$1'); }
+function magnitudeExponent(value){
+  const n=Math.abs(Number(value));
+  if(!Number.isFinite(n)) return Infinity;
+  return n>0?Math.floor(Math.log10(n)):0;
+}
+function structureExponentStatus(current,price,output){
+  const currentExp=magnitudeExponent(Math.max(Number(current)||0,1));
+  const priceExp=magnitudeExponent(Math.max(Number(price)||0,1));
+  const outputExp=magnitudeExponent(Math.max(Number(output)||0,Number.MIN_VALUE));
+  return {
+    currentExp,priceExp,outputExp,
+    gap:Number.isFinite(priceExp)?Math.max(0,priceExp-currentExp):Infinity,
+    affordable:Number(current)>=Number(price),
+  };
+}
 
 function say(msg, gold){
   logs.unshift(gold?`<b>${msg}</b>`:msg);
@@ -2765,6 +2830,38 @@ function navigationStage(baseIdx,custom){
   return customPartStage(custom,'bodyStage',clampFormStage(baseIdx,0));
 }
 
+/* 圓形視野的法向反彈。位置先投影回邊界，再只翻轉朝外的法向分量；
+   切向分量保留，因此斜撞會以對稱角離開，而不是沿著圓周滑行。 */
+function reflectCircularHeading(mover,cx,cy,limit){
+  if (!mover || !Number.isFinite(mover.x) || !Number.isFinite(mover.y) || !Number.isFinite(mover.a)) return false;
+  const dx=mover.x-cx,dy=mover.y-cy,dist=Math.hypot(dx,dy);
+  if (!Number.isFinite(dist) || dist<=limit || dist<=0) return false;
+  const nx=dx/dist,ny=dy/dist;
+  mover.x=cx+nx*limit; mover.y=cy+ny*limit;
+  const vx=Math.cos(mover.a),vy=Math.sin(mover.a),outward=vx*nx+vy*ny;
+  if (outward>0){
+    const rx=vx-2*outward*nx,ry=vy-2*outward*ny;
+    mover.a=Math.atan2(ry,rx);
+    if (Number.isFinite(mover.turn)) mover.turn=0;
+  }
+  return outward>0;
+}
+
+function reflectCircularVelocity(mover,cx,cy,limit,restitution){
+  if (!mover || !Number.isFinite(mover.x) || !Number.isFinite(mover.y)) return false;
+  const dx=mover.x-cx,dy=mover.y-cy,dist=Math.hypot(dx,dy);
+  if (!Number.isFinite(dist) || dist<=limit || dist<=0) return false;
+  const nx=dx/dist,ny=dy/dist;
+  mover.x=cx+nx*limit; mover.y=cy+ny*limit;
+  const vx=Number(mover.vx)||0,vy=Number(mover.vy)||0,outward=vx*nx+vy*ny;
+  if (outward>0){
+    const bounce=Math.max(0,Math.min(Number(restitution)||0,1));
+    mover.vx=vx-(1+bounce)*outward*nx;
+    mover.vy=vy-(1+bounce)*outward*ny;
+  }
+  return outward>0;
+}
+
 /* ── 粒子池 ── */
 let motes=[], stars=[], uMatter=[], ripples=[], floats=[], filPhase=0;
 function initParticles(){
@@ -2836,6 +2933,8 @@ function handleFieldClick(x,y){
   if (typeof renderStats==='function') renderStats();
 }
 function setTarget(x,y){
+  const dx=x-CX,dy=y-CY,d=Math.hypot(dx,dy)||1,limit=R-80;
+  if (d>limit){ x=CX+dx/d*limit; y=CY+dy/d*limit; }
   para.tx=x; para.ty=y; para.hasTarget=true;
   para.targetBoost=manualNavigationBoost(S.stage,Math.hypot(x-para.x,y-para.y),R);
 }
@@ -3009,18 +3108,7 @@ function moveParamecium(idx,dt){
   }
   para.x+=Math.cos(para.a)*sp*frame;
   para.y+=Math.sin(para.a)*sp*frame;
-  const limit=R-72, dx=para.x-CX, dy=para.y-CY, dist=Math.hypot(dx,dy);
-  if (dist>limit){
-    // Clamp once at the soft rim so a large halo cannot bounce between two
-    // adjacent pixels while its centre is still trying to turn back inward.
-    para.x=CX+dx/dist*limit;
-    para.y=CY+dy/dist*limit;
-    const back=Math.atan2(CY-para.y,CX-para.x);
-    let diff=back-para.a;
-    while(diff>Math.PI)diff-=6.2832; while(diff<-Math.PI)diff+=6.2832;
-    para.turn*=.35;
-    para.a+=diff*(1-Math.pow(1-nav.edgeSteer,frame));
-  }
+  reflectCircularHeading(para,CX,CY,R-72);
 }
 
 /* ═══ 纖毛特化：全 31 階，每階自己的表達 ═══ */
@@ -3028,7 +3116,8 @@ function rimPoint(a,rw,rh){
   const ex=Math.cos(a)*rw, ey=Math.sin(a)*rh;
   return {ex,ey,nn:Math.atan2(ey/(rh*rh),ex/(rw*rw))};
 }
-function drawCilia(idx,bd,t,rw,rh,body,p){
+function drawCilia(idx,bd,t,rw,rh,body,p,visual){
+  visual=visual||structureVisualState(idx,null,true);
   if (idx===9){                               // 鯤：纖毛消融成雙層呼吸光暈
     const breathe=reduce?1:.9+Math.sin(t/850)*.1;
     cx.save(); cx.globalAlpha=breathe;
@@ -3086,9 +3175,33 @@ function drawCilia(idx,bd,t,rw,rh,body,p){
     case idx===7: ring(26,8,2.8,1,260); break;                                 // 大象：疏而沉
     case idx===8: ring(32,11,2.0,2.5,240,{coherent:true}); break;              // 藍鯨：流線長鬃
     case idx===10: ring(20,4.5,3.2,0.3,500,{alpha:.5}); break;                 // 巨人：石樁更沉
-    case idx===11:                                                              // 龍：同調鬃流，背脊揚起
-      ring(30,8,1.9,2.5,210,{coherent:true, lenFn:(i,a)=>Math.sin(a)<-0.4?14:8});
-      break;
+    case idx===11: {                                                            // 龍：短纖毛收束成寬幅能量脊，不再像一圈昆蟲觸鬚
+      ring(22,4.5,1.25,1.15,310,{coherent:true,alpha:.23});
+      const ridgeRank=visual.ranks.colo||0;
+      if (!ridgeRank) break;
+      const ridgeCount=3+ridgeRank*2;
+      cx.save(); cx.lineJoin='round'; cx.lineCap='round';
+      cx.shadowColor='#ff4058'; cx.shadowBlur=3+ridgeRank;
+      for (let i=0;i<ridgeCount;i++){
+        const q=i/(ridgeCount-1), a=Math.PI+.16+q*(Math.PI-.32);
+        const M=rimPoint(a,rw,rh);
+        const crest=3+ridgeRank*.75+Math.sin(q*Math.PI)*(4+ridgeRank*1.55)+(reduce?0:Math.sin(t/720+i*.62)*.8);
+        const spread=.032+Math.sin(q*Math.PI)*.012;
+        const A=rimPoint(a-spread,rw,rh), B=rimPoint(a+spread,rw,rh);
+        const tx=M.ex+Math.cos(M.nn)*crest, ty=M.ey+Math.sin(M.nn)*crest;
+        cx.fillStyle=hexA(body,.12+ridgeRank*.025+Math.sin(q*Math.PI)*.1);
+        cx.strokeStyle=`rgba(255,92,108,${.3+ridgeRank*.06})`; cx.lineWidth=.82+ridgeRank*.08;
+        cx.beginPath(); cx.moveTo(A.ex,A.ey); cx.lineTo(tx,ty); cx.lineTo(B.ex,B.ey); cx.closePath(); cx.fill(); cx.stroke();
+        const glowSlot=Math.round(i/(ridgeCount-1)*ridgeRank);
+        const glowTarget=Math.round(glowSlot*(ridgeCount-1)/ridgeRank);
+        if (ridgeRank>=2 && glowSlot>0 && glowSlot<ridgeRank && i===glowTarget){
+          const pulse=reduce?1:.86+Math.sin(t/980+i)*.14;
+          cx.fillStyle=`rgba(255,182,155,${.52*pulse})`;
+          cx.beginPath(); cx.arc(tx,ty,1.35,0,6.2832); cx.fill();
+        }
+      }
+      cx.restore();
+      break; }
     case idx===12: {                                                            // 世界龜：連續的環身群山，以大波律動
       const N=64;
       cx.fillStyle=hexA(body,.44); cx.strokeStyle=hexA(body,.86); cx.lineWidth=1.6;
@@ -3229,7 +3342,8 @@ function drawCilia(idx,bd,t,rw,rh,body,p){
 }
 
 /* ═══ 體外延伸 ═══ */
-function drawAppendages(idx,t,rw,rh,body){
+function drawAppendages(idx,t,rw,rh,body,visual){
+  visual=visual||structureVisualState(idx,null,true);
   const wv=reduce?0:Math.sin(t/700)*1;
   if (idx===8){ // 藍鯨：月牙尾鰭（承自鯤的舊形）
     cx.fillStyle=hexA(body,.28);
@@ -3317,17 +3431,19 @@ function drawAppendages(idx,t,rw,rh,body){
     cx.closePath(); cx.fill(); cx.stroke();
   }
   if (idx===11){ // 龍：後掠巨翼——翼骨向後掠出，大幅揮動
-    const flap=reduce?0:Math.sin(t/700)*0.22;
-    for (const s of [1,-1]){
+    const wingRank=visual.ranks.cilia||0;
+    const flap=reduce?0:Math.sin(t/700)*(.1+wingRank*.03);
+    if (wingRank>0) for (const s of [1,-1]){
       cx.save();
       cx.scale(1,s);
       cx.translate(rw*0.1, rh*0.72);   // 肩點
       cx.rotate(flap);
       const angs=[2.15,2.5,2.85];      // 後掠方向（後外側）
-      const lens=[rw*1.55, rw*1.3, rw*0.95];
+      const growth=.78+wingRank*.055;
+      const lens=[rw*1.55*growth, rw*1.3*growth, rw*0.95*growth];
       const tips=angs.map((a,k)=>({x:Math.cos(a)*lens[k], y:Math.sin(a)*lens[k]}));
       // 翼膜（後緣扇形凹陷）
-      cx.fillStyle=hexA(body,.18);
+      cx.fillStyle=hexA(body,.07+wingRank*.028);
       cx.beginPath();
       cx.moveTo(0,0);
       cx.lineTo(tips[0].x,tips[0].y);
@@ -3336,7 +3452,7 @@ function drawAppendages(idx,t,rw,rh,body){
       cx.quadraticCurveTo(-rw*0.35, rh*0.28, 0,0);
       cx.closePath(); cx.fill();
       // 前緣主骨（粗）＋兩根指骨
-      cx.strokeStyle=hexA(body,.6); cx.lineWidth=2.6;
+      cx.strokeStyle=hexA(body,.42+wingRank*.045); cx.lineWidth=1.8+wingRank*.2;
       cx.beginPath(); cx.moveTo(0,0);
       cx.quadraticCurveTo(tips[0].x*0.45, tips[0].y*0.45-6, tips[0].x,tips[0].y); cx.stroke();
       cx.lineWidth=1.6;
@@ -3345,6 +3461,56 @@ function drawAppendages(idx,t,rw,rh,body){
         cx.quadraticCurveTo(tp.x*0.5, tp.y*0.5-4, tp.x,tp.y); cx.stroke();
       }
       cx.restore();
+    }
+
+    // 龍角不是細長天線：厚實主幹向外分叉，末端只留小幅能量微光。
+    const hornRank=visual.ranks.nuc||0;
+    if (hornRank>0){
+    const hornPulse=reduce?1:.9+Math.sin(t/1200)*.1;
+    for (const s of [1,-1]){
+      const base={x:rw*.55,y:s*rh*.48};
+      const forkA={x:rw*.88,y:s*rh*1.08};
+      const forkB={x:rw*1.12,y:s*rh*1.45};
+      const mainTip={x:rw*1.48,y:s*rh*1.46};
+      const backTip={x:rw*.72,y:s*rh*1.68};
+      const crownTip={x:rw*1.18,y:s*rh*2.02};
+      const frontTip={x:rw*1.55,y:s*rh*1.88};
+      const traceHorn=()=>{
+        cx.beginPath(); cx.moveTo(base.x,base.y);
+        cx.bezierCurveTo(rw*.62,s*rh*.78,rw*.78,s*rh*.92,forkA.x,forkA.y);
+        cx.bezierCurveTo(rw*.97,s*rh*1.28,rw*1.23,s*rh*1.56,mainTip.x,mainTip.y); cx.stroke();
+        cx.beginPath(); cx.moveTo(forkA.x,forkA.y);
+        cx.bezierCurveTo(rw*.8,s*rh*1.26,rw*.72,s*rh*1.48,backTip.x,backTip.y); cx.stroke();
+        if (hornRank>=2){
+        cx.beginPath(); cx.moveTo(forkB.x,forkB.y);
+        cx.bezierCurveTo(rw*1.05,s*rh*1.65,rw*1.1,s*rh*1.88,crownTip.x,crownTip.y); cx.stroke();
+        }
+        if (hornRank>=3){
+        cx.beginPath(); cx.moveTo(forkB.x,forkB.y);
+        cx.bezierCurveTo(rw*1.34,s*rh*1.55,rw*1.48,s*rh*1.75,frontTip.x,frontTip.y); cx.stroke();
+        }
+      };
+      cx.save(); cx.lineCap='round'; cx.lineJoin='round';
+      cx.shadowColor='#ff3048'; cx.shadowBlur=4+hornRank*1.75;
+      cx.strokeStyle=hexA(body,.22+hornRank*.02); cx.lineWidth=4.2+hornRank*.45; traceHorn();
+      cx.shadowBlur=2+hornRank*.75; cx.strokeStyle='rgba(255,114,105,.88)'; cx.lineWidth=1.65+hornRank*.2; traceHorn();
+      if (hornRank>=2){ cx.strokeStyle='rgba(255,226,183,.66)'; cx.lineWidth=.58+hornRank*.035; traceHorn(); }
+
+      cx.fillStyle=hexA(body,.38); cx.strokeStyle='rgba(255,134,118,.52)'; cx.lineWidth=1.15;
+      cx.beginPath(); cx.moveTo(rw*.48,s*rh*.38); cx.lineTo(rw*.72,s*rh*.57); cx.lineTo(rw*.56,s*rh*.72); cx.closePath(); cx.fill(); cx.stroke();
+      const litTips=[mainTip,backTip];
+      if (hornRank>=2) litTips.push(crownTip);
+      if (hornRank>=3) litTips.push(frontTip);
+      for (const tip of litTips){
+        const glow=cx.createRadialGradient(tip.x,tip.y,0,tip.x,tip.y,5.4);
+        glow.addColorStop(0,`rgba(255,238,196,${(.52+hornRank*.065)*hornPulse})`);
+        glow.addColorStop(.38,`rgba(255,76,86,${(.2+hornRank*.045)*hornPulse})`);
+        glow.addColorStop(1,'rgba(255,48,72,0)');
+        cx.fillStyle=glow; cx.beginPath(); cx.arc(tip.x,tip.y,5.4,0,6.2832); cx.fill();
+        cx.fillStyle='rgba(255,244,211,.82)'; cx.beginPath(); cx.arc(tip.x,tip.y,1.05,0,6.2832); cx.fill();
+      }
+      cx.restore();
+    }
     }
   }
   if (idx===13){ // 耶夢加得：環身銜尾光環
@@ -3644,8 +3810,83 @@ function naturalCoreColor(idx){
   return RIM_COLOR[idx]||'#ffdcB4';
 }
 
+/* 構造外觀只讀取「當前尺度這一輪」買到的構造；躍遷後歸零，絕不把舊尺度特效帶來疊加。
+   1／25／50／100 個構造形成四段熟練度，最多只開啟紋樣、核心環、光暈、節點四類輕量層。 */
+function structureVisualRank(value){
+  const n=Math.max(0,Math.floor(Number(value)||0));
+  return n>=100?4:n>=50?3:n>=25?2:n>0?1:0;
+}
+function structureVisualState(stageIdx,ownedOverride,forceFull){
+  const idx=Math.max(0,Math.min(STAGES.length-1,Math.floor(Number(stageIdx)||0)));
+  const available=BUILDINGS.filter(b=>idx>=(LAYER_UNLOCK[b.layer]-1));
+  const hasOverride=!!ownedOverride&&typeof ownedOverride==='object';
+  const isLive=!forceFull&&!hasOverride&&typeof S!=='undefined'&&S&&S.phase==='mortal'&&S.stage===idx;
+  const full=!!forceFull||(!hasOverride&&!isLive);
+  const owned=hasOverride?ownedOverride:(isLive&&S.owned||{}), ranks={};
+  for (const b of BUILDINGS) ranks[b.id]=available.includes(b)?(full?4:structureVisualRank(owned[b.id])):0;
+  const acquired=available.reduce((sum,b)=>sum+(ranks[b.id]>0?1:0),0);
+  const tier=full?4:(acquired?Math.min(4,Math.ceil(acquired/Math.max(1,available.length)*4)):0);
+  const mastery=full?1:available.reduce((sum,b)=>sum+ranks[b.id],0)/Math.max(1,available.length*4);
+  return {tier,mastery,ranks,available:available.map(b=>b.id),acquired,full};
+}
+function drawStructureAdornment(idx,t,rw,rh,color,detail,layer,visual){
+  visual=visual||structureVisualState(idx,null,true);
+  if (!visual.tier) return;
+  detail=detail===undefined?1:Math.max(0,Math.min(detail,1));
+  const accent=color||naturalAuraColor(idx), motion=reduce?0:t/18000;
+  const strength=(.58+.42*visual.mastery)*(.5+.5*detail), family=band(idx);
+  const seed=(idx*.73)%6.2832;
+
+  if (layer==='outer' && visual.tier>=3){
+    const auraBands=visual.tier>=4?2:1;
+    cx.save(); cx.lineCap='round'; cx.shadowColor=accent; cx.shadowBlur=3+detail*5;
+    for (let i=0;i<auraBands;i++){
+      const familyStretch=family==='star'?1.12:family==='horizon'?1.2:1;
+      const start=seed+i*.82+motion*(i%2?-.5:.5), end=start+4.08-i*.22;
+      cx.strokeStyle=hexA(accent,(.07+i*.025)*strength); cx.lineWidth=.62+i*.2;
+      cx.beginPath(); cx.ellipse(0,0,rw*(1.13+i*.13)*familyStretch,rh*(1.34+i*.16),i*.14,start,end); cx.stroke();
+    }
+    if (visual.tier>=4){
+      const nodeCount=detail<.45?2:Math.min(4,2+Math.floor(visual.mastery*2));
+      for (let i=0;i<nodeCount;i++){
+        const a=seed+motion*.7+i/nodeCount*6.2832;
+        const x=Math.cos(a)*rw*1.3, y=Math.sin(a)*rh*1.7;
+        cx.fillStyle=hexA(accent,(.24+.16*detail)*strength);
+        cx.beginPath(); cx.arc(x,y,.72+i%2*.32,0,6.2832); cx.fill();
+      }
+    }
+    cx.restore();
+    return;
+  }
+
+  if (layer==='inner'){
+    cx.save(); cx.lineCap='round';
+    if (visual.tier>=1){
+      const marks=visual.tier>=4?2:1;
+      for (let i=0;i<marks;i++){
+        const s=marks===1?0:(i-.5), y=s*rh*.58;
+        const drift=reduce?0:Math.sin(t/2400+seed+i*1.7)*rh*.035;
+        cx.strokeStyle=hexA(accent,(.08+.024*i)*strength); cx.lineWidth=.62+i*.12;
+        cx.beginPath(); cx.moveTo(-rw*.76,y);
+        if (family==='planet') cx.quadraticCurveTo(0,y+(i?-.42:.42)*rh+drift,rw*.76,y);
+        else if (family==='degen') cx.lineTo(rw*.76,y+drift);
+        else cx.bezierCurveTo(-rw*.28,y+rh*.26+drift,rw*.3,y-rh*.22-drift,rw*.76,y);
+        cx.stroke();
+      }
+    }
+    if (visual.tier>=2){
+      const rings=visual.tier>=4?2:1, ox=rw*.12;
+      for (let i=0;i<rings;i++){
+        cx.strokeStyle=hexA(accent,(.105+i*.035)*strength); cx.lineWidth=.58+i*.18;
+        cx.beginPath(); cx.ellipse(ox,0,8.5+i*3.1,5.4+i*2,motion+seed+i*.45,0,6.2832); cx.stroke();
+      }
+    }
+    cx.restore();
+  }
+}
+
 /* ── 草履蟲本體 ── */
-function drawParamecium(idx,bd,t,px,py,pa,scale,custom,detail){
+function drawParamecium(idx,bd,t,px,py,pa,scale,custom,detail,structureOverride){
   px=px===undefined?para.x:px; py=py===undefined?para.y:py;
   pa=pa===undefined?para.a:pa; scale=scale||1;
   detail=detail===undefined?1:Math.max(0,Math.min(detail,1));
@@ -3660,6 +3901,10 @@ function drawParamecium(idx,bd,t,px,py,pa,scale,custom,detail){
   const body=custom&&custom.bodyColor ? custom.bodyColor : BODY_COLOR[bodyIdx];
   const ciliaColor=custom&&custom.ciliaColor ? custom.ciliaColor : (BODY_COLOR[ciliaIdx]||body);
   const appendageColor=custom&&custom.appendageColor ? custom.appendageColor : (BODY_COLOR[appendageIdx]||body);
+  const adornmentColor=custom&&(custom.auraColor||custom.bodyColor) ? (custom.auraColor||custom.bodyColor) : naturalAuraColor(bodyIdx);
+  const structureVisual=structureOverride&&typeof structureOverride==='object'
+    ? structureOverride
+    : structureVisualState(bodyIdx,null,structureOverride===true);
   const p=bodyIdx/(STAGES.length-1);
   cx.save();
   cx.translate(px,py); cx.rotate(pa); cx.scale(scale,scale);
@@ -3698,9 +3943,10 @@ function drawParamecium(idx,bd,t,px,py,pa,scale,custom,detail){
     cx.restore();
   }
 
+  drawStructureAdornment(bodyIdx,t,rw,rh,adornmentColor,detail,'outer',structureVisual);
   drawMythicAura(auraIdx,t,rw,rh,custom&&custom.auraColor,detail);
-  drawAppendages(appendageIdx,t,rw,rh,appendageColor);
-  drawCilia(ciliaIdx,band(ciliaIdx),t,rw,rh,ciliaColor,ciliaIdx/(STAGES.length-1));
+  drawAppendages(appendageIdx,t,rw,rh,appendageColor,structureVisual);
+  drawCilia(ciliaIdx,band(ciliaIdx),t,rw,rh,ciliaColor,ciliaIdx/(STAGES.length-1),structureVisual);
 
   // 膜
   const glow = bodyIdx===14?5 : bd==='bio'?0 : bd==='planet'?8 : bd==='star'?26 : bd==='degen'?20 : 14;
@@ -3745,6 +3991,7 @@ function drawParamecium(idx,bd,t,px,py,pa,scale,custom,detail){
   }
   drawMotif(motifIdx,band(motifIdx),t,rw,rh);
   cx.restore();
+  drawStructureAdornment(bodyIdx,t,rw,rh,adornmentColor,detail,'inner',structureVisual);
   drawCore(coreIdx,band(coreIdx),t,rw,rh,custom&&custom.coreColor);
   cx.restore();
 
@@ -4775,6 +5022,65 @@ function stepMix(values,p){
 }
 function stageReveal(p,at){ return clamp01(p-(at-1)); }
 function genesisReveal(g,at){ return clamp01(g-(at-1)); }
+
+function makePondFood(x,y){
+  const heading=rand(0,6.2832),speed=rand(.025,.09);
+  return {
+    x,y,vx:Math.cos(heading)*speed,vy:Math.sin(heading)*speed,claim:null,
+    flowPhase:rand(0,6.2832),flowRate:rand(.00007,.00016),
+  };
+}
+
+/* 每顆食物有自己的緩流相位。Λ 只改變局部漂移幅度，不再把整池食物
+   同步往視野外推，於是素材會留在各處緩慢游移。 */
+function pondFoodDriftVector(food,t,lambda){
+  const fallback=((Number(food&&food.x)||0)*.017+(Number(food&&food.y)||0)*.013)%6.2832;
+  const base=Number.isFinite(food&&food.flowPhase)?food.flowPhase:fallback;
+  const rate=Number.isFinite(food&&food.flowRate)?food.flowRate:.00011;
+  const phase=base+(Number(t)||0)*rate;
+  const force=.00055+.0008*clamp01(Number(lambda)||0);
+  return {x:Math.cos(phase)*force,y:Math.sin(phase)*force};
+}
+
+/* 可見形態決定引力：微行星開始出現自引力，恆星、簡併天體與視界帶
+   逐段增強。數值是池塘運動的柔化加速度，不是現實單位。 */
+function pondFormGravityStrength(stageIdx){
+  const idx=Math.max(0,Math.min(STAGES.length-1,Math.floor(Number(stageIdx)||0)));
+  if (idx<SELF_GRAVITY_STAGE) return 0;
+  if (idx<=16) return .0045+(idx-14)*.0015;
+  if (idx<=20) return .009+(idx-17)*.0017;
+  if (idx<=23) return .016+(idx-21)*.0022;
+  return .023+(idx-24)*.0021;
+}
+
+function pondFoodGravityVector(food,bodies,gValue){
+  let ax=0,ay=0;
+  const gravityScale=.35+.85*clamp01(Number(gValue)||0);
+  for (const body of bodies||[]){
+    const strength=pondFormGravityStrength(body&&body.stage);
+    if (strength<=0 || !Number.isFinite(body.x) || !Number.isFinite(body.y)) continue;
+    const dx=body.x-food.x,dy=body.y-food.y,d=Math.hypot(dx,dy)||1;
+    const softened=1/(1+Math.pow(d/46,2));
+    const force=strength*gravityScale*softened;
+    ax+=dx/d*force; ay+=dy/d*force;
+  }
+  const magnitude=Math.hypot(ax,ay),cap=.014;
+  if (magnitude>cap){ ax*=cap/magnitude; ay*=cap/magnitude; }
+  return {x:ax,y:ay};
+}
+
+function pondGravityBodies(){
+  if (!genesisComplete()) return [];
+  const result=[{
+    x:pond.x,y:pond.y,stage:navigationStage(heroStage(),S.heroCustom||{}),
+  }];
+  for (const av of pond.avatars||[]){
+    const data=av.data||normalizeAvatar({stage:av.idx,custom:{}});
+    result.push({x:av.x,y:av.y,stage:navigationStage(avatarStage(data),data.custom||{})});
+  }
+  return result;
+}
+
 function drawUniverseProgress(t,stage,hue,genesis){
   if (!uMatter.length) initParticles();
   genesis=Number.isFinite(genesis)?genesis:genesisStage();
@@ -4951,7 +5257,7 @@ function drawUniverseProgress(t,stage,hue,genesis){
 function seedFoods(n){
   for (let i=0;i<n;i++){
     const a=rand(0,6.2832), rr=rand(R*0.1,R*0.6);
-    pond.foods.push({x:CX+Math.cos(a)*rr,y:CY+Math.sin(a)*rr,vx:rand(-.1,.1),vy:rand(-.1,.1)});
+    pond.foods.push(makePondFood(CX+Math.cos(a)*rr,CY+Math.sin(a)*rr));
   }
 }
 function pondInit(){
@@ -5070,16 +5376,7 @@ function pondSwim(p, cs, t, eatCb, formIdx, dt){
   }
   p.x+=Math.cos(p.a)*sp*motionFrame;
   p.y+=Math.sin(p.a)*sp*motionFrame;
-  const edge=Math.hypot(p.x-CX,p.y-CY), swimLimit=R-72;
-  if (edge>swimLimit){
-    const ux=(p.x-CX)/edge,uy=(p.y-CY)/edge;
-    p.x=CX+ux*swimLimit; p.y=CY+uy*swimLimit;
-    const back=Math.atan2(CY-p.y,CX-p.x);
-    let diff=back-p.a;
-    while(diff>Math.PI)diff-=6.2832; while(diff<-Math.PI)diff+=6.2832;
-    p.turn*=.35;
-    p.a+=diff*(1-Math.pow(1-nav.edgeSteer,motionFrame));
-  }
+  reflectCircularHeading(p,CX,CY,R-72);
 }
 
 function drawPond(t, raw){
@@ -5094,6 +5391,8 @@ function drawPond(t, raw){
   const dt=(reduce?0:raw)*cs;
   const hue=stepMix([214,192,225,246,168],visualStage)+(constantValue('alpha')-0.5)*60;
   const G=constantValue('G'), LB=constantValue('lambda'), MU=constantValue('mu');
+  const foodFrame=dt>0?Math.max(.1,Math.min((Number(raw)||0)*60,2.25))*cs:0;
+  const gravityBodies=pondGravityBodies();
 
   cx.clearRect(0,0,W,W);
   cx.save(); cx.beginPath(); cx.arc(CX,CY,R,0,6.2832); cx.clip();
@@ -5112,44 +5411,30 @@ function drawPond(t, raw){
   while (pond.spawnAcc>=1 && pond.foods.length<foodCaps[stage]+activeAvatars*2){
     pond.spawnAcc-=1;
     const a=rand(0,6.2832), rr=rand(R*0.1,R*0.6);
-    pond.foods.push({x:CX+Math.cos(a)*rr,y:CY+Math.sin(a)*rr,vx:rand(-.1,.1),vy:rand(-.1,.1)});
+    pond.foods.push(makePondFood(CX+Math.cos(a)*rr,CY+Math.sin(a)*rr));
   }
 
   for (let i=pond.foods.length-1;i>=0;i--){
     const f=pond.foods[i];
-    let cn=null,cd=1e9;
+    const drift=pondFoodDriftVector(f,t,LB);
+    const gravity=pondFoodGravityVector(f,gravityBodies,G);
+    let separateX=0,separateY=0;
     for (const g2 of pond.foods){
       if (g2===f) continue;
       const d=Math.hypot(g2.x-f.x,g2.y-f.y);
-      if (d<cd){cd=d;cn=g2;}
+      if (d>0&&d<20){
+        const repel=.0018*(1-d/20);
+        separateX+=(f.x-g2.x)/d*repel; separateY+=(f.y-g2.y)/d*repel;
+      }
     }
-    if (cn && cd>6){
-      f.vx += (cn.x-f.x)/cd*0.016*G*2.4;
-      f.vy += (cn.y-f.y)/cd*0.016*G*2.4;
-    }
-    // 食物同時受到群游的弱引力；softened pull 讓它靠近而不瞬移。
-    let swimmer=null,sd=1e9;
-    for (const p of (genesisComplete()?[pond,...pond.avatars]:[])){
-      const d=Math.hypot(p.x-f.x,p.y-f.y);
-      if (d<sd){ sd=d; swimmer=p; }
-    }
-    if (swimmer){
-      const soft=Math.max(sd,24);
-      f.vx += (swimmer.x-f.x)/soft*0.006*G;
-      f.vy += (swimmer.y-f.y)/soft*0.006*G;
-    }
-    const dxc=f.x-CX, dyc=f.y-CY, dc=Math.hypot(dxc,dyc)||1;
-    f.vx += dxc/dc*0.016*LB; f.vy += dyc/dc*0.016*LB;
-    f.vx*=0.97; f.vy*=0.97;
+    f.vx+=(drift.x+gravity.x+separateX)*foodFrame;
+    f.vy+=(drift.y+gravity.y+separateY)*foodFrame;
+    const damping=Math.pow(.985,foodFrame);
+    f.vx*=damping; f.vy*=damping;
     const spd=Math.hypot(f.vx,f.vy);
-    if (spd>0.42){ f.vx*=0.42/spd; f.vy*=0.42/spd; }   // 食物限速——追得到
-    f.x+=f.vx*cs; f.y+=f.vy*cs;
-    const edge=Math.hypot(f.x-CX,f.y-CY), foodLimit=R-64;
-    if (edge>foodLimit){
-      const ux=(f.x-CX)/edge,uy=(f.y-CY)/edge;
-      f.x=CX+ux*foodLimit; f.y=CY+uy*foodLimit;
-      f.vx*=-.35; f.vy*=-.35;
-    }
+    if (spd>0.34){ f.vx*=0.34/spd; f.vy*=0.34/spd; }   // 食物限速——引力可感但仍追得到
+    f.x+=f.vx*foodFrame; f.y+=f.vy*foodFrame;
+    reflectCircularVelocity(f,CX,CY,R-64,.55);
     cx.fillStyle=`hsla(${hue-20+stage*5} 76% ${62+stage*2}% / ${.68+stage*.06})`;
     cx.shadowColor=`hsla(${hue-15} 90% 70% / .5)`; cx.shadowBlur=stage*1.7;
     cx.beginPath(); cx.arc(f.x,f.y,4,0,6.2832); cx.fill();
@@ -5190,6 +5475,7 @@ function drawPond(t, raw){
         b.x-=ux*push; b.y-=uy*push;
       }
     }
+    for (const swimmer of all) reflectCircularHeading(swimmer,CX,CY,R-72);
 
     const crowd=pond.avatars.length;
     const avatarDetail=crowd>=9?.25:crowd>=5?.4:.62;
@@ -5699,6 +5985,7 @@ function buildShop(){
       <span class="ds">${tr(view,'ds')}</span>
       <span class="stat num"></span>
       <span class="price num"></span>
+      <span class="structure-power-gap"></span>
       <span class="bar"></span>`;
     el.onclick=()=>{
       const k = buyAmt==='max' ? Math.max(maxBuy(b),0) : parseInt(buyAmt);
@@ -5709,7 +5996,7 @@ function buildShop(){
       checkBuildingAchievements();
       if (S.owned[b.id]===k){
         const acquired=stageStructurePresentation(b,S.stage);
-        say(isEn()?`First ${acquired.nameEn} acquired — ${acquired.dsEn}.`:`獲得第一個「${acquired.name}」——${acquired.ds}。`);
+        say(isEn()?`Form manifested: ${acquired.nameEn} — ${acquired.dsEn}.`:`形態顯現：「${acquired.name}」——${acquired.ds}。`);
       }
       renderShop(); renderStats(); save();
     };
@@ -5749,6 +6036,15 @@ function renderShop(){
       `${fmt(each)}/s · ${fmt(sub)}/s · ${pct<0.1?'<0.1':pct.toFixed(1)}%` + (mm>1?` · ×${mm}`:'');
     el.querySelector('.price').innerHTML =
       (buyAmt==='max' ? `×${k} · `:(buyAmt!=='1'?`×${kShow} · `:'')) + fmt(c);
+    const exp=structureExponentStatus(S.bio,c,each);
+    const gapState=exp.affordable
+      ? (isEn()?`AFFORDABLE · OUTPUT 10<sup>${exp.outputExp}</sup>/s`:`可購買 · 產出 10<sup>${exp.outputExp}</sup>/s`)
+      : exp.gap>0
+        ? (isEn()?`${exp.gap} POWER${exp.gap===1?'':'S'} TO GO · OUTPUT 10<sup>${exp.outputExp}</sup>/s`:`尚差 ${exp.gap} 次方 · 產出 10<sup>${exp.outputExp}</sup>/s`)
+        : (isEn()?`SAME POWER · NOT ENOUGH · OUTPUT 10<sup>${exp.outputExp}</sup>/s`:`同次方 · 尚未足額 · 產出 10<sup>${exp.outputExp}</sup>/s`);
+    const powerGap=el.querySelector('.structure-power-gap');
+    powerGap.classList.toggle('ready',exp.affordable);
+    powerGap.innerHTML=`<span class="exp-route">${isEn()?'LIFE':'生命'} 10<sup>${exp.currentExp}</sup> → ${isEn()?'COST':'價格'} 10<sup>${exp.priceExp}</sup></span><span class="exp-state">${gapState}</span>`;
     el.querySelector('.bar').style.width = Math.min(S.bio/c*100,100)+'%';
   }
 }
