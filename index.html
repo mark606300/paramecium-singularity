@@ -549,8 +549,8 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .readout .val.small{font-size:.9rem}
   .readout .unit{font-size:.64rem;letter-spacing:0}
   .scope-summary{display:grid;gap:.18rem}
-  /* 手機的尺度讀數固定在圓形視野約七成高處，避免貼著下緣看起來像視野外資訊。 */
-  .scope-frame>.scope-meta{width:min(86%,24rem);bottom:20%;padding:0}
+  /* 手機尺度讀數維持原本高度，只明確鎖定在圓形視野的水平正中央。 */
+  .scope-frame>.scope-meta{width:min(86%,24rem);left:50%;bottom:6%;transform:translateX(-50%);padding:0;text-align:center}
   .scope-frame>.epoch{top:.55rem;width:76%}
   .scope-frame>.epoch .n{font-size:.5rem;letter-spacing:.22em}
   .scope-frame>.epoch .t{font-size:.82rem;letter-spacing:.1em;margin-top:.08rem}
