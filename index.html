@@ -44,8 +44,7 @@ header{display:flex;align-items:baseline;gap:1.3rem;flex-wrap:wrap;
 .readout .val.small{font-size:.98rem;color:var(--glow)}
 .readout .unit{font-size:.82rem;color:var(--amber);letter-spacing:.05em}
 #bio{display:inline-block;min-width:7.6ch;font-variant-numeric:tabular-nums}
-#bio.life-tick{animation:lifeTick .18s ease-out}
-@keyframes lifeTick{0%{color:#fff5cf;text-shadow:0 0 12px rgba(255,196,107,.72);transform:translateY(-1px)}100%{color:var(--amber);text-shadow:none;transform:translateY(0)}}
+#bio sup{font-size:.8em;color:#ffe0a6;font-weight:600;margin-left:.03em}
 .badge{font-size:.68rem;color:var(--glow);border:1px solid var(--glow);
   border-radius:2px;padding:.15rem .5rem;letter-spacing:.08em}
 #langbtn{background:transparent;border:1px solid var(--line);color:var(--ink);
@@ -59,10 +58,11 @@ main{display:grid;grid-template-columns:1fr 23rem;height:calc(100dvh - 3.3rem)}
 canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
   box-shadow:0 0 0 1px var(--line),0 0 90px -10px #0d4a58 inset,0 0 60px -30px #5ce0c0;
   touch-action:none}
-.scope-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.42rem .65rem;align-items:center;
-  width:100%;padding:.48rem .62rem;border:1px solid rgba(29,74,99,.7);border-radius:2px;
-  background:linear-gradient(90deg,rgba(11,34,48,.82),rgba(9,25,39,.72))}
-.scope-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.35rem .65rem;min-width:0;width:100%}
+.scope-frame>.scope-meta{position:absolute;z-index:4;left:50%;bottom:clamp(.8rem,4.8%,1.8rem);transform:translateX(-50%);
+  width:min(72%,22rem);padding:.42rem .68rem;border:1px solid rgba(92,224,192,.28);border-radius:3px;
+  background:linear-gradient(90deg,rgba(5,18,28,.86),rgba(10,33,44,.78),rgba(5,18,28,.86));
+  box-shadow:0 0 24px rgba(6,18,28,.8),0 0 18px rgba(92,224,192,.04);pointer-events:none;text-align:center}
+.scope-summary{display:block;min-width:0;width:100%}
 /* 紀元恢復為最初的顯微鏡中上讀數；定位基準是圓形視野本身。 */
 .scope-frame>.epoch{position:absolute;top:clamp(.65rem,5%,1.5rem);left:50%;z-index:2;
   transform:translateX(-50%);width:min(76%,18rem);text-align:center;pointer-events:none;
@@ -71,8 +71,9 @@ canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
 .scope-frame>.epoch .n{font-size:.6rem;letter-spacing:.3em;color:var(--ink-dim);font-family:var(--font-mono)}
 .scope-frame>.epoch .t{font-size:1.05rem;color:var(--ink);letter-spacing:.14em;margin-top:.15rem}
 .identity{min-width:0}
-.identity .sn{font-size:.79rem;color:var(--glow);letter-spacing:.09em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.identity .scope-size-note{margin-top:.16rem;font-size:.61rem;color:var(--ink-dim);font-family:var(--font-mono);
+.identity .sn{font-size:.79rem;color:var(--glow);letter-spacing:.09em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  text-shadow:0 1px 7px var(--void)}
+.identity .scope-size-note{margin-top:.16rem;font-size:.61rem;color:rgba(143,179,196,.78);font-family:var(--font-mono);
   letter-spacing:.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .event-banner{display:flex;align-items:center;justify-content:flex-end;gap:.48rem;min-width:0;
   padding:.28rem .52rem;border:1px solid var(--nucleus);border-radius:2px;background:rgba(255,107,157,.08)}
@@ -98,6 +99,12 @@ aside::-webkit-scrollbar-thumb{background:var(--line)}
 .sec{font-size:.62rem;letter-spacing:.26em;color:var(--ink-dim);margin:.5rem 0 .6rem}
 .layer-h{font-size:.6rem;letter-spacing:.2em;color:var(--glow);opacity:.7;
   margin:.7rem 0 .35rem;padding-bottom:.2rem;border-bottom:1px solid var(--line)}
+.structure-stage-card{margin:0 0 .55rem;padding:.58rem .66rem;border:1px solid rgba(92,224,192,.22);border-radius:2px;
+  background:linear-gradient(115deg,rgba(92,224,192,.055),rgba(255,196,107,.025))}
+.structure-stage-title{font-size:.73rem;color:var(--glow);letter-spacing:.12em}
+.structure-stage-quip{margin-top:.25rem;font-size:.63rem;line-height:1.55;color:var(--ink-dim)}
+.structure-stage-quip::before{content:'「';color:var(--amber)}
+.structure-stage-quip::after{content:'」';color:var(--amber)}
 
 /* 批量購買 */
 .buyamt{display:flex;gap:.3rem;margin-bottom:.5rem}
@@ -249,6 +256,13 @@ aside::-webkit-scrollbar-thumb{background:var(--line)}
 .transition-route .from{font-size:.57rem;color:var(--ink-dim);letter-spacing:.1em}
 .transition-route .to{font-size:.82rem;color:var(--glow);letter-spacing:.07em;white-space:nowrap}
 .transition-route .threshold{grid-column:1/-1;font-family:var(--font-mono);font-size:.57rem;color:var(--amber)}
+.transition-route .threshold{font-size:.67rem;line-height:1.45}
+.transition-route .threshold sup,.transition-power-gap sup{font-size:.8em;color:#ffe0a6;font-weight:600}
+.transition-power-gap{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:.45rem;
+  padding:.3rem .42rem;border:1px solid rgba(255,196,107,.2);border-radius:2px;background:rgba(255,196,107,.045);
+  font-size:.61rem;color:var(--ink-dim);letter-spacing:.04em}
+.transition-power-gap strong{font-family:var(--font-mono);font-size:.88rem;color:var(--amber);letter-spacing:.01em;white-space:nowrap}
+.transition-power-gap span{color:var(--ink)}
 .transition-meter{height:4px;overflow:hidden;border-radius:4px;background:rgba(29,74,99,.72)}
 .transition-meter>span{display:block;width:var(--transition-progress,0%);height:100%;background:linear-gradient(90deg,var(--glow),var(--amber));box-shadow:0 0 9px var(--glow)}
 .transition-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.32rem}
@@ -443,7 +457,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .avpick select,.morph-field select,input[type=color]{font-size:16px;min-height:44px}
 }
 @media (max-width:900px) and (min-height:521px), (max-width:560px) and (orientation:portrait){
-  :root{--mobile-drawer-peek:6.25rem}
+  :root{--mobile-drawer-peek:3rem}
   body{display:grid;grid-template-rows:auto minmax(0,1fr);height:100dvh;min-height:100dvh;overflow:hidden;overscroll-behavior:none}
   main{display:grid;grid-template-columns:1fr;grid-template-rows:minmax(0,1fr);height:auto;min-height:0}
   .field{min-height:0;overflow:hidden;padding:.6rem .5rem calc(var(--mobile-drawer-peek) + env(safe-area-inset-bottom) + .55rem)}
@@ -459,7 +473,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   aside#upgrade-drawer.drawer-dragging{transition:none}
   aside#upgrade-drawer.drawer-suspended{visibility:hidden;pointer-events:none}
   .mobile-drawer-head{display:grid;grid-template-columns:1fr auto;gap:.08rem .6rem;align-items:center;
-    position:relative;flex:0 0 auto;width:100%;min-height:2.7rem;
+    position:relative;flex:0 0 auto;width:100%;min-height:3rem;
     padding:.7rem max(1rem,env(safe-area-inset-right)) .35rem max(1rem,env(safe-area-inset-left));
     border:0;border-bottom:1px solid rgba(29,74,99,.52);background:transparent;color:var(--ink);text-align:left;cursor:grab;touch-action:none}
   .mobile-drawer-head:active{cursor:grabbing}
@@ -469,9 +483,16 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .mobile-ready-total{font-family:var(--font-mono);font-size:.6rem;color:var(--amber);white-space:nowrap}
   .mobile-drawer-hint{display:none;grid-column:1/-1;font-size:.54rem;line-height:1.25;color:var(--ink-dim);letter-spacing:.06em}
   aside#upgrade-drawer.drawer-open .mobile-drawer-hint{display:block}
+  aside#upgrade-drawer:not(.drawer-open) .mobile-drawer-head{grid-template-columns:1fr}
+  aside#upgrade-drawer:not(.drawer-open) .mobile-drawer-title{display:none}
+  aside#upgrade-drawer:not(.drawer-open) .mobile-ready-total{justify-self:center;padding-top:.18rem}
+  aside#upgrade-drawer:not(.drawer-open) .mobile-category-nav,
+  aside#upgrade-drawer:not(.drawer-open) .mobile-drawer-content{display:none}
   .mobile-category-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));flex:0 0 auto;gap:.28rem;width:100%;min-width:0;overflow:hidden;
     padding:.28rem max(.6rem,env(safe-area-inset-right)) .38rem max(.6rem,env(safe-area-inset-left));
-    scrollbar-width:none;border-bottom:1px solid rgba(29,74,99,.45);background:rgba(3,13,21,.38)}
+    scrollbar-width:none;border-bottom:1px solid rgba(29,74,99,.45);background:rgba(3,13,21,.38);
+    opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease}
+  aside#upgrade-drawer.drawer-open .mobile-category-nav{opacity:1;visibility:visible;pointer-events:auto}
   .mobile-category-nav::-webkit-scrollbar{display:none}
   .mobile-category-nav button{position:relative;display:grid;place-items:center;width:100%;min-width:0;min-height:42px;
     padding:.35rem .18rem;border:1px solid rgba(29,74,99,.82);border-radius:999px;background:rgba(16,48,63,.62);
@@ -483,7 +504,8 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .mobile-category-nav button.ready .mobile-category-badge{display:grid}
   .mobile-drawer-content{display:block;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;
     padding:.35rem max(.75rem,env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(.75rem,env(safe-area-inset-left));
-    scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+    scrollbar-width:thin;scrollbar-color:var(--line) transparent;opacity:0;visibility:hidden;pointer-events:none}
+  aside#upgrade-drawer.drawer-open .mobile-drawer-content{opacity:1;visibility:visible;pointer-events:auto}
   .mobile-panel-group{display:none}
   .mobile-panel-group.mobile-panel-active{display:block}
   .mobile-panel-group>.sec:first-child,.mobile-panel-group .sec:first-child{margin-top:.25rem}
@@ -501,6 +523,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .readout .unit{font-size:.64rem;letter-spacing:0}
   #langbtn{min-width:44px;min-height:44px}
   .scope-summary{display:grid;gap:.18rem}
+  .scope-frame>.scope-meta{width:min(76%,20rem);bottom:6%;padding:.38rem .55rem}
   .scope-frame>.epoch{top:.55rem;width:76%}
   .scope-frame>.epoch .n{font-size:.5rem;letter-spacing:.22em}
   .scope-frame>.epoch .t{font-size:.82rem;letter-spacing:.1em;margin-top:.08rem}
@@ -579,16 +602,16 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
       <div class="scope-frame">
         <canvas id="c" width="900" height="900" aria-label="培養皿視野"></canvas>
         <div class="epoch" id="scope-epoch-overlay"><div class="n" id="ep-n">紀元 01</div><div class="t" id="ep-t">原始湯</div></div>
-      </div>
-      <div class="scope-meta">
-        <div class="scope-summary">
-          <div class="identity">
-            <div class="sn" id="stage-name">草履蟲尺度</div>
-            <div class="scope-size-note" id="stage-mass">質量 · 10⁻⁹ kg</div>
+        <div class="scope-meta">
+          <div class="scope-summary">
+            <div class="identity">
+              <div class="sn" id="stage-name">草履蟲尺度</div>
+              <div class="scope-size-note" id="stage-mass">質量 · 10⁻⁹ kg</div>
+            </div>
           </div>
         </div>
-        <div class="event-banner" id="event-banner" style="display:none"></div>
       </div>
+      <div class="event-banner" id="event-banner" style="display:none"></div>
       <div id="scope-status-host" data-section="observation-log">
         <div class="journal-head">
           <span class="acquisition-title" id="acquisition-status-title">觀測日誌</span>
@@ -598,13 +621,13 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
     </div>
   </section>
 
-  <aside id="upgrade-drawer" aria-label="升級面板">
+  <aside id="upgrade-drawer" aria-label="演化中樞">
     <button class="mobile-drawer-head" id="mobile-drawer-head" type="button" aria-expanded="false" aria-controls="mobile-drawer-content">
-      <span class="mobile-drawer-title" id="mobile-drawer-title">升級面板</span>
+      <span class="mobile-drawer-title" id="mobile-drawer-title">演化中樞</span>
       <span class="mobile-ready-total" id="mobile-ready-total">目前無可升級項目</span>
       <span class="mobile-drawer-hint" id="mobile-drawer-hint">點一下或向上拉以展開</span>
     </button>
-    <nav class="mobile-category-nav" id="mobile-category-nav" aria-label="升級分類"></nav>
+    <nav class="mobile-category-nav" id="mobile-category-nav" aria-label="演化分類"></nav>
     <div class="mobile-drawer-content" id="mobile-drawer-content">
     <div id="mortal-view">
       <section class="mobile-panel-group" id="mortal-transition-panel" data-mobile-panel="mortal-transition">
@@ -616,6 +639,10 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
 
       <section class="mobile-panel-group" id="mortal-structures-panel" data-mobile-panel="mortal-structures">
         <div class="sec" id="struct-h">構造</div>
+        <div class="structure-stage-card" id="structure-stage-card">
+          <div class="structure-stage-title" id="structure-stage-title"></div>
+          <div class="structure-stage-quip" id="structure-stage-quip"></div>
+        </div>
         <div class="buyamt" id="buyamt"></div>
         <div id="shop"></div>
       </section>
@@ -626,7 +653,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
       </section>
 
       <section class="mobile-panel-group" id="mortal-legacy-panel" data-mobile-panel="mortal-legacy">
-        <div class="sec" id="legacy-h">傳承</div>
+        <div class="sec" id="legacy-h">紀元遺澤</div>
         <div id="legacy"></div>
       </section>
     </div>
@@ -656,7 +683,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
               <div class="scale-codex-fact"><span class="scale-codex-label" id="scale-codex-measure-label">尺度紀錄</span><span class="scale-codex-value num" id="scale-codex-measure"></span></div>
               <div class="scale-codex-fact analogy"><span class="scale-codex-label" id="scale-codex-analogy-label">換個方式想像</span><span class="scale-codex-value" id="scale-codex-analogy"></span></div>
               <div class="scale-codex-fact"><span class="scale-codex-label" id="scale-codex-food-label">代表攝食</span><span class="scale-codex-value" id="scale-codex-food"></span></div>
-              <div class="scale-codex-fact"><span class="scale-codex-label" id="scale-codex-legacy-label">事件與傳承</span><span class="scale-codex-value" id="scale-codex-legacy"></span></div>
+              <div class="scale-codex-fact"><span class="scale-codex-label" id="scale-codex-legacy-label">事件與紀元遺澤</span><span class="scale-codex-value" id="scale-codex-legacy"></span></div>
             </div>
             <p class="scale-codex-note" id="scale-codex-note"></p>
           </article>
@@ -855,9 +882,81 @@ const BUILDINGS = [
   {id:'disk', name:'吸積盤', nameEn:'Accretion Disk', ds:'落下的物質發出最後的光', dsEn:'Falling matter gives its last light', layer:'horizon', base:1.4e14, rate:1e15},
   {id:'core', name:'奇點核心', nameEn:'Singularity Core', ds:'把「之前」裝進口袋', dsEn:'Put "before" in your pocket', layer:'horizon', base:1e16, rate:1e17},
 ];
+
+/* 31 個尺度共用同一套經濟槽位，但各自投影成不同的形態構造。
+   id / base / rate / layer 永遠不變，舊存檔與平衡不受外觀資料影響。 */
+const STRUCTURE_SLOT_COPY = {
+  cilia:{ds:'低成本的基礎推進與引流構造',dsEn:'A low-cost foundation for propulsion and flow'},
+  vac:{ds:'收集並吞下當前尺度的資源',dsEn:'Collects and engulfs resources at this scale'},
+  mito:{ds:'把收集物轉為穩定產出',dsEn:'Turns gathered matter into steady output'},
+  nuc:{ds:'校準感知、方向與節律',dsEn:'Coordinates sensing, direction, and rhythm'},
+  colo:{ds:'維持更大的外層形態',dsEn:'Keeps the larger outer form coherent'},
+  nerve:{ds:'跨越自身傳遞訊號與流',dsEn:'Carries signals and flows across the body'},
+  mind:{ds:'讓所有構造朝同一目的運作',dsEn:'Coordinates every structure toward one purpose'},
+  forge:{ds:'把物質轉成更高能的燃料',dsEn:'Converts matter into higher-energy fuel'},
+  dyson:{ds:'攔截原本會流失的能量',dsEn:'Captures energy that would otherwise escape'},
+  pulse:{ds:'把週期或自轉化為定向輸出',dsEn:'Turns cycles or rotation into directed output'},
+  degen:{ds:'從極端壓縮中取得產能',dsEn:'Extracts output from extreme compression'},
+  disk:{ds:'讓落入物質在消失前發光',dsEn:'Makes infalling matter shine before it vanishes'},
+  core:{ds:'把當前尺度的秩序固定於中心',dsEn:'Anchors the order of this scale at its centre'},
+};
+const STRUCTURE_FALLBACK_ROLES = [
+  ['引流枝','Flow Branch'],['攝取腔','Intake Chamber'],['動力核','Drive Core'],['形態藍圖','Form Blueprint'],
+  ['群落網','Colony Web'],['訊號索','Signal Cord'],['自我模型','Self Model'],['元素爐','Element Furnace'],
+  ['收能環','Energy Halo'],['週期束','Cycle Beam'],['極壓核','Pressure Core'],['聚質盤','Matter Disk'],['尺度錨','Scale Anchor'],
+];
+const STRUCTURE_PROFILES = [
+  {motif:'草履蟲',motifEn:'Paramecium',names:['纖毛','食物泡','粒線體','大核','表膜晶格'],namesEn:['Cilia','Food Vacuole','Mitochondrion','Macronucleus','Pellicle Lattice'],quip:'先別急著征服宇宙，食物泡還沒消化完。',quipEn:'Before conquering the cosmos, finish digesting what is in the food vacuole.'},
+  {motif:'水蚤',motifEn:'Water Flea',names:['游泳剛毛','濾食肢','搏動心臟','複眼','透明甲殼'],namesEn:['Swimming Setae','Filter-Feeding Limbs','Beating Heart','Compound Eye','Transparent Carapace'],quip:'你終於有心了，首先拿它來追著前世吃。',quipEn:'You finally have a heart; the first thing you do with it is chase and eat your former self.'},
+  {motif:'蜜蜂',motifEn:'Honeybee',names:['翅鉤','蜜囊','飛行肌','觸角羅盤','蜂巢六角格'],namesEn:['Wing Hooks','Honey Stomach','Flight Muscles','Antennal Compass','Honeycomb Cells'],quip:'單細胞的你現在有同事，而且她們全是親戚。',quipEn:'The single cell now has coworkers, and every one of them is family.'},
+  {motif:'蜂鳥',motifEn:'Hummingbird',names:['旋翼羽','長喙','高速心肌','懸停小腦','虹彩羽冠'],namesEn:['Rotor Feathers','Nectar Bill','High-Speed Heart','Hovering Cerebellum','Iridescent Gorget'],quip:'每秒二十次心跳；與其說是脈搏，不如說是讀取動畫。',quipEn:'Twenty heartbeats a second—less a pulse than a loading animation.'},
+  {motif:'倉鼠',motifEn:'Hamster',names:['鬍鬚雷達','頰囊','恆溫代謝','巢穴記憶','跑輪'],namesEn:['Whisker Radar','Cheek Pouch','Warm-Blooded Metabolism','Burrow Memory','Exercise Wheel'],quip:'宇宙還很遠，但你已發明無限跑步。',quipEn:'The cosmos is still far away, but you have already invented infinite running.'},
+  {motif:'貓',motifEn:'Cat',names:['鬍鬚陣列','獵食胃','彈簧後腿','夜視瞳','呼嚕共振腔'],namesEn:['Whisker Array','Hunter’s Stomach','Spring Hindlegs','Night-Vision Pupils','Purring Chamber'],quip:'你沒有服從按鈕，只有讓世界配合你的按鈕。',quipEn:'There is no obey button, only buttons that make the world accommodate you.'},
+  {motif:'人',motifEn:'Human',names:['巧手','農田','直立步態','語言皮質','聚落'],namesEn:['Dexterous Hands','Cultivated Field','Upright Gait','Language Cortex','Settlement'],quip:'你不再直接吃掉上一階；改成先命名、圈地，再慢慢吃。',quipEn:'You no longer eat your prior stage directly; first you name it, fence it, then eat it slowly.'},
+  {motif:'大象',motifEn:'Elephant',names:['象鼻','磨牙列','巨軀循環','長程記憶','象群路徑'],namesEn:['Trunk','Grinding Molars','Giant Circulation','Long Memory','Herd Trail'],quip:'每條路都記得，包括那條通往更大的自己的路。',quipEn:'You remember every road, including the one toward a larger version of yourself.'},
+  {motif:'藍鯨',motifEn:'Blue Whale',names:['尾鰭','鯨鬚濾板','深潛血紅素','低頻歌聲','洄游航線'],namesEn:['Tail Fluke','Baleen Rack','Diving Myoglobin','Infrasonic Song','Migration Route'],quip:'最大動物的終局配裝：升級嘴巴，吃更小的東西。',quipEn:'The largest-animal build: upgrade the mouth and eat smaller things.'},
+  {motif:'鯤',motifEn:'Kun',names:['扶搖巨鰭','北冥吞口','滄海心室','九萬里感知','化鵬羽兆'],namesEn:['Skyward Fins','North-Sea Maw','Oceanic Heart','Ninety-Thousand-Li Sense','Peng-Transformation Plumage'],quip:'系統仍叫它構造，因為「幾千里長的魚」塞不進欄位。',quipEn:'The system still calls these structures because “a fish thousands of li long” will not fit in the field.'},
+  {motif:'巨人',motifEn:'Giant',names:['擎天足','山岳胃','盜火胸腔','遠眺之眼','巨人城寨'],namesEn:['Sky-Pillar Feet','Mountain Stomach','Fire-Bearing Chest','Far-Seeing Eye','Giant Citadel'],quip:'你終於大到能踩到地圖邊界，地圖只好再畫大一點。',quipEn:'You are finally large enough to step on the map boundary, so the map gets redrawn.'},
+  {motif:'龍',motifEn:'Dragon',names:['騰雲翼','吞雲龍口','逆鱗心爐','龍角天線','盤山鱗甲'],namesEn:['Cloudborne Wings','Cloud-Swallowing Maw','Reverse-Scale Heart-Furnace','Dragon-Horn Antennae','Mountain-Coiling Scales'],quip:'沒有生物學家願意審稿，神話學家倒是全票通過。',quipEn:'No biologist will review this build; the mythologists approve unanimously.'},
+  {motif:'世界龜',motifEn:'World Turtle',names:['擎陸巨足','鎮海巨喙','地脈心室','背甲羅盤','載世甲殼'],namesEn:['Land-Bearing Limbs','Sea-Anchoring Beak','Leyline Heart','Carapace Compass','World-Bearing Shell'],quip:'你的移動速度是零；幸好這一階的工作就是別動。',quipEn:'Your movement speed is zero. Fortunately, this stage’s job is not to move.'},
+  {motif:'耶夢加得',motifEn:'Jörmungandr',names:['環世鱗帶','吞潮巨口','毒海心腔','蛇瞳星圖','銜尾之環','末日神經','循環意志'],namesEn:['World-Girdling Scales','Tidal Maw','Venom-Sea Heart','Serpent-Eye Star Map','Tail-Biting Ring','Doom Nerves','Cyclic Will'],quip:'長到咬住自己尾巴後，路徑尋找變成一個哲學問題。',quipEn:'Once you are long enough to bite your own tail, pathfinding becomes a philosophical problem.'},
+  {motif:'微行星',motifEn:'Planetesimal',names:['自轉碎屑帶','捕塵坑','放射性熱核','自轉軸','碎石堆結構','微重力脈絡','軌道本能'],namesEn:['Rotating Debris Band','Dust-Catching Pits','Radiogenic Core','Spin Axis','Rubble-Pile Frame','Microgravity Network','Orbital Instinct'],quip:'離開地球後，你首先進化成一顆很有想法的石頭。',quipEn:'After leaving Earth, your first evolution is a rock with opinions.'},
+  {motif:'原行星',motifEn:'Protoplanet',names:['熔融地殼','吸積截面','分異地核','磁場羅盤','原始大氣','岩漿脈絡','清軌意志'],namesEn:['Molten Crust','Accretion Cross-Section','Differentiated Core','Magnetic Compass','Primordial Atmosphere','Magma Network','Orbit-Clearing Drive'],quip:'凡是靠近的都成為你；這不是社交，是行星形成。',quipEn:'Everything nearby becomes you. This is not socializing; it is planet formation.'},
+  {motif:'氣態巨行星',motifEn:'Gas Giant',names:['氫雲帶','捕獲風暴','金屬氫心層','磁層羅盤','環系統','對流脈絡','大紅斑意志'],namesEn:['Hydrogen Cloud Bands','Capturing Storm','Metallic-Hydrogen Layer','Magnetospheric Compass','Ring System','Convective Network','Great-Storm Will'],quip:'找不到地面並非貼圖錯誤，你真的沒有地面。',quipEn:'The missing surface is not a texture bug. You truly do not have one.'},
+  {motif:'褐矮星',motifEn:'Brown Dwarf',names:['雲帶外殼','氣體吸積','金屬氫核心','磁暴經度','褐矮星大氣','對流脈絡','次恆星脈動','氘燃燒爐','紅外光球'],namesEn:['Cloud-Band Envelope','Gas Accretion','Metallic-Hydrogen Core','Magnetic-Storm Meridians','Brown-Dwarf Atmosphere','Convective Network','Substellar Pulse','Deuterium Furnace','Infrared Photosphere'],quip:'恆星資格考只差一題，但氘還是願意給你補考。',quipEn:'You missed the stellar entrance exam by one question, but deuterium offers a resit.'},
+  {motif:'紅矮星',motifEn:'Red Dwarf',names:['暗紅光球','氫燃料層','全對流核心','磁斑網','色球層','耀斑迴路','長壽週期','質子鏈爐','磁層收集環'],namesEn:['Dim-Red Photosphere','Hydrogen Fuel Layer','Fully Convective Core','Magnetic Starspot Net','Chromosphere','Flare Loops','Trillion-Year Cycle','Proton–Proton Furnace','Magnetospheric Collector Ring'],quip:'亮度不高，待機時間一兆年；掛機玩家夢寐以求。',quipEn:'Low brightness, trillion-year idle time: the dream build for an idle player.'},
+  {motif:'主序星',motifEn:'Main-Sequence Star',names:['光球','氫燃料層','靜水平衡核','日震網','磁活動帶','輻射層','對流層','質子鏈爐','日冕收集環'],namesEn:['Photosphere','Hydrogen Fuel Layer','Hydrostatic Core','Helioseismic Network','Magnetic Activity Belt','Radiative Zone','Convective Zone','Proton–Proton Furnace','Coronal Collector'],quip:'你終於是一顆標準恆星，標準到天文課本願意拿你當範例。',quipEn:'You are finally a standard star—standard enough for an astronomy textbook.'},
+  {motif:'紅超巨星',motifEn:'Red Supergiant',names:['膨脹光球','恆星風','鐵核前驅','巨型對流胞','脈動外層','氦殼層','碳氧燃燒層','洋蔥層鍛爐','塵埃風帆'],namesEn:['Swollen Photosphere','Stellar Wind','Iron-Core Seed','Giant Convection Cells','Pulsating Envelope','Helium Shell','Carbon–Oxygen Burning Shell','Onion-Shell Furnace','Dust-Wind Sail'],quip:'你把行星軌道吞進外殼，還說自己只是有點膨脹。',quipEn:'You swallow your planets’ orbits and call it a little swelling.'},
+  {motif:'白矮星',motifEn:'White Dwarf',names:['熾白光球','伴星質流','碳氧核心','自轉晶格','電子簡併殼','結晶前沿','錢德拉界線','殘熱爐','新星吸積帶'],namesEn:['White-Hot Photosphere','Companion Mass Stream','Carbon–Oxygen Core','Rotational Lattice','Electron-Degenerate Shell','Crystallization Front','Chandrasekhar Gauge','Residual-Heat Furnace','Nova Accretion Belt'],quip:'沒有燃料，仍靠餘熱工作；宇宙最硬派的加班者。',quipEn:'No fuel, still running on residual heat: the cosmos’s toughest overtime worker.'},
+  {motif:'中子星',motifEn:'Neutron Star',names:['中子地殼','回落物質','超流體核心','磁極羅盤','核義大利麵層','渦旋釘扎網','毫秒自轉','磁星發電機','磁層捕獲環','脈衝射束','簡併壓支柱'],namesEn:['Neutron Crust','Fallback Matter','Superfluid Core','Magnetic-Pole Compass','Nuclear Pasta Layer','Vortex-Pinning Network','Millisecond Spin','Magnetar Dynamo','Magnetospheric Capture Ring','Pulsar Beam','Degeneracy-Pressure Brace'],quip:'一茶匙重十億噸，但介面仍允許你一次買一百個。',quipEn:'A teaspoon weighs a billion tonnes, yet the interface still lets you buy one hundred at once.'},
+  {motif:'夸克星',motifEn:'Quark Star',names:['夸克殼','奇異物質滴','色超導核心','強作用鎖','夸克晶格','通量管網','極速自轉','奇異轉化爐','裸奇異表面','伽瑪束','強作用支柱'],namesEn:['Quark Crust','Strange-Matter Droplets','Color-Superconducting Core','Strong-Force Lock','Quark Lattice','Flux-Tube Network','Ultrafast Spin','Strange-Conversion Furnace','Bare Strange Surface','Gamma Beam','Strong-Interaction Brace'],quip:'理論上也許存在；商店已經先替你上架。',quipEn:'It may exist in theory. The shop listed it first.'},
+  {motif:'恆星黑洞',motifEn:'Stellar Black Hole',names:['光子環','潮汐捕獲流','克爾自旋','極軸','引力透鏡殼','磁通網','視界剪切','能層引擎','黑洞陰影','極軸噴流','時空曲率井','吸積盤','事件視界'],namesEn:['Photon Ring','Tidal Capture Stream','Kerr Spin','Polar Axis','Lensing Halo','Magnetic Flux Net','Horizon Shear','Ergosphere Engine','Black-Hole Shadow','Polar Jet','Curvature Well','Accretion Disk','Event Horizon'],quip:'你仍是草履蟲，只是現在「細胞膜」的逃逸速度等於光速。',quipEn:'You are still a paramecium; your “cell membrane” now merely has light-speed escape velocity.'},
+  {motif:'超大質量黑洞',motifEn:'Supermassive Black Hole',names:['黑日光子冠','恆星潮汐流','深重勢阱','自旋權杖','引力透鏡聖環','磁化冕網','視界剪切層','能層王座','黑日陰影','雙極噴流','時空扭曲井','加冕吸積盤','中央事件視界'],namesEn:['Black-Sun Photon Crown','Stellar Tidal Stream','Deep Potential Well','Spin Sceptre','Sacred Lensing Ring','Magnetized Corona','Horizon Shear Layer','Ergosphere Throne','Black-Sun Shadow','Bipolar Jets','Warped-Spacetime Well','Coronation Disk','Central Event Horizon'],quip:'你統治五百萬個太陽質量，依然用纖毛式思維處理政務。',quipEn:'You rule five million solar masses and still administer them with ciliary thinking.'},
+  {motif:'銀河系質量星系',motifEn:'Milky-Way-Mass Galaxy',names:['旋臂星潮','分子雲港','中央核球','棒狀引力矩','暗物質暈','恆星形成網','星際介質循環','恆星鍛造群','球狀星團冠','脈衝星航標','緻密天體墓園','核周吸積盤','中央黑洞聖所'],namesEn:['Spiral-Arm Star Tide','Molecular-Cloud Harbor','Central Bulge','Bar Torque','Dark-Matter Halo','Star-Formation Web','Interstellar-Medium Cycle','Stellar Forge Population','Globular-Cluster Crown','Pulsar Beacons','Compact-Object Graveyard','Circumnuclear Disk','Central Black-Hole Sanctum'],quip:'你的身體有千億顆星，但移動方式仍像草履蟲在水滴裡找細菌。',quipEn:'Your body contains a hundred billion stars, but you still move like a paramecium hunting bacteria in a droplet.'},
+  {motif:'星系團',motifEn:'Galaxy Cluster',names:['成員星系軌道','星系際氣體','暗物質勢阱','引力透鏡弧','維里化暈','宇宙網入流','併合震波','星群鍛造帶','電波暈','射電遺跡弧','緻密核心群','冷卻流','中央巨橢圓聖座'],namesEn:['Member-Galaxy Orbits','Intracluster Medium','Dark-Matter Potential Well','Gravitational-Lens Arcs','Virialized Halo','Cosmic-Web Inflow','Merger Shock','Cluster Star-Forge Belt','Radio Halo','Radio Relic Arcs','Compact-Core Population','Cooling Flow','Central Giant-Elliptical Throne'],quip:'成千上萬個星系開會，議程只有一項：繼續掉向你。',quipEn:'Thousands of galaxies hold a meeting. The only agenda item is continuing to fall toward you.'},
+  {motif:'J0838+5327',motifEn:'J0838+5327',names:['核區等離子結','核周氣體流','超大質量黑洞引擎','噴流自旋軸','活動星系核冕','磁化通道','重啟時鐘','同步輻射爐','電波橋','內層雙極噴流','外層噴流遺跡','內電波瓣','外電波瓣'],namesEn:['Nuclear Plasma Knot','Circumnuclear Gas Stream','Supermassive Black-Hole Engine','Jet Spin Axis','Active-Nucleus Corona','Magnetized Channel','Restart Clock','Synchrotron Furnace','Radio Bridge','Inner Bipolar Jets','Fossil Outer-Jet Channel','Inner Radio Lobes','Outer Radio Lobes'],quip:'你的噴流長到能排下兩百多個銀河系，草履蟲本體仍堅持自己只是游得比較遠。',quipEn:'Your jets could line up more than two hundred Milky Ways; the paramecium insists it only swam farther.'},
+  {motif:'拉尼亞凱亞超星系團',motifEn:'Laniakea Supercluster',names:['星系流線','宇宙網節點','大引力源勢阱','速度場羅盤','吸引盆地邊界','纖維網入流','星系群落潮','星海鍛造帶','超星系團光暈','流域軸線','緻密天體譜系','暗物質流','大引力源聖所'],namesEn:['Galaxy Flowlines','Cosmic-Web Nodes','Great-Attractor Potential','Peculiar-Velocity Compass','Basin-of-Attraction Boundary','Filamentary Inflow','Galaxy-Group Tide','Star-Sea Forge Belt','Supercluster Glow','Basin Axis','Compact-Object Lineages','Dark-Matter Flow','Great-Attractor Sanctum'],quip:'你不是一個物體，而是一個大家都在往裡掉的方向。',quipEn:'You are not an object so much as a direction everyone is falling toward.'},
+  {motif:'哈伯球',motifEn:'Hubble Sphere',names:['哈伯流線','退行星系標記','宇宙膨脹場','共動座標網','哈伯半徑殼','紅移梯度','尺度因子時鐘','宇宙微波背景','可觀測節點暈','逐光脈衝','因果曲率網','c/H₀ 等速面','逐光之界'],namesEn:['Hubble Flowlines','Receding-Galaxy Markers','Cosmic Expansion Field','Comoving Coordinate Grid','Hubble-Radius Shell','Redshift Gradient','Scale-Factor Clock','Cosmic Microwave Background','Observable-Node Halo','Light-Chasing Pulses','Causal-Curvature Web','c/H₀ Equal-Recession Surface','Light-Chasing Frontier'],quip:'你追上了膨脹，不等於追上了宇宙；它還在把終點往外搬。',quipEn:'You caught the expansion, not the Universe; it keeps moving the finish line outward.'},
+];
+function stageStructureProfile(stageIdx){
+  const idx=Math.max(0,Math.min(STRUCTURE_PROFILES.length-1,Math.floor(Number(stageIdx)||0)));
+  return STRUCTURE_PROFILES[idx];
+}
+function stageStructurePresentation(b,idx){
+  idx=idx===undefined?(S&&Number.isFinite(S.stage)?S.stage:0):idx;
+  const profile=stageStructureProfile(idx);
+  const slot=Math.max(0,BUILDINGS.findIndex(item=>item.id===b.id));
+  const fallback=STRUCTURE_FALLBACK_ROLES[slot]||[b.name,b.nameEn];
+  const copy=STRUCTURE_SLOT_COPY[b.id]||{ds:b.ds,dsEn:b.dsEn};
+  return {
+    name:profile.names[slot]||`${profile.motif} · ${fallback[0]}`,
+    nameEn:profile.namesEn[slot]||`${profile.motifEn} · ${fallback[1]}`,
+    ds:copy.ds,dsEn:copy.dsEn,
+  };
+}
 const LAYER_UNLOCK = {cell:1, life:14, star:18, degen:23, horizon:25};
-const LAYER_NAME = {cell:'細胞', life:'生命', star:'恆星', degen:'簡併', horizon:'視界'};
-const LAYER_NAME_EN = {cell:'Cell', life:'Life', star:'Star', degen:'Degenerate', horizon:'Horizon'};
+const LAYER_NAME = {cell:'基礎型', life:'協調型', star:'能源型', degen:'極限型', horizon:'尺度核心'};
+const LAYER_NAME_EN = {cell:'Foundation', life:'Coordination', star:'Energy', degen:'Extreme', horizon:'Scale Core'};
 const COST_MULT = 1.15;
 const MILESTONES = [25, 50, 100];   // 同構造達標 → 該構造產出 ×2／級
 
@@ -868,7 +967,7 @@ const SPORE_SHOP = [
   {id:'chemo', kind:'once', name:'趨食性', nameEn:'Chemotaxis', ds:'食物生成 +50%', dsEn:'Food spawns +50%', cost:12, route:'食物', routeEn:'food'},
   {id:'gluttony', kind:'once', name:'貪食', nameEn:'Gluttony', ds:'食物獎勵 ×2', dsEn:'Food rewards ×2', cost:25, route:'食物', routeEn:'food'},
   {id:'membrane', kind:'once', name:'厚膜', nameEn:'Thick Membrane', ds:'離線收益 50% → 80%', dsEn:'Offline gain 50% → 80%', cost:20, route:'掛機', routeEn:'idle'},
-  {id:'presplit', kind:'once', name:'分裂前夜', nameEn:'Eve of Division', ds:'每次躍遷起手送 10 個粒線體', dsEn:'Start each life with 10 mitochondria', cost:30, route:'掛機', routeEn:'idle'},
+  {id:'presplit', kind:'once', name:'起源餘勢', nameEn:'Inherited Momentum', ds:'每次躍遷，以 10 個該尺度的核心動力構造起步', dsEn:'Begin each scale with 10 core-drive structures', cost:30, route:'掛機', routeEn:'idle'},
   {id:'secondnuc', kind:'once', name:'第二核', nameEn:'Second Nucleus', ds:'孢獲得量 +25%', dsEn:'Spores gained +25%', cost:40, route:'通用', routeEn:'core'},
   {id:'lattice', kind:'once', name:'表膜晶格', nameEn:'Pellicle Lattice', ds:'構造成本係數 1.15 → 1.14', dsEn:'Cost factor 1.15 → 1.14', cost:60, route:'通用', routeEn:'core'},
   {id:'gravifeed', kind:'once', name:'引力聚食', nameEn:'Gravitational Feeding', ds:'食物向你漂來', dsEn:'Food drifts toward you', cost:45, route:'食物', routeEn:'food', unlockN:15},
@@ -1071,7 +1170,7 @@ const ACHIEVEMENT_VERSION = 1;
 const ACHIEVEMENT_CATEGORIES = [
   {id:'scale',name:'尺度遠征',nameEn:'Journey of Scale'},
   {id:'feeding',name:'游獵足跡',nameEn:'Swimming and Feeding'},
-  {id:'making',name:'構築傳承',nameEn:'Structures and Legacy'},
+  {id:'making',name:'構築遺澤',nameEn:'Structures and Epochal Legacy'},
   {id:'creation',name:'創生紀元',nameEn:'Singularity and Creation'},
   {id:'hidden',name:'秘藏迴響',nameEn:'Hidden Echoes'},
 ];
@@ -1107,7 +1206,7 @@ const ACHIEVEMENTS = [
   {id:'first_legacy',cat:'making',name:'神話初承',nameEn:'The First Legacy',
     desc:'越過一個帶有神話事件的形態，讓它的本事留下。',descEn:'Pass a form marked by a mythic event and keep part of its power.'},
   {id:'legacy_book',cat:'making',name:'萬象歸典',nameEn:'The Book of Every Form',
-    desc:'喚醒旅途中所有傳承。',descEn:'Awaken every legacy carried along the journey.'},
+    desc:'承接旅途中所有紀元遺澤。',descEn:'Awaken every epochal legacy carried along the journey.'},
 
   {id:'first_law',cat:'creation',name:'律令初鳴',nameEn:'The First Law',
     desc:'第一次讓一條物理常數向能孕育生命的數值靠近。',descEn:'Move a physical constant toward a life-bearing value for the first time.'},
@@ -1179,23 +1278,23 @@ const HUAYAN_UNITS = [
 const UI_STR = {
   zh:{
     lifeforce:'生命力', persec:'每秒', spore:'孢', freedom:'自由度', fps:'自由度/秒',
-    scale:'尺度', structures:'構造', sporeShop:'孢 · 永久強化', legacy:'傳承',
+    scale:'尺度', structures:'構造', sporeShop:'孢 · 永久強化', legacy:'紀元遺澤',
     molt:'蛻變', cross:'渡', collapse:'坍縮', ready:'成為奇點', critical:'奇點臨界',
     gen:'宇宙代數', cumlife:'累計生命', lifeindex:'生命指數', eps:'指數/秒', ignite:'重製宇宙', lock:'鎖定', locked:'已鎖',
     constants:'物理常數', singShop:'宇宙殘骸 · 永久強化', matter:'基本物質', materials:'創生質', mps:'創生質/秒', remnants:'殘骸', transition:'尺度躍遷',
     fitGood:'宜居', fitMid:'臨界', fitBad:'死寂', epoch:'紀元', owned:'已擁有', sated:'飽食',
-    upgradePanel:'升級面板', noUpgrade:'目前無可升級項目', pullHint:'點一下或向上拉以展開', closeHint:'點一下或向下拉以收合',
+    upgradePanel:'演化中樞', noUpgrade:'目前無可升級項目', pullHint:'點一下或向上拉以展開', closeHint:'點一下或向下拉以收合',
     progress:'躍遷', creation:'創生', laws:'定律', remains:'殘骸', shoal:'群游', records:'日誌',
     mobileStructures:'構造', mobileSpore:'孢', mobileRemnants:'殘骸', observationLog:'觀測日誌',
   },
   en:{
     lifeforce:'Life-force', persec:'/sec', spore:'Spores', freedom:'Freedom', fps:'Freedom/s',
-    scale:'Scale', structures:'Structures', sporeShop:'Spores · Permanent', legacy:'Legacy',
+    scale:'Scale', structures:'Structures', sporeShop:'Spores · Permanent', legacy:'Epochal Legacy',
     molt:'Metamorphose', cross:'Cross Over', collapse:'Collapse', ready:'Become the Singularity', critical:'Singularity Imminent',
     gen:'Generation', cumlife:'Cumulative Life', lifeindex:'Life Exponent', eps:'Exponent/s', ignite:'Recast Universe', lock:'Lock', locked:'Locked',
     constants:'Physical Constants', singShop:'Cosmic Remnants · Permanent', matter:'Fundamental Matter', materials:'Genesis Matter', mps:'Genesis Matter/s', remnants:'Remnants', transition:'Scale Transition',
     fitGood:'habitable', fitMid:'marginal', fitBad:'dead', epoch:'Epoch', owned:'Owned', sated:'Sated',
-    upgradePanel:'Upgrades', noUpgrade:'Nothing affordable yet', pullHint:'Tap or pull up to open', closeHint:'Tap or pull down to close',
+    upgradePanel:'Evolution Nexus', noUpgrade:'Nothing affordable yet', pullHint:'Tap or pull up to open', closeHint:'Tap or pull down to close',
     progress:'Scale', creation:'Genesis', laws:'Laws', remains:'Remnants', shoal:'Shoal', records:'Log',
     mobileStructures:'Build', mobileSpore:'Spore', mobileRemnants:'Remnant', observationLog:'Observation Log',
   },
@@ -1681,8 +1780,8 @@ function doCollapse(bonusSporeMult){
   // 新傳承點亮
   const newL = LEGACY.find(l=>l.idx===fromIdx);
   if (newL) say(isEn()
-    ? `Legacy awakened: ${newL.nameEn} — ${newL.dsEn}`
-    : `傳承覺醒：「${newL.name}」——${newL.ds}`, true);
+    ? `Epochal legacy awakened: ${newL.nameEn} — ${newL.dsEn}`
+    : `遺澤覺醒：「${newL.name}」——${newL.ds}`, true);
 
   if (st.unlock && st.unlock!=='cell'){
     say(isEn() ? `Structure tier unlocked: ${LAYER_NAME_EN[st.unlock]}.` : `構造層解鎖：${LAYER_NAME[st.unlock]}。`, true);
@@ -1755,8 +1854,8 @@ function enterSingularity(){
   say(isEn() ? 'You are the singularity itself. No outside; nothing larger.' : '你成為奇點。「外面」二字，自此失去意義——沒有容你之物，也沒有大於你的尺度。', true);
   const finalLegacy=LEGACY.find(l=>l.unlockOnSingularity);
   if (finalLegacy) say(isEn()
-    ? `Legacy awakened: ${finalLegacy.nameEn} — ${finalLegacy.dsEn}`
-    : `傳承覺醒：「${finalLegacy.name}」——${finalLegacy.ds}`, true);
+    ? `Epochal legacy awakened: ${finalLegacy.nameEn} — ${finalLegacy.dsEn}`
+    : `遺澤覺醒：「${finalLegacy.name}」——${finalLegacy.ds}`, true);
   say(isEn()
     ? 'So you stop growing — and start creating. Grow matter from a quark sea, reveal physics one law at a time, then recast what remains.'
     : '生長到此為止，創造自此開始。從夸克海養出基本物質，讓物理一條條顯現，再從宇宙殘骸中重來。');
@@ -5253,10 +5352,13 @@ function renderMobileUpgradeDrawer(){
   if (typeof document.querySelectorAll==='function') for (const panel of document.querySelectorAll('[data-mobile-panel]')){
     panel.classList.toggle('mobile-panel-active',panel.dataset.mobilePanel===active);
   }
-  const title=$('mobile-drawer-title'),ready=$('mobile-ready-total'),hint=$('mobile-drawer-hint');
+  const title=$('mobile-drawer-title'),ready=$('mobile-ready-total'),hint=$('mobile-drawer-hint'),head=$('mobile-drawer-head');
   if (title) title.textContent=ui('upgradePanel');
   if (ready) ready.textContent=total?(isEn()?`${total} upgrade${total===1?'':'s'} ready`:`可升級 ${total} 項`):ui('noUpgrade');
   if (hint) hint.textContent=mobileDrawerUI.open?ui('closeHint'):ui('pullHint');
+  if (head && typeof head.setAttribute==='function') head.setAttribute('aria-label',mobileDrawerUI.open
+    ? (isEn()?'Close Evolution Nexus':'收合演化中樞')
+    : (isEn()?'Open Evolution Nexus':'展開演化中樞'));
   drawer.classList.toggle('drawer-suspended',!!cine);
 }
 function drawerTranslateY(element){
@@ -5291,7 +5393,7 @@ function initMobileUpgradeDrawer(){
   });
   head.addEventListener('pointerdown',event=>{
     if (!mobileDrawerMode()) return;
-    const visible=(head.offsetHeight||52)+(nav.offsetHeight||58);
+    const visible=head.offsetHeight||48;
     const fallbackClosed=Math.max(0,(drawer.offsetHeight||0)-visible);
     const actualOffset=drawerTranslateY(drawer);
     const closed=mobileDrawerClosedOffset(drawer,fallbackClosed);
@@ -5333,8 +5435,8 @@ function renderStaticLanguage(){
   const brand=$('brand'); if (brand) brand.innerHTML=en?'<b>PARAMECIUM</b> SINGULARITY':'<b>草履蟲</b>奇點';
   const labels={
     c:en?'Microscope and cosmic field':'培養皿與宇宙視野',
-    'upgrade-drawer':en?'Upgrade panel':'升級面板',
-    'mobile-category-nav':en?'Upgrade categories':'升級分類',
+    'upgrade-drawer':en?'Evolution Nexus':'演化中樞',
+    'mobile-category-nav':en?'Evolution categories':'演化分類',
     'scope-status-host':en?'Observation log':'觀測日誌',
     log:en?'Observation log entries':'觀測日誌記錄',
     'scale-codex-shell':en?'Scale encyclopedia':'尺度圖鑑',
@@ -5350,14 +5452,10 @@ function renderStaticLanguage(){
 }
 
 /* ── 讀數 ── */
-let lastLifeReadout=NaN,lastLifeMarkup='';
-function updateLifeReadout(value,markup){
+let lastLifeMarkup='';
+function updateLifeReadout(_value,markup){
   const el=$('bio'); if (!el) return;
   if (markup!==lastLifeMarkup){ el.innerHTML=markup; lastLifeMarkup=markup; }
-  if (Number.isFinite(lastLifeReadout) && value!==lastLifeReadout && el.classList){
-    el.classList.remove('life-tick'); void el.offsetWidth; el.classList.add('life-tick');
-  }
-  lastLifeReadout=value;
 }
 function renderStats(){
   if (S.phase==='singularity'){
@@ -5410,20 +5508,27 @@ const bNodes = {};
 function buildShop(){
   const shop = $('shop');
   shop.innerHTML = '';
+  const profile=stageStructureProfile(S&&Number.isFinite(S.stage)?S.stage:0);
+  const stageTitle=$('structure-stage-title'),stageQuip=$('structure-stage-quip');
+  if (stageTitle) stageTitle.textContent=isEn()
+    ? `Paramecium Body · ${profile.motifEn} Form Structures`
+    : `草履蟲本體 · ${profile.motif}形態構造`;
+  if (stageQuip) stageQuip.textContent=isEn()?profile.quipEn:profile.quip;
   let curLayer = null;
   for (const b of BUILDINGS){
+    const view=stageStructurePresentation(b,S.stage);
     if (b.layer!==curLayer){
       curLayer=b.layer;
       const h=document.createElement('div');
       h.className='layer-h'; h.id='layer-'+b.layer;
-      h.textContent = (isEn()?LAYER_NAME_EN[b.layer]:LAYER_NAME[b.layer]) + (isEn()?' Tier':'層');
+      h.textContent = isEn()?LAYER_NAME_EN[b.layer]:LAYER_NAME[b.layer];
       shop.appendChild(h);
     }
     const el=document.createElement('button');
     el.className='item';
     el.innerHTML=`
-      <span class="nm">${tr(b,'name')}</span><span class="qty num"></span>
-      <span class="ds">${tr(b,'ds')}</span>
+      <span class="nm">${tr(view,'name')}</span><span class="qty num"></span>
+      <span class="ds">${tr(view,'ds')}</span>
       <span class="stat num"></span>
       <span class="price num"></span>
       <span class="bar"></span>`;
@@ -5434,7 +5539,10 @@ function buildShop(){
       if (S.bio<c) return;
       S.bio-=c; S.owned[b.id]+=k;
       checkBuildingAchievements();
-      if (S.owned[b.id]===k) say(isEn()?`First ${b.nameEn} acquired — ${b.dsEn}.`:`獲得第一個「${b.name}」——${b.ds}。`);
+      if (S.owned[b.id]===k){
+        const acquired=stageStructurePresentation(b,S.stage);
+        say(isEn()?`First ${acquired.nameEn} acquired — ${acquired.dsEn}.`:`獲得第一個「${acquired.name}」——${acquired.ds}。`);
+      }
       renderShop(); renderStats(); save();
     };
     shop.appendChild(el);
@@ -5543,7 +5651,7 @@ function renderLegacy(){
   $('legacy-h').textContent = `${ui('legacy')} ${on.length}/${LEGACY.length}`;
   wrap.innerHTML = on.length
     ? on.map(l=>`<div class="lg"><span class="lgn">${tr(l,'name')}</span><span class="lgd">${tr(l,'ds')}</span></div>`).join('')
-    : `<div class="lg dim">${isEn()?'Pass a stage bearing a signature event; its power stays with you.':'越過帶簽名事件的階段，牠的本事會留在你身上。'}</div>`;
+    : `<div class="lg dim">${isEn()?'Cross a scale bearing an epochal event; its power remains with you as a legacy.':'越過承載紀元事件的尺度，牠的本事會化作遺澤，永遠留在你身上。'}</div>`;
 }
 
 /* ── 尺度圖鑑：依 maxStage 推導解鎖，不新增存檔欄位 ── */
@@ -5638,7 +5746,7 @@ function renderScaleCodex(){
   setText('scale-codex-analogy',stageAnalogy(idx));
   setText('scale-codex-food-label',isEn()?'REPRESENTATIVE PREY':'代表攝食');
   setText('scale-codex-food',tr(st,'big'));
-  setText('scale-codex-legacy-label',isEn()?'EVENT AND LEGACY':'事件與傳承');
+  setText('scale-codex-legacy-label',isEn()?'EVENT & EPOCHAL LEGACY':'事件與紀元遺澤');
   setText('scale-codex-note',tr(st,'note'));
   setText('scale-codex-variant',isEn()?'NATURAL FORM':'原生形態');
 
@@ -5648,16 +5756,16 @@ function renderScaleCodex(){
     const awakened=legacyOn(legacy);
     if (isEn()){
       const gate=legacy.unlockOnSingularity?'after becoming the singularity':'after passing this form';
-      legacyText=`Event “${event.nameEn}”: ${event.dsEn} ${awakened?'Legacy awakened':`Legacy available ${gate}`}: “${legacy.nameEn}” — ${legacy.dsEn}`;
+      legacyText=`Event “${event.nameEn}”: ${event.dsEn} ${awakened?'Epochal legacy awakened':`Epochal legacy available ${gate}`}: “${legacy.nameEn}” — ${legacy.dsEn}`;
     } else {
       const gate=legacy.unlockOnSingularity?'成為奇點後':'越過此形態後';
-      legacyText=`階段事件「${event.name}」：${event.ds}${awakened?'已覺醒傳承':`${gate}可覺醒傳承`}「${legacy.name}」——${legacy.ds}`;
+      legacyText=`階段事件「${event.name}」：${event.ds}${awakened?'已覺醒紀元遺澤':`${gate}可承接紀元遺澤`}「${legacy.name}」——${legacy.ds}`;
     }
   } else if (event){
     legacyText=isEn()?`Stage event “${event.nameEn}” — ${event.dsEn}`:`階段事件「${event.name}」——${event.ds}`;
   } else {
     legacyText=isEn()
-      ? 'No signature event at this scale; it still marks an essential step in the complete journey.'
+      ? 'No epochal event at this scale; it still marks an essential step in the complete journey.'
       : '這一階沒有特殊事件，但仍是完整尺度之路中不可缺少的一步。';
   }
   setText('scale-codex-legacy',legacyText);
@@ -5800,20 +5908,24 @@ function renderTransitionBrief(mode,next,thr,reconstruction){
   const current=STAGES[S.stage];
   if (mode==='ready'){
     setTransitionProgress(brief,'100%');
-    brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'FINAL SCALE':'最終尺度'}</span><span class="to">${isEn()?'Singularity':'奇點'}</span><span class="threshold">10<sup>68</sup> · ${isEn()?'journey complete':'尺度之路完成'}</span></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'NEXT':'下一步',isEn()?'Creation replaces growth':'以創造取代生長','reward')}${transitionFact(isEn()?'PRESERVED':'永遠保留',isEn()?'Legacy · Codex · achievements':'傳承 · 圖鑑 · 成就')}${transitionFact(isEn()?'FORM':'形態',isEn()?'All discovered memories remain':'已發現形態皆保留')}${transitionFact(isEn()?'RESET':'轉化',isEn()?'Mortal structures end here':'凡人構造在此終結')}</div>`;
+    brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'FINAL SCALE':'最終尺度'}</span><span class="to">${isEn()?'Singularity':'奇點'}</span><span class="threshold">10<sup>68</sup> · ${isEn()?'journey complete':'尺度之路完成'}</span><div class="transition-power-gap"><strong>10<sup>68</sup> → 10<sup>68</sup></strong><span>${isEn()?'Exponent goal reached':'次方達標'}</span></div></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'NEXT':'下一步',isEn()?'Creation replaces growth':'以創造取代生長','reward')}${transitionFact(isEn()?'PRESERVED':'永遠保留',isEn()?'Epochal legacy · Codex · achievements':'紀元遺澤 · 圖鑑 · 成就')}${transitionFact(isEn()?'FORM':'形態',isEn()?'All discovered memories remain':'已發現形態皆保留')}${transitionFact(isEn()?'RESET':'轉化',isEn()?'Mortal structures end here':'凡人構造在此終結')}</div>`;
     return;
   }
   if (mode==='fold'){
     const exponent=Math.floor(Math.log10(Math.max(S.lifetime,1)));
     const folds=Math.max(0,Math.min(42,exponent-26));
+    const powersLeft=Math.max(0,68-exponent);
     const pct=folds/42*100;
     setTransitionProgress(brief,`${pct.toFixed(2)}%`);
-    brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'HUBBLE-VOLUME FOLDING':'哈伯體積折疊'}</span><span class="to">${folds} / 42</span><span class="threshold">10<sup>${exponent}</sup> → 10<sup>68</sup></span></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'EACH FOLD':'每次折疊',isEn()?'Equivalent accumulation ×10':'等效累積 ×10','reward')}${transitionFact(isEn()?'INTERVAL':'下一次',`${Math.ceil(mergeInterval())} ${isEn()?'sec':'秒'}`)}${transitionFact(isEn()?'PRESERVED':'永遠保留',isEn()?'Spores · legacy · Codex':'孢 · 傳承 · 圖鑑')}${transitionFact(isEn()?'DESTINATION':'終點',isEn()?'Become the singularity':'成為奇點')}</div>`;
+    brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'HUBBLE-VOLUME FOLDING':'哈伯體積折疊'}</span><span class="to">${folds} / 42</span><span class="threshold">10<sup>${exponent}</sup> → 10<sup>68</sup></span><div class="transition-power-gap"><strong>10<sup>${exponent}</sup> → 10<sup>68</sup></strong><span>${isEn()?`${powersLeft} power${powersLeft===1?'':'s'} to go`:`尚差 ${powersLeft} 次方`}</span></div></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'EACH FOLD':'每次折疊',isEn()?'Equivalent accumulation ×10':'等效累積 ×10','reward')}${transitionFact(isEn()?'INTERVAL':'下一次',`${Math.ceil(mergeInterval())} ${isEn()?'sec':'秒'}`)}${transitionFact(isEn()?'PRESERVED':'永遠保留',isEn()?'Spores · epochal legacy · Codex':'孢 · 紀元遺澤 · 圖鑑')}${transitionFact(isEn()?'DESTINATION':'終點',isEn()?'Become the singularity':'成為奇點')}</div>`;
     return;
   }
   const safeThr=Math.max(1,Number(thr)||1);
   const progress=Math.max(0,Math.min(1,S.earned/safeThr));
   const remaining=Math.max(0,safeThr-S.earned);
+  const currentExp=Math.floor(Math.log10(Math.max(S.earned,1)));
+  const targetExp=Math.floor(Math.log10(safeThr));
+  const powerGap=Math.max(0,targetExp-currentExp);
   const reward=sporeGainFor(Math.max(S.earned,safeThr),S.stage);
   const legacy=LEGACY.find(l=>l.idx===S.stage);
   setTransitionProgress(brief,`${(progress*100).toFixed(2)}%`);
@@ -5823,9 +5935,14 @@ function renderTransitionBrief(mode,next,thr,reconstruction){
     : (isEn()?`${fmt(S.earned)} / ${fmt(safeThr)} · ready`:`${fmt(S.earned)} / ${fmt(safeThr)} · 已達標`);
   const legacyText=legacy
     ? `${tr(legacy,'name')} · ${tr(legacy,'ds')}`
-    : (isEn()?'No signature legacy at this crossing':'本次沒有簽名傳承');
+    : (isEn()?'No epochal legacy awaits at this crossing.':'本次躍遷沒有可承接的紀元遺澤');
   const rebuild=reconstruction>1?` · ${isEn()?'rebuild':'重建'} ×${reconstruction.toFixed(2)}`:'';
-  brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'CURRENT → NEXT':'目前 → 下一尺度'}</span><span class="to">${route}</span><span class="threshold">${threshold}</span></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'REWARD':'預估獲得',`+${reward} ${ui('spore')}${rebuild}`,'reward')}${transitionFact(isEn()?'LEGACY':'即將覺醒',legacyText)}${transitionFact(isEn()?'PRESERVED':'保留',isEn()?'Lifetime · spores · permanent powers':'累計生命 · 孢 · 永久強化')}${transitionFact(isEn()?'RESET':'重置',isEn()?'Spendable life-force · structures':'可用生命力 · 構造')}</div>`;
+  const powerState=remaining<=0
+    ? (isEn()?'Exponent goal reached':'次方達標')
+    : powerGap>0
+      ? (isEn()?`${powerGap} power${powerGap===1?'':'s'} to go`:`尚差 ${powerGap} 次方`)
+      : (isEn()?'Within the target exponent':'已進入同一次方');
+  brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'CURRENT → NEXT':'目前 → 下一尺度'}</span><span class="to">${route}</span><span class="threshold">${threshold}</span><div class="transition-power-gap"><strong>10<sup>${currentExp}</sup> → 10<sup>${targetExp}</sup></strong><span>${powerState}</span></div></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'REWARD':'預估獲得',`+${reward} ${ui('spore')}${rebuild}`,'reward')}${transitionFact(isEn()?'EPOCHAL LEGACY':'紀元遺澤',legacyText)}${transitionFact(isEn()?'PRESERVED':'保留',isEn()?'Lifetime · spores · permanent powers':'累計生命 · 孢 · 永久強化')}${transitionFact(isEn()?'RESET':'重置',isEn()?'Spendable life-force · structures':'可用生命力 · 構造')}</div>`;
 }
 function renderCollapse(){
   const btn=$('collapse');
