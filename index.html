@@ -421,22 +421,35 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
 .banner.rm .b-ghost,.banner.rm::before,.banner.rm::after{display:none!important}
 .banner.rm .b-name{animation:none!important}
 
-/* ═══ 測試面板（正式版刪掉整個 #debug）═══ */
-#debug{position:fixed;top:0;right:0;z-index:90;
-  background:rgba(10,20,30,.96);border:1px solid var(--nucleus);border-top:none;border-right:none;
-  border-bottom-left-radius:6px;padding:.7rem;width:15rem;font-size:.7rem;
-  transform:translateX(calc(100% - 0px));transition:transform .2s}
+/* ═══ 測試艙：僅 ?test=1 啟用，正式模式不顯示 ═══ */
+#debug[hidden],html:not(.test-mode) #debug{display:none!important}
+#debug{position:fixed;top:max(.5rem,env(safe-area-inset-top));right:max(0px,env(safe-area-inset-right));z-index:110;
+  width:min(21rem,calc(100vw - 3.5rem));font-size:.7rem;
+  transform:translateX(calc(100% + env(safe-area-inset-right)));transition:transform .22s ease}
 #debug.open{transform:translateX(0)}
-#debug .tab{position:absolute;left:0;top:0;transform:translateX(-100%);
-  writing-mode:vertical-rl;background:var(--nucleus);color:#06121c;
-  padding:.5rem .25rem;border-radius:6px 0 0 6px;cursor:pointer;font-size:.65rem;letter-spacing:.15em}
-#debug h4{color:var(--nucleus);font-size:.68rem;letter-spacing:.16em;margin:.35rem 0;font-weight:400}
-#debug .row{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.35rem}
+#debug .debug-body{max-height:calc(100dvh - max(1rem,env(safe-area-inset-top)) - max(1rem,env(safe-area-inset-bottom)));
+  overflow-y:auto;overscroll-behavior:contain;padding:.8rem;
+  background:linear-gradient(180deg,rgba(10,27,39,.985),rgba(5,17,27,.995));
+  border:1px solid rgba(92,224,192,.5);border-right:0;border-radius:8px 0 0 8px;
+  box-shadow:-18px 18px 50px rgba(0,0,0,.46)}
+#debug .tab{position:absolute;left:0;top:.55rem;transform:translateX(-100%);min-width:44px;min-height:44px;
+  writing-mode:vertical-rl;background:var(--nucleus);color:#06121c;border:0;
+  padding:.65rem .45rem;border-radius:7px 0 0 7px;cursor:pointer;font-size:.65rem;letter-spacing:.14em;
+  touch-action:manipulation;box-shadow:-8px 8px 22px rgba(0,0,0,.28)}
+#debug .debug-head{display:flex;align-items:flex-start;justify-content:space-between;gap:.7rem;margin-bottom:.45rem}
+#debug .debug-title{color:var(--glow);font-size:.82rem;letter-spacing:.14em}
+#debug .debug-status{margin-top:.22rem;color:var(--amber);font:400 .62rem/1.5 var(--font-mono)}
+#debug h4{color:var(--nucleus);font-size:.68rem;letter-spacing:.16em;margin:.7rem 0 .35rem;font-weight:400}
+#debug .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.36rem;margin-bottom:.36rem}
+#debug .row.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 #debug button{background:var(--cyto);color:var(--ink);border:1px solid var(--line);
-  border-radius:2px;padding:.25rem .4rem;font-size:.65rem;cursor:pointer}
+  border-radius:5px;padding:.42rem .45rem;min-height:38px;font-size:.64rem;line-height:1.25;cursor:pointer;
+  touch-action:manipulation}
 #debug button:hover{border-color:var(--nucleus)}
+#debug button.active{border-color:var(--amber);color:var(--amber);background:rgba(255,196,107,.08)}
+#debug button.danger{grid-column:1/-1;border-color:rgba(255,103,151,.55);color:#ffb3ca}
 #debug select{background:var(--cyto);color:var(--ink);border:1px solid var(--line);
-  border-radius:2px;padding:.2rem;font-size:.65rem;width:100%;margin-bottom:.3rem}
+  border-radius:5px;padding:.45rem;font-size:16px;min-height:44px;width:100%;margin-bottom:.38rem}
 #debug .hint{color:var(--ink-dim);font-size:.6rem;line-height:1.5;margin-top:.3rem}
 
 @media(max-width:900px){
@@ -448,7 +461,8 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   aside{border-left:none;border-top:1px solid var(--line);overflow:visible}
   .readout .val{font-size:1.1rem}
   .b-name{font-size:2.2rem}
-  #debug{display:none}
+  html.test-mode #debug{display:block}
+  #debug button{min-height:44px}
   .scope-meta{grid-template-columns:1fr}
   .event-banner{justify-content:flex-start}
   .scope-summary{justify-content:space-between}
@@ -547,39 +561,70 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
 </head>
 <body>
 
-<!-- ═══ 測試面板：正式版刪掉整個 #debug ═══ -->
-<div id="debug">
-  <span class="tab" onclick="document.getElementById('debug').classList.toggle('open')">測試 DEBUG</span>
-  <h4>資源</h4>
-  <div class="row">
-    <button onclick="DEBUG.mulBio(1e3)">生命力×1000</button>
-    <button onclick="DEBUG.addSpore(50)">+50孢</button>
-    <button onclick="DEBUG.fillStage()">填滿門檻</button>
+<!-- 測試艙由 ?test=1 開啟；hidden 防止正式頁面載入時閃現。 -->
+<div id="debug" hidden>
+  <button type="button" class="tab" id="test-tools-toggle" aria-controls="test-tools-body" aria-expanded="false" onclick="toggleTestTools()" data-test-zh="測試艙" data-test-en="TEST LAB">測試艙</button>
+  <div class="debug-body" id="test-tools-body" aria-hidden="true">
+    <div class="debug-head">
+      <div>
+        <div class="debug-title" data-test-zh="測試艙" data-test-en="TEST CHAMBER">測試艙</div>
+        <div class="debug-status" id="test-tools-status">獨立測試存檔</div>
+      </div>
+      <button type="button" onclick="toggleTestTools(false)" data-test-zh="收起" data-test-en="CLOSE">收起</button>
+    </div>
+    <p class="hint" data-test-zh="獨立測試存檔，不影響正式進度；此存檔不會解鎖成就。" data-test-en="A separate test save. Production progress is untouched, and achievements are disabled here.">獨立測試存檔，不影響正式進度；此存檔不會解鎖成就。</p>
+
+    <h4 data-test-zh="資源" data-test-en="RESOURCES">資源</h4>
+    <div class="row">
+      <button onclick="DEBUG.addBio(1e6)" data-test-zh="+100萬生命力" data-test-en="+1M LIFE-FORCE">+100萬生命力</button>
+      <button onclick="DEBUG.mulBio(1e3)" data-test-zh="生命力 ×1,000" data-test-en="LIFE-FORCE ×1,000">生命力 ×1,000</button>
+      <button onclick="DEBUG.addSpore(100)" data-test-zh="+100 孢" data-test-en="+100 SPORES">+100 孢</button>
+      <button onclick="DEBUG.unlockAll()" data-test-zh="一次性孢強化全開" data-test-en="UNLOCK ONE-TIME SPORE UPGRADES">一次性孢強化全開</button>
+    </div>
+
+    <h4 data-test-zh="尺度" data-test-en="SCALE">尺度</h4>
+    <select id="dbg-stage" aria-label="目標尺度"></select>
+    <div class="row">
+      <button onclick="DEBUG.applyStage()" data-test-zh="跳至所選尺度" data-test-en="JUMP TO SELECTED SCALE">跳至所選尺度</button>
+      <button onclick="DEBUG.fillStage()" data-test-zh="填滿躍遷門檻" data-test-en="FILL TRANSITION THRESHOLD">填滿躍遷門檻</button>
+      <button onclick="DEBUG.prevStage()" data-test-zh="上一尺度" data-test-en="PREVIOUS SCALE">上一尺度</button>
+      <button onclick="DEBUG.nextStage()" data-test-zh="下一尺度" data-test-en="NEXT SCALE">下一尺度</button>
+    </div>
+    <p class="hint" data-test-zh="尺度跳轉會切回凡人層，並清空當前構造與可用生命力。" data-test-en="Scale jumps return to the mortal layer and clear current structures and spendable life-force.">尺度跳轉會切回凡人層，並清空當前構造與可用生命力。</p>
+
+    <h4 data-test-zh="紀元事件" data-test-en="EPOCH EVENT">紀元事件</h4>
+    <select id="dbg-event" aria-label="紀元事件"></select>
+    <div class="row">
+      <button onclick="DEBUG.fireEvent(document.getElementById('dbg-event').value)" data-test-zh="立即觸發" data-test-en="TRIGGER NOW">立即觸發</button>
+      <button onclick="DEBUG.clearEvent()" data-test-zh="清除事件效果" data-test-en="CLEAR EVENT EFFECTS">清除事件效果</button>
+    </div>
+
+    <h4 data-test-zh="時間" data-test-en="TIME">時間</h4>
+    <div class="row">
+      <button onclick="DEBUG.timeWarp(60)" data-test-zh="結算 +1 分鐘" data-test-en="SETTLE +1 MINUTE">結算 +1 分鐘</button>
+      <button onclick="DEBUG.timeWarp(3600)" data-test-zh="結算 +1 小時" data-test-en="SETTLE +1 HOUR">結算 +1 小時</button>
+    </div>
+    <div class="row three">
+      <button data-test-speed="1" onclick="DEBUG.speed(1)">×1</button>
+      <button data-test-speed="10" onclick="DEBUG.speed(10)">×10</button>
+      <button data-test-speed="100" onclick="DEBUG.speed(100)">×100</button>
+    </div>
+
+    <h4 data-test-zh="奇點與終局" data-test-en="SINGULARITY & ENDGAME">奇點與終局</h4>
+    <div class="row">
+      <button onclick="DEBUG.toSingularity()" data-test-zh="直達奇點" data-test-en="JUMP TO SINGULARITY">直達奇點</button>
+      <button onclick="DEBUG.addSingularResources()" data-test-zh="補充創生資源" data-test-en="ADD GENESIS RESOURCES">補充創生資源</button>
+      <button onclick="DEBUG.maxSingularity()" data-test-zh="奇點系統全解鎖" data-test-en="UNLOCK SINGULARITY SYSTEMS">奇點系統全解鎖</button>
+      <button onclick="DEBUG.nearEnd()" data-test-zh="推至終局前" data-test-en="SET NEAR ENDING">推至終局前</button>
+    </div>
+
+    <h4 data-test-zh="測試存檔" data-test-en="TEST SAVE">測試存檔</h4>
+    <div class="row">
+      <button onclick="DEBUG.saveNow()" data-test-zh="立即儲存" data-test-en="SAVE NOW">立即儲存</button>
+      <button onclick="DEBUG.exitTestMode()" data-test-zh="返回正式存檔" data-test-en="RETURN TO PRODUCTION SAVE">返回正式存檔</button>
+      <button class="danger" onclick="DEBUG.confirmReset()" data-test-zh="重置測試存檔" data-test-en="RESET TEST SAVE">重置測試存檔</button>
+    </div>
   </div>
-  <h4>階段</h4>
-  <select id="dbg-stage" onchange="DEBUG.setStage(this.selectedIndex)"></select>
-  <div class="row">
-    <button onclick="DEBUG.nextStage()">下一階▶</button>
-    <button onclick="DEBUG.unlockAll()">全孢升級</button>
-  </div>
-  <h4>事件</h4>
-  <select id="dbg-event"></select>
-  <div class="row"><button onclick="DEBUG.fireEvent(document.getElementById('dbg-event').value)">觸發</button></div>
-  <h4>時間/速度</h4>
-  <div class="row">
-    <button onclick="DEBUG.timeWarp(60)">+1分</button>
-    <button onclick="DEBUG.timeWarp(3600)">+1時</button>
-    <button onclick="DEBUG.speed(1)">×1</button>
-    <button onclick="DEBUG.speed(10)">×10</button>
-    <button onclick="DEBUG.speed(100)">×100</button>
-  </div>
-  <h4>終局</h4>
-  <div class="row">
-    <button onclick="DEBUG.toSingularity()">直達奇點</button>
-    <button onclick="DEBUG.nearEnd()">臨近結局</button>
-    <button onclick="if(confirm('重置存檔？'))DEBUG.reset()">重置</button>
-  </div>
-  <p class="hint">正式版刪除 id="debug" 整段即可。速度倍率影響產出、事件、尺度折疊與奇點層。</p>
 </div>
 
 <header>
@@ -1835,7 +1880,8 @@ function tickMerge(dt){
 }
 
 /* ── 進入奇點 ── */
-function enterSingularity(){
+function enterSingularity(options){
+  options=options||{};
   S.phase='singularity';
   activeEvent=null; afterEffect=null;
   S.freedom += 10;
@@ -1863,6 +1909,12 @@ function enterSingularity(){
     if (typeof startSingCinematic==='function' && !S.seenCine) startSingCinematic();
     else if (typeof onSingularity==='function') onSingularity();
   };
+  if (options.skipCinematic){
+    S.seenCine=true;
+    revealSingularity();
+    save();
+    return;
+  }
   // 橫幅先讀完再啟動電影，避免透明全頁層遮住後方關鍵動畫；點擊可立即接續。
   if (typeof showBanner==='function') showBanner('singularity',S.stage,revealSingularity);
   else revealSingularity();
@@ -2391,8 +2443,14 @@ function onAte(){
   recordAchievementEvent('satiety',{stacks:satiety.stacks});
 }
 
-/* ── 存檔 ── */
-const SAVE_KEY = 'parasing:v3';
+/* ── 存檔：?test=1 使用完全獨立的測試存檔 ── */
+function isTestMode(search){
+  try { return new URLSearchParams(String(search||'')).get('test')==='1'; }
+  catch(_error){ return false; }
+}
+function saveKeyFor(search){ return isTestMode(search)?'parasing:v3:test':'parasing:v3'; }
+const TEST_MODE=isTestMode(typeof window!=='undefined'&&window.location?window.location.search:'');
+const SAVE_KEY=saveKeyFor(typeof window!=='undefined'&&window.location?window.location.search:'');
 async function storageSet(key,value){
   if (window.storage && typeof window.storage.set==='function') return window.storage.set(key,value);
   localStorage.setItem(key,value);
@@ -2499,34 +2557,108 @@ async function load(){
   return false;
 }
 
-/* ── 除錯 API ── */
+/* ── 測試艙 API：只有 initTestTools() 會在 ?test=1 時公開 ── */
 const DEBUG = {
-  addBio(x){ markAchievementTestSave('debug'); S.bio+=x;S.earned+=x;S.lifetime+=x; renderAll(); },
-  mulBio(x){ markAchievementTestSave('debug'); S.bio*=x;S.earned*=x;S.lifetime*=x; renderAll(); },
-  addSpore(x){ markAchievementTestSave('debug'); S.spores+=x;S.sporesTotal+=x; renderAll(); },
-  fillStage(){ markAchievementTestSave('debug'); S.earned=STAGES[S.stage].thr; S.bio=STAGES[S.stage].thr; renderAll(); },
-  setStage(i){ markAchievementTestSave('debug'); S.stage=Math.max(0,Math.min(i,STAGES.length-1));
-    S.maxStage=Math.max(S.maxStage,S.stage);
-    S.bio=0;S.earned=0;
+  touch(reason){ markAchievementTestSave(reason||'test-mode'); },
+  addBio(x){
+    this.touch('test-resource'); const gain=Math.max(0,Number(x)||0);
+    S.bio+=gain;S.earned+=gain;S.lifetime+=gain; renderAll(); save();
+  },
+  mulBio(x){
+    this.touch('test-resource'); const mult=Math.max(0,Number(x)||0);
+    S.bio*=mult;S.earned*=mult;S.lifetime*=mult; renderAll(); save();
+  },
+  addSpore(x){
+    this.touch('test-resource'); const gain=Math.max(0,Number(x)||0);
+    S.spores+=gain;S.sporesTotal+=gain; renderAll(); save();
+  },
+  fillStage(){
+    this.touch('test-threshold');
+    const threshold=Number.isFinite(STAGES[S.stage].thr)?STAGES[S.stage].thr:SINGULARITY_THR;
+    S.earned=Math.max(S.earned,threshold); S.bio=Math.max(S.bio,threshold); S.lifetime=Math.max(S.lifetime,threshold);
+    renderAll(); save();
+  },
+  applyStage(){ const el=document.getElementById('dbg-stage'); if(el) this.setStage(Number(el.value)); },
+  setStage(i){
+    this.touch('test-stage');
+    S.phase='mortal'; S.stage=Math.max(0,Math.min(Math.floor(Number(i)||0),STAGES.length-1));
+    S.maxStage=Math.max(S.maxStage,S.stage); S.bio=0; S.earned=0; S.lifetime=0;
+    activeEvent=null; afterEffect=null; satiety={time:0,stacks:0}; startBoost={time:0,mult:1}; mergeTimer=0; ouroT=0;
     BUILDINGS.forEach(b=>S.owned[b.id]=0);
-    if (typeof onStageChange==='function') onStageChange(); renderAll(); },
-  nextStage(){ markAchievementTestSave('debug'); if(canCollapse()) doCollapse(); },
-  unlockAll(){ markAchievementTestSave('debug'); SPORE_SHOP.forEach(s=>{ if(s.kind==='once') S.shop[s.id]=true; }); renderAll(); },
-  fireEvent(id){ markAchievementTestSave('debug'); triggerEvent(id); },
-  toSingularity(){ markAchievementTestSave('debug'); S.stage=STAGES.length-1; S.maxStage=S.stage; S.lifetime=SINGULARITY_THR; enterSingularity(); renderAll(); },
-  nearEnd(){ markAchievementTestSave('debug'); if(S.phase==='singularity'){ S.lifeExp=ENDING_EXP-5; renderAll(); } },
-  timeWarp(sec){ markAchievementTestSave('debug'); const g=rate()*sec; S.bio+=g;S.earned+=g;S.lifetime+=g;
-    if(S.phase==='singularity'){ S.materials+=materialRate()*sec; S.freedom+=freedomRate()*sec; S.lifeExp+=expRate()*sec; S.uniAge+=sec; }
-    say(`⏩ +${sec}s`); renderAll(); },
-  speed(x){ if(Number(x)!==1) markAchievementTestSave('speed'); window.__speed=x; say(`⏩ ×${x}`); },
-  reset(){ S=freshState(); logs=[]; activeEvent=null; afterEffect=null;
-    window.__speed=1;
-    satiety={time:0,stacks:0}; startBoost={time:0,mult:1};
+    const fw=typeof document!=='undefined'?document.getElementById('freedom-wrap'):null; if(fw) fw.style.display='none';
+    if (typeof onStageChange==='function') onStageChange(); else renderAll();
+    const selector=typeof document!=='undefined'?document.getElementById('dbg-stage'):null; if(selector) selector.value=String(S.stage);
+    if (typeof renderTestTools==='function') renderTestTools(); save();
+  },
+  prevStage(){ this.setStage(Math.max(0,S.stage-1)); },
+  nextStage(){ this.setStage(Math.min(STAGES.length-1,S.stage+1)); },
+  unlockAll(){
+    this.touch('test-spore-shop'); SPORE_SHOP.forEach(s=>{ if(s.kind==='once') S.shop[s.id]=true; });
+    renderAll(); save();
+  },
+  fireEvent(id){ this.touch('test-event'); if(EVENTS[id]) triggerEvent(id); renderAll(); },
+  clearEvent(){
+    this.touch('test-event'); activeEvent=null; afterEffect=null;
+    if(typeof renderEvent==='function') renderEvent();
+  },
+  toSingularity(){
+    this.touch('test-singularity');
+    if(S.phase!=='singularity'){
+      S.stage=STAGES.length-1; S.maxStage=S.stage; S.lifetime=SINGULARITY_THR;
+      enterSingularity({skipCinematic:true});
+    }
+    if(typeof onSingularity==='function') onSingularity(); renderAll(); save();
+  },
+  addSingularResources(){
+    this.touch('test-singularity-resource'); if(S.phase!=='singularity') this.toSingularity();
+    S.materials+=1e6; S.freedom+=1e5; S.remnants+=1e4; renderAll(); save();
+  },
+  maxSingularity(){
+    this.touch('test-singularity-unlock'); if(S.phase!=='singularity') this.toSingularity();
+    S.universeStage=UNIVERSE_STAGES.length-1;
+    S.materials=Math.max(S.materials,1e9); S.freedom=Math.max(S.freedom,1e6); S.remnants=Math.max(S.remnants,1e4);
+    CONSTANTS.forEach(c=>{ S.constLevels[c.id]=CONST_MAX_LEVEL; S.consts[c.id]=c.sweet; });
+    S.genesisStage=LIFE_GENESIS.length-1; S.lifeUniverses=Math.max(1,Math.floor(Number(S.lifeUniverses)||0));
+    S.heroStage=STAGES.length-1;
+    if(typeof pondInit==='function') pondInit(); if(typeof onSingularity==='function') onSingularity(); renderAll(); save();
+  },
+  nearEnd(){
+    this.touch('test-ending'); this.maxSingularity(); S.lifeExp=ENDING_EXP-1; S.ended=false;
+    renderAll(); save();
+  },
+  timeWarp(sec){
+    this.touch('test-time'); sec=Math.max(0,Number(sec)||0);
+    if(S.phase==='singularity'){
+      S.materials+=materialRate()*sec; S.freedom+=freedomRate()*sec; S.lifeExp+=expRate()*sec; S.uniAge+=sec;
+    } else {
+      const g=rate()*sec; S.bio+=g;S.earned+=g;S.lifetime+=g;
+    }
+    say(isEn()?`Test settlement: +${sec}s.`:`測試結算：+${sec} 秒。`); renderAll(); save();
+  },
+  speed(x){
+    this.touch('test-speed'); window.__speed=Math.max(1,Number(x)||1); say(`⏩ ×${window.__speed}`);
+    if(typeof renderTestTools==='function') renderTestTools();
+  },
+  saveNow(){ this.touch('test-save'); save(); say(isEn()?'Test save written.':'測試存檔已寫入。'); },
+  confirmReset(){
+    const message=isEn()?'Permanently erase this separate test save? This cannot be undone.':'永久清除這份獨立測試存檔？此操作無法復原。';
+    if(typeof confirm!=='function'||confirm(message)) this.reset();
+  },
+  reset(){
+    S=freshState(); logs=[]; activeEvent=null; afterEffect=null; window.__speed=1;
+    satiety={time:0,stacks:0}; startBoost={time:0,mult:1}; mergeTimer=0; ouroT=0;
+    if(typeof foodTimer!=='undefined') foodTimer=0; if(typeof foods!=='undefined') foods=[]; if(typeof cine!=='undefined') cine=null;
+    if(TEST_MODE) markAchievementTestSave('test-mode');
     if(typeof resetAchievementToastQueue==='function') resetAchievementToastQueue();
-    say('一隻草履蟲在原始湯裡睜開眼。');
-    if(typeof onStageChange==='function') onStageChange(); renderAll(); save(); },
+    say(isEn()?'A fresh test paramecium opens its eyes.':'一隻全新的測試草履蟲睜開眼。');
+    if(typeof onStageChange==='function') onStageChange(); renderAll(); save();
+  },
+  exitTestMode(){
+    if(typeof location==='undefined') return;
+    const url=new URL(location.href); url.searchParams.delete('test');
+    if(typeof location.assign==='function') location.assign(url.href); else location.href=url.href;
+  },
 };
-window.DEBUG = DEBUG;
 
 </script>
 <script>
@@ -5449,6 +5581,7 @@ function renderStaticLanguage(){
   }
   const struct=$('struct-h'); if (struct) struct.textContent=ui('structures');
   const spores=$('spore-h'); if (spores) spores.textContent=ui('sporeShop');
+  if (typeof renderTestTools==='function') renderTestTools();
 }
 
 /* ── 讀數 ── */
@@ -6642,12 +6775,58 @@ function renderAll(){
 window.__speed = 1;
 
 function fillDebugSelects(){
-  const ss=document.getElementById('dbg-stage');
+  if(!TEST_MODE) return;
+  const ss=document.getElementById('dbg-stage'),es=document.getElementById('dbg-event');
+  if(!ss||!es) return;
+  const selectedEvent=es.value;
+  ss.innerHTML='';
   STAGES.forEach((s,i)=>{ const o=document.createElement('option');
-    o.textContent=`${i+1}. ${s.name}`; ss.appendChild(o); });
-  const es=document.getElementById('dbg-event');
+    o.value=String(i); o.textContent=`${i+1}. ${isEn()?s.nameEn:s.name}`; ss.appendChild(o); });
+  ss.value=String(S.stage);
+  es.innerHTML='';
   Object.entries(EVENTS).forEach(([id,e])=>{ const o=document.createElement('option');
-    o.value=id; o.textContent=e.name; es.appendChild(o); });
+    o.value=id; o.textContent=isEn()?e.nameEn:e.name; es.appendChild(o); });
+  if(EVENTS[selectedEvent]) es.value=selectedEvent;
+  ss.setAttribute('aria-label',isEn()?'Target scale':'目標尺度');
+  es.setAttribute('aria-label',isEn()?'Epoch event':'紀元事件');
+}
+
+function toggleTestTools(force){
+  if(!TEST_MODE) return;
+  const panel=document.getElementById('debug'),toggle=document.getElementById('test-tools-toggle');
+  if(!panel||!toggle) return;
+  const open=typeof force==='boolean'?force:!panel.classList.contains('open');
+  panel.classList.toggle('open',open); toggle.setAttribute('aria-expanded',String(open));
+  const body=document.getElementById('test-tools-body'); if(body) body.setAttribute('aria-hidden',String(!open));
+}
+
+function renderTestTools(){
+  if(!TEST_MODE) return;
+  const panel=document.getElementById('debug'); if(!panel) return;
+  const en=isEn();
+  const languageKey=en?'en':'zh';
+  if(panel.getAttribute('data-test-language')!==languageKey){
+    panel.setAttribute('data-test-language',languageKey); fillDebugSelects();
+  }
+  panel.querySelectorAll('[data-test-zh]').forEach(el=>{
+    el.textContent=el.getAttribute(en?'data-test-en':'data-test-zh')||el.textContent;
+  });
+  const status=document.getElementById('test-tools-status');
+  if(status){
+    status.textContent=S.phase==='singularity'
+      ? (en?`TEST SAVE · Singularity · Universe ${(S.universeStage||0)+1}/${UNIVERSE_STAGES.length}`:`測試存檔 · 奇點層 · 宇宙 ${(S.universeStage||0)+1}/${UNIVERSE_STAGES.length}`)
+      : (en?`TEST SAVE · Mortal · Scale ${S.stage+1}/${STAGES.length}`:`測試存檔 · 凡人層 · 尺度 ${S.stage+1}/${STAGES.length}`);
+  }
+  panel.querySelectorAll('[data-test-speed]').forEach(button=>{
+    button.classList.toggle('active',Number(button.getAttribute('data-test-speed'))===Number(window.__speed||1));
+  });
+}
+
+function initTestTools(){
+  const panel=document.getElementById('debug'); if(!panel) return;
+  if(!TEST_MODE){ panel.remove(); if(window.DEBUG) try{ delete window.DEBUG; }catch(_error){} return; }
+  document.documentElement.classList.add('test-mode'); panel.hidden=false; window.DEBUG=DEBUG;
+  fillDebugSelects(); renderTestTools();
 }
 
 let last=performance.now(), statAcc=0, dbgAcc=0;
@@ -6701,7 +6880,7 @@ function loop(now){
     statAcc=0;
   }
   dbgAcc+=raw;
-  if (dbgAcc>.5){ const ss=document.getElementById('dbg-stage'); if(ss) ss.selectedIndex=S.stage; dbgAcc=0; }
+  if (dbgAcc>.5){ if(TEST_MODE) renderTestTools(); dbgAcc=0; }
 
   requestAnimationFrame(loop);
 }
@@ -6710,10 +6889,11 @@ async function boot(){
   S=freshState();
   initCanvas(document.getElementById('c'));
   buildShop(); buildSporeShop(); buildBuyAmt();
-  fillDebugSelects();
 
   const loaded=await load();
   if (!loaded){ logs=[]; say('一隻草履蟲在原始湯裡睜開眼。點擊視野開始攝食。'); }
+  if(TEST_MODE) markAchievementTestSave('test-mode');
+  initTestTools();
   buildScaleCodex();
   ensureStageEventSkill();
   document.getElementById('langbtn').textContent = isEn()?'中':'EN';
