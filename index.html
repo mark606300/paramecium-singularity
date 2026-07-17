@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#06121c">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -43,6 +43,9 @@ header{display:flex;align-items:baseline;gap:1.3rem;flex-wrap:wrap;
 .readout .val{font-size:1.45rem;color:var(--amber)}
 .readout .val.small{font-size:.98rem;color:var(--glow)}
 .readout .unit{font-size:.82rem;color:var(--amber);letter-spacing:.05em}
+#bio{display:inline-block;min-width:7.6ch;font-variant-numeric:tabular-nums}
+#bio.life-tick{animation:lifeTick .18s ease-out}
+@keyframes lifeTick{0%{color:#fff5cf;text-shadow:0 0 12px rgba(255,196,107,.72);transform:translateY(-1px)}100%{color:var(--amber);text-shadow:none;transform:translateY(0)}}
 .badge{font-size:.68rem;color:var(--glow);border:1px solid var(--glow);
   border-radius:2px;padding:.15rem .5rem;letter-spacing:.08em}
 #langbtn{background:transparent;border:1px solid var(--line);color:var(--ink);
@@ -69,11 +72,8 @@ canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
 .scope-frame>.epoch .t{font-size:1.05rem;color:var(--ink);letter-spacing:.14em;margin-top:.15rem}
 .identity{min-width:0}
 .identity .sn{font-size:.79rem;color:var(--glow);letter-spacing:.09em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.scope-details{min-width:0;color:var(--ink-dim)}
-.scope-details summary{cursor:pointer;font-size:.6rem;letter-spacing:.12em;color:var(--ink-dim);list-style-position:inside;white-space:nowrap}
-.scope-details[open]{grid-column:1/-1;width:100%;border-top:1px dashed rgba(79,116,136,.36);padding-top:.34rem}
-.scope-details .sm{font-size:.64rem;font-family:var(--font-mono);margin-top:.35rem}
-.scope-details .sa{font-size:.62rem;color:var(--amber);letter-spacing:.035em;margin-top:.22rem;line-height:1.45}
+.identity .scope-size-note{margin-top:.16rem;font-size:.61rem;color:var(--ink-dim);font-family:var(--font-mono);
+  letter-spacing:.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .event-banner{display:flex;align-items:center;justify-content:flex-end;gap:.48rem;min-width:0;
   padding:.28rem .52rem;border:1px solid var(--nucleus);border-radius:2px;background:rgba(255,107,157,.08)}
 #scope-status-host{display:block;width:100%;padding:.45rem .62rem;border:1px solid rgba(92,224,192,.24);
@@ -81,9 +81,8 @@ canvas{width:100%;aspect-ratio:1;border-radius:50%;cursor:crosshair;
   box-shadow:0 12px 28px -24px var(--glow)}
 .acquisition-title{display:block;margin-bottom:.2rem;font-family:var(--font-display);font-size:.57rem;
   letter-spacing:.2em;color:var(--glow);text-transform:uppercase}
-.journal-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.3rem .65rem;margin-bottom:.22rem}
+.journal-head{display:block;margin-bottom:.22rem}
 .journal-head .acquisition-title{margin-bottom:0}
-.journal-head .scope-details[open]{grid-column:1/-1}
 .sing-stats-title{display:block;margin-bottom:.18rem;font-family:var(--font-display);font-size:.58rem;
   letter-spacing:.22em;color:var(--glow);text-transform:uppercase}
 .ev-nm{color:var(--nucleus);font-size:.9rem;letter-spacing:.14em}
@@ -160,9 +159,11 @@ aside::-webkit-scrollbar-thumb{background:var(--line)}
 .scale-codex-body{padding:.15rem .58rem .65rem}
 .scale-codex-intro{font-size:.59rem;line-height:1.55;color:var(--ink-dim);padding:.28rem 0 .52rem}
 .scale-codex-visual{position:relative;border:1px solid rgba(92,224,192,.22);
-  background:rgba(3,13,21,.72);overflow:hidden}
-#scale-codex-preview{display:block;width:100%;height:auto;aspect-ratio:18/11;border-radius:0;
-  cursor:default;touch-action:auto;image-rendering:auto;box-shadow:inset 0 0 30px rgba(92,224,192,.08)}
+  width:min(100%,31rem);aspect-ratio:1;margin-inline:auto;background:rgba(3,13,21,.72);overflow:hidden;border-radius:50%}
+#scale-codex-preview{display:block;width:100%;height:100%;aspect-ratio:1;border-radius:50%;
+  cursor:default;touch-action:none;image-rendering:auto;box-shadow:inset 0 0 30px rgba(92,224,192,.08)}
+.scale-codex-variant{position:absolute;right:.65rem;bottom:.55rem;padding:.18rem .42rem;border:1px solid rgba(92,224,192,.34);
+  border-radius:999px;background:rgba(3,13,21,.78);color:var(--glow);font-size:.52rem;letter-spacing:.1em;pointer-events:none}
 .scale-codex-lock{display:none;position:absolute;inset:0;place-items:center;text-align:center;
   padding:1rem;background:rgba(3,10,17,.84);color:var(--ink-dim);font-size:.67rem;line-height:1.6}
 .scale-codex-lock.show{display:grid}
@@ -242,6 +243,21 @@ aside::-webkit-scrollbar-thumb{background:var(--line)}
 .log div:first-child{opacity:1;color:var(--ink)}
 .log b{color:var(--glow);font-weight:400}
 
+.transition-brief{display:grid;gap:.45rem;margin-top:.55rem;padding:.62rem;border:1px solid rgba(92,224,192,.2);
+  border-radius:2px;background:linear-gradient(135deg,rgba(92,224,192,.055),rgba(201,160,255,.035))}
+.transition-route{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.2rem .55rem;align-items:baseline}
+.transition-route .from{font-size:.57rem;color:var(--ink-dim);letter-spacing:.1em}
+.transition-route .to{font-size:.82rem;color:var(--glow);letter-spacing:.07em;white-space:nowrap}
+.transition-route .threshold{grid-column:1/-1;font-family:var(--font-mono);font-size:.57rem;color:var(--amber)}
+.transition-meter{height:4px;overflow:hidden;border-radius:4px;background:rgba(29,74,99,.72)}
+.transition-meter>span{display:block;width:var(--transition-progress,0%);height:100%;background:linear-gradient(90deg,var(--glow),var(--amber));box-shadow:0 0 9px var(--glow)}
+.transition-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.32rem}
+.transition-fact{padding:.32rem .38rem;border-left:2px solid rgba(92,224,192,.26);background:rgba(3,13,21,.32)}
+.transition-fact small{display:block;font-size:.49rem;color:var(--ink-dim);letter-spacing:.12em;margin-bottom:.1rem}
+.transition-fact b{display:block;font-size:.59rem;color:var(--ink);font-weight:400;line-height:1.4}
+.transition-fact.reward{border-left-color:rgba(255,196,107,.5)}
+.transition-fact.reward b{color:var(--amber)}
+
 .const-row{border:1px solid var(--line);border-radius:2px;padding:.6rem;margin-bottom:.5rem;background:var(--cyto);position:relative}
 .const-head{display:flex;align-items:baseline;gap:.5rem}
 .const-sym{font-family:var(--font-mono);font-size:1.1rem;color:var(--glow)}
@@ -270,7 +286,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
 .hero-desc,.morph-note{font-size:.66rem;color:var(--ink-dim);line-height:1.6;margin:.25rem 0 .55rem}
 .morph-preview-shell{position:relative;display:grid;grid-template-columns:8rem 1fr;gap:.6rem;align-items:center;
   border:1px solid rgba(92,224,192,.2);background:rgba(4,16,25,.62);padding:.48rem;margin:.35rem 0 .65rem}
-#morph-preview{width:8rem;height:5.4rem;aspect-ratio:auto;border-radius:2px;cursor:default;touch-action:auto;
+#morph-preview{width:8rem;height:5.4rem;aspect-ratio:auto;border-radius:2px;cursor:default;touch-action:manipulation;
   box-shadow:inset 0 0 24px rgba(92,224,192,.09)}
 .morph-preview-copy{min-width:0}
 .morph-preview-name{font-size:.82rem;color:var(--glow);letter-spacing:.08em;margin-bottom:.3rem}
@@ -423,11 +439,11 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .event-banner{justify-content:flex-start}
   .scope-summary{justify-content:space-between}
   .collapse,.item,.sitem,.const-upgrade,.avpick button,.scale-codex-nav button,.scale-codex-entry,.achievement-panel>summary,.scale-codex>summary{min-height:44px}
-  #langbtn,.buyamt button,.scope-details summary,.matter-advance,.morph-reset,.morph-swatch{min-width:44px;min-height:44px}
+  #langbtn,.buyamt button,.matter-advance,.morph-reset,.morph-swatch{min-width:44px;min-height:44px}
   .avpick select,.morph-field select,input[type=color]{font-size:16px;min-height:44px}
 }
 @media (max-width:900px) and (min-height:521px), (max-width:560px) and (orientation:portrait){
-  :root{--mobile-drawer-peek:7.35rem}
+  :root{--mobile-drawer-peek:6.25rem}
   body{display:grid;grid-template-rows:auto minmax(0,1fr);height:100dvh;min-height:100dvh;overflow:hidden;overscroll-behavior:none}
   main{display:grid;grid-template-columns:1fr;grid-template-rows:minmax(0,1fr);height:auto;min-height:0}
   .field{min-height:0;overflow:hidden;padding:.6rem .5rem calc(var(--mobile-drawer-peek) + env(safe-area-inset-bottom) + .55rem)}
@@ -442,18 +458,19 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   aside#upgrade-drawer.drawer-open{transform:translateY(0)}
   aside#upgrade-drawer.drawer-dragging{transition:none}
   aside#upgrade-drawer.drawer-suspended{visibility:hidden;pointer-events:none}
-  .mobile-drawer-head{display:grid;grid-template-columns:1fr auto;gap:.12rem .6rem;align-items:center;
-    position:relative;flex:0 0 auto;width:100%;min-height:3.25rem;
-    padding:.82rem max(1rem,env(safe-area-inset-right)) .55rem max(1rem,env(safe-area-inset-left));
+  .mobile-drawer-head{display:grid;grid-template-columns:1fr auto;gap:.08rem .6rem;align-items:center;
+    position:relative;flex:0 0 auto;width:100%;min-height:2.7rem;
+    padding:.7rem max(1rem,env(safe-area-inset-right)) .35rem max(1rem,env(safe-area-inset-left));
     border:0;border-bottom:1px solid rgba(29,74,99,.52);background:transparent;color:var(--ink);text-align:left;cursor:grab;touch-action:none}
   .mobile-drawer-head:active{cursor:grabbing}
   .mobile-drawer-head::before{content:'';position:absolute;top:.35rem;left:50%;width:2.7rem;height:3px;
     border-radius:3px;background:rgba(143,179,196,.48);transform:translateX(-50%)}
   .mobile-drawer-title{font-size:.72rem;letter-spacing:.16em;color:var(--glow)}
   .mobile-ready-total{font-family:var(--font-mono);font-size:.6rem;color:var(--amber);white-space:nowrap}
-  .mobile-drawer-hint{grid-column:1/-1;font-size:.54rem;line-height:1.25;color:var(--ink-dim);letter-spacing:.06em}
+  .mobile-drawer-hint{display:none;grid-column:1/-1;font-size:.54rem;line-height:1.25;color:var(--ink-dim);letter-spacing:.06em}
+  aside#upgrade-drawer.drawer-open .mobile-drawer-hint{display:block}
   .mobile-category-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));flex:0 0 auto;gap:.28rem;width:100%;min-width:0;overflow:hidden;
-    padding:.38rem max(.6rem,env(safe-area-inset-right)) .5rem max(.6rem,env(safe-area-inset-left));
+    padding:.28rem max(.6rem,env(safe-area-inset-right)) .38rem max(.6rem,env(safe-area-inset-left));
     scrollbar-width:none;border-bottom:1px solid rgba(29,74,99,.45);background:rgba(3,13,21,.38)}
   .mobile-category-nav::-webkit-scrollbar{display:none}
   .mobile-category-nav button{position:relative;display:grid;place-items:center;width:100%;min-width:0;min-height:42px;
@@ -481,6 +498,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .readout .label{font-size:.58rem;letter-spacing:.13em}
   .readout .val{font-size:1rem}
   .readout .val.small{font-size:.9rem}
+  .readout .unit{font-size:.64rem;letter-spacing:0}
   #langbtn{min-width:44px;min-height:44px}
   .scope-summary{display:grid;gap:.18rem}
   .scope-frame>.epoch{top:.55rem;width:76%}
@@ -488,7 +506,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
   .scope-frame>.epoch .t{font-size:.82rem;letter-spacing:.1em;margin-top:.08rem}
   .identity .sn{font-size:.72rem}
   #scope-status-host{padding:.4rem .5rem}
-  #scope-status-host .log{max-height:4.35rem}
+  #scope-status-host .log{max-height:clamp(5.4rem,13dvh,7.4rem)}
   .scale-codex-grid{grid-template-columns:1fr;max-height:10.5rem}
 }
 @media(max-height:520px) and (orientation:landscape){
@@ -564,18 +582,16 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
       </div>
       <div class="scope-meta">
         <div class="scope-summary">
-          <div class="identity"><div class="sn" id="stage-name">草履蟲尺度</div></div>
+          <div class="identity">
+            <div class="sn" id="stage-name">草履蟲尺度</div>
+            <div class="scope-size-note" id="stage-mass">質量 · 10⁻⁹ kg</div>
+          </div>
         </div>
         <div class="event-banner" id="event-banner" style="display:none"></div>
       </div>
       <div id="scope-status-host" data-section="observation-log">
         <div class="journal-head">
           <span class="acquisition-title" id="acquisition-status-title">觀測日誌</span>
-          <details class="scope-details">
-            <summary id="scope-details-summary">尺度資訊</summary>
-            <div class="sm" id="stage-mass">質量 · 10⁻⁹ kg</div>
-            <div class="sa" id="stage-analogy"></div>
-          </details>
         </div>
         <div class="log" id="log" role="log" aria-live="polite" aria-relevant="additions" tabindex="0" aria-label="觀測日誌記錄"></div>
       </div>
@@ -595,6 +611,7 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
         <div class="sec" id="trans-h">尺度躍遷</div>
         <button class="collapse" id="collapse">蛻變</button>
         <p class="note" id="collapse-note"></p>
+        <div class="transition-brief" id="transition-brief" aria-live="polite"></div>
       </section>
 
       <section class="mobile-panel-group" id="mortal-structures-panel" data-mobile-panel="mortal-structures">
@@ -625,7 +642,8 @@ input[type=range]:disabled{accent-color:var(--ink-dim)}
           <p class="scale-codex-intro" id="scale-codex-intro">沿尺度之路抵達新的形態，便會解鎖該形態的圖像與紀錄。進入奇點後，已發現的圖鑑仍會保留。</p>
           <article id="scale-codex-detail">
             <div class="scale-codex-visual">
-              <canvas id="scale-codex-preview" width="720" height="440" aria-label="草履蟲圖鑑插圖"></canvas>
+              <canvas id="scale-codex-preview" width="720" height="720" aria-label="草履蟲圖鑑插圖"></canvas>
+              <span class="scale-codex-variant" id="scale-codex-variant">原生形態</span>
               <div class="scale-codex-lock" id="scale-codex-lock"></div>
             </div>
             <div class="scale-codex-heading">
@@ -1143,7 +1161,7 @@ function freshAchievementState(){
   };
 }
 
-/* ── 大數單位（顯示時包「」）── */
+/* ── 大數數量級（主數字採科學記號，名稱只作括號附註）── */
 const BIG_UNITS = [
   {e:4,name:'萬',en:'Myriad'},{e:8,name:'億',en:'Yi'},{e:12,name:'兆',en:'Zhao'},{e:16,name:'京',en:'Jing'},
   {e:20,name:'垓',en:'Gai'},{e:24,name:'秭',en:'Zi'},{e:28,name:'穰',en:'Rang'},{e:32,name:'溝',en:'Gou'},
@@ -1353,13 +1371,15 @@ function foodSpawnMult(){ return (has('chemo')?1.5:1) * (1+legacySum('spawn')); 
 function foodLifetime(){ return FOOD_LIFETIME * (1+legacySum('flife')); }
 function offlineMult(){ return (has('membrane')?0.8:0.5) * (1+legacySum('off')); }
 function offlineCap(){ return (has('timedila')?24:8)*3600; }
-function sporeGain(){
-  const thr = STAGES[S.stage].thr || 1;
-  let g = Math.floor(10*Math.sqrt(S.earned/Math.max(thr,1)));
+function sporeGainFor(earned,stageIdx){
+  const idx=Number.isFinite(stageIdx)?Math.max(0,Math.min(STAGES.length-1,Math.floor(stageIdx))):S.stage;
+  const thr = STAGES[idx].thr || 1;
+  let g = Math.floor(10*Math.sqrt(Math.max(0,Number(earned)||0)/Math.max(thr,1)));
   if (has('secondnuc')) g = Math.floor(g*1.25);
   g = Math.floor(g*(1+legacySum('spore')));
   return Math.max(g,0);
 }
+function sporeGain(){ return sporeGainFor(S.earned,S.stage); }
 function epochIdx(){ let k=0; EPOCHS.forEach((e,i)=>{ if(S.earned>=e.at) k=i; }); return k; }
 
 /* ── 格式化 ── */
@@ -1370,14 +1390,45 @@ function fmt(n){
   const m = (n/Math.pow(10,e)).toFixed(2);
   return `${m}×10<sup>${e}</sup>`;
 }
+/* 上方生命力專用：依每次 0.12 秒更新可見的增量，自動保留 2–6 位小數。 */
+function liveLifeFmt(n,perSec){
+  if (!isFinite(n)) return '∞';
+  if (n<1e6) return fmt(n);
+  const e=Math.floor(Math.log10(Math.max(n,1)));
+  const movement=Math.abs(Number(perSec)||0)*.12/Math.pow(10,e);
+  const decimals=movement>0
+    ? Math.max(2,Math.min(6,Math.ceil(-Math.log10(Math.max(movement,1e-6)))))
+    : 2;
+  return `${(n/Math.pow(10,e)).toFixed(decimals)}×10<sup>${e}</sup>`;
+}
 function unitName(u){ return isEn() ? u.en : u.name; }
-function bigUnit(n){
-  if (n<1e6 || !isFinite(n)) return '';
-  const e = Math.floor(Math.log10(n));
+const EN_MAGNITUDE_BASES=[
+  {e:3,name:'thousand'},{e:6,name:'million'},{e:9,name:'billion'},
+  {e:12,name:'trillion'},{e:15,name:'quadrillion'},{e:18,name:'quintillion'},
+];
+function magnitudeNameByExponent(e){
+  if (isEn()){
+    let best=null;
+    for (const u of EN_MAGNITUDE_BASES) if (e>=u.e) best=u;
+    if (!best || e-best.e>2) return `10^${e}`;
+    return `${['','ten ','hundred '][e-best.e]}${best.name}`;
+  }
   let best=null;
   for (const u of BIG_UNITS) if (e>=u.e) best=u;
-  for (const u of HUAYAN_UNITS) if (e>=u.e) best=u;
-  return best ? `「${unitName(best)}」` : '';
+  if (!best) return '';
+  const delta=e-best.e;
+  return delta>=0&&delta<=3 ? `${['','十','百','千'][delta]}${best.name}` : best.name;
+}
+function bigUnit(n){
+  if (n<1e5 || !isFinite(n)) return '';
+  const e = Math.floor(Math.log10(n));
+  if (e>=HUAYAN_UNITS[0].e){
+    let best=HUAYAN_UNITS[0];
+    for (const u of HUAYAN_UNITS) if (e>=u.e) best=u;
+    return isEn()?`(${best.en} scale)`:`（${best.name}級）`;
+  }
+  const label=magnitudeNameByExponent(e);
+  return label ? (isEn()?`(${label} scale)`:`（${label}級）`) : '';
 }
 function huayanByExp(exp){
   let best = BIG_UNITS[BIG_UNITS.length-1];
@@ -2474,14 +2525,29 @@ function drawFloats(){
 
 const para = {x:0,y:0,a:0,tx:0,ty:0,hasTarget:false,turn:0};
 let pendingEat = null;
+let zoomLockInstalled=false;
+function installMobileZoomLock(){
+  if (zoomLockInstalled || typeof document==='undefined' || typeof document.addEventListener!=='function') return;
+  zoomLockInstalled=true;
+  document.addEventListener('dblclick',event=>{
+    if (event&&event.cancelable) event.preventDefault();
+  },{passive:false});
+  for (const type of ['gesturestart','gesturechange','gestureend']){
+    document.addEventListener(type,event=>{
+      if (event&&event.cancelable) event.preventDefault();
+    },{passive:false});
+  }
+}
 
 function initCanvas(canvas){
+  installMobileZoomLock();
   cv=canvas; cx=cv.getContext('2d');
   W=cv.width; R=W*0.49; CX=W/2; CY=W/2;
   reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   para.x=CX; para.y=CY; para.a=rand(0,6.28);
   initParticles();
   cv.addEventListener('pointerdown', e=>{
+    if (e.pointerType==='touch' && e.cancelable) e.preventDefault();
     if (cine){ cineSkip(); return; }
     const rect=cv.getBoundingClientRect();
     const x=(e.clientX-rect.left)/rect.width*W;
@@ -5284,25 +5350,33 @@ function renderStaticLanguage(){
 }
 
 /* ── 讀數 ── */
+let lastLifeReadout=NaN,lastLifeMarkup='';
+function updateLifeReadout(value,markup){
+  const el=$('bio'); if (!el) return;
+  if (markup!==lastLifeMarkup){ el.innerHTML=markup; lastLifeMarkup=markup; }
+  if (Number.isFinite(lastLifeReadout) && value!==lastLifeReadout && el.classList){
+    el.classList.remove('life-tick'); void el.offsetWidth; el.classList.add('life-tick');
+  }
+  lastLifeReadout=value;
+}
 function renderStats(){
   if (S.phase==='singularity'){
     // 低速時自動加深精度；尚未形成載生宇宙時，生命指數會明確顯示為零成長。
     $('lb-bio').textContent = ui('lifeindex');
-    $('bio').innerHTML = `10<sup>${lifeExpText()}</sup>`;
+    updateLifeReadout(S.lifeExp,`10<sup>${lifeExpText()}</sup>`);
     $('bio-unit').innerHTML = huayanByExp(S.lifeExp);
     $('lb-rate').textContent = ui('eps');
     $('rate').innerHTML = expRateText();
     $('spore-wrap').style.display='none';
     $('ep-n').textContent = ui('gen');
     $('ep-t').textContent = isEn() ? `Gen ${S.gen.toFixed(1)} · ${currentUniverseStage().nameEn}` : `第 ${S.gen.toFixed(1)} 代 · ${currentUniverseStage().name}`;
-    $('stage-name').textContent = isEn()?`Singularity · ${currentUniverseStage().nameEn}`:`奇點 · ${currentUniverseStage().name}`;
-    $('stage-mass').textContent = `${(S.universeStage||0)+1}/${UNIVERSE_STAGES.length} · ∞`;
-    $('stage-analogy').textContent = genesisComplete()
-      ? (isEn()?'Life anchor awake · the first paramecium is hunting':'生命錨點已甦醒 · 第一隻草履蟲正在捕食')
-      : (isEn()?`Life genesis ${genesisStage()+1}/${LIFE_GENESIS.length}`:`生命孕生 ${genesisStage()+1}/${LIFE_GENESIS.length}`);
+    $('stage-name').textContent = isEn()?`${currentUniverseStage().nameEn} Scale · Singularity`:`${currentUniverseStage().name}尺度 · 奇點`;
+    $('stage-mass').textContent = isEn()
+      ? `Universe stage ${(S.universeStage||0)+1}/${UNIVERSE_STAGES.length}`
+      : `宇宙階段 ${(S.universeStage||0)+1}/${UNIVERSE_STAGES.length}`;
   } else {
     $('lb-bio').textContent = ui('lifeforce');
-    $('bio').innerHTML = fmt(S.bio);
+    updateLifeReadout(S.bio,liveLifeFmt(S.bio,rate()));
     $('bio-unit').innerHTML = bigUnit(S.bio);
     $('lb-rate').textContent = ui('persec');
     $('rate').innerHTML = fmt(rate());
@@ -5315,10 +5389,7 @@ function renderStats(){
     const st = STAGES[S.stage];
     $('stage-name').textContent = isEn() ? `${st.nameEn} ${ui('scale')}` : `${st.name}${ui('scale')}`;
     $('stage-mass').textContent = `${stageMeasure(st)} · ${tr(st,'mass')}`;
-    $('stage-analogy').textContent = stageAnalogy(S.stage);
   }
-  const detailsSummary=$('scope-details-summary');
-  if (detailsSummary) detailsSummary.textContent=isEn()?'Scale details':'尺度資訊';
 
   // 飽食徽章
   const sb = $('satiety');
@@ -5496,15 +5567,9 @@ function scaleCodexRealm(idx){
   return isEn()?realm[3]:realm[2];
 }
 function scaleCodexPortraitScale(idx){
-  // 後五階的視覺重心是星系長軸、電波瓣與宇宙網，而非中央橢圓；
-  // 依各自最大垂直半徑縮放，讓完整結構留在 360×220 的圖鑑畫幅內。
-  if (idx>=28) return .45;
-  if (idx===27) return .52;
-  if (idx===26) return .62;
-  if (idx>=24) return .88;
-  if (idx===20) return .85;
-  if (idx>=14) return 1.02;
-  return 1.15;
+  // 圖鑑與主視野共用 900 單位模型座標；不再依階段另行縮放，避免固定長度的
+  // 纖毛、噴流與宇宙網相對本體被放大或縮小。
+  return 1;
 }
 function selectScaleCodexStage(idx){
   idx=Math.floor(Number(idx));
@@ -5538,8 +5603,8 @@ function renderScaleCodex(){
   if (shell&&shell.setAttribute) shell.setAttribute('aria-label',isEn()?'Scale Encyclopedia':'尺度圖鑑');
   const intro=$('scale-codex-intro');
   if (intro) intro.textContent=isEn()
-    ? 'Reach a new form along the journey of scale to reveal its portrait and record. Everything discovered remains here after the singularity.'
-    : '沿尺度之路抵達新的形態，便會解鎖該形態的圖像與紀錄；進入奇點後，已發現的圖鑑仍會保留。';
+    ? 'Reach a new form along the journey of scale to reveal its natural portrait and record. Everything discovered remains here after the singularity.'
+    : '沿尺度之路抵達新的形態，便會解鎖與主視野同比例的原生形態與紀錄；進入奇點後，已發現的圖鑑仍會保留。';
 
   const grid=$('scale-codex-grid');
   if (grid){
@@ -5575,6 +5640,7 @@ function renderScaleCodex(){
   setText('scale-codex-food',tr(st,'big'));
   setText('scale-codex-legacy-label',isEn()?'EVENT AND LEGACY':'事件與傳承');
   setText('scale-codex-note',tr(st,'note'));
+  setText('scale-codex-variant',isEn()?'NATURAL FORM':'原生形態');
 
   const event=st.sig&&EVENTS[st.sig], legacy=LEGACY.find(l=>l.idx===idx);
   let legacyText;
@@ -5608,9 +5674,9 @@ function drawScaleCodexPreview(t){
   const pc=$('scale-codex-preview');
   if (!pc||typeof pc.getContext!=='function'||!Number.isFinite(activeScaleCodexStage)) return false;
   const idx=Math.max(0,Math.min(activeScaleCodexStage,scaleCodexUnlockedMax()));
-  // 以 360×220 作為穩定的邏輯座標，再依實際 CSS 寬度與螢幕像素密度建立高解析 backing store。
-  // 這能保留既有形態比例，也避免 Windows 縮放或 Retina 顯示器把細線與纖毛放糊。
-  const pw=360, ph=220;
+  // 圖鑑使用與主畫布相同的 900×900 模型座標，再縮放到實際 backing store。
+  // 本體、固定長度纖毛、噴流與環繞結構因而保持與遊戲視野完全相同的比例。
+  const pw=360, ph=360, model=900;
   const cssWidth=Math.max(1,Number(pc.clientWidth)||pw);
   const dpr=Math.max(1,Math.min(Number(window.devicePixelRatio)||1,2.5));
   const targetWidth=Math.max(pw,Math.round(cssWidth*dpr));
@@ -5621,14 +5687,14 @@ function drawScaleCodexPreview(t){
   const old={cx,W,R,CX,CY,x:para.x,y:para.y,a:para.a};
   pcx.save();
   try {
-    pcx.setTransform(pc.width/pw,0,0,pc.height/ph,0,0);
-    pcx.clearRect(0,0,pw,ph);
-    const bg=pcx.createRadialGradient(pw*.5,ph*.48,4,pw*.5,ph*.5,pw*.62);
+    pcx.setTransform(pc.width/model,0,0,pc.height/model,0,0);
+    pcx.clearRect(0,0,model,model);
+    const bg=pcx.createRadialGradient(model*.5,model*.48,10,model*.5,model*.5,model*.62);
     bg.addColorStop(0,hexA(accent,.16)); bg.addColorStop(.52,'rgba(7,24,36,.97)'); bg.addColorStop(1,'rgba(2,9,16,1)');
-    pcx.fillStyle=bg; pcx.fillRect(0,0,pw,ph);
-    pcx.strokeStyle=hexA(accent,.12); pcx.lineWidth=.7;
-    for(const rr of [36,72,108]){ pcx.beginPath(); pcx.ellipse(pw*.5,ph*.5,rr,rr*.52,0,0,6.2832); pcx.stroke(); }
-    cx=pcx; W=pw; R=Math.min(pw,ph)*.49; CX=pw*.5; CY=ph*.5;
+    pcx.fillStyle=bg; pcx.fillRect(0,0,model,model);
+    pcx.strokeStyle=hexA(accent,.12); pcx.lineWidth=1.6;
+    for(const rr of [90,180,270]){ pcx.beginPath(); pcx.ellipse(model*.5,model*.5,rr,rr*.52,0,0,6.2832); pcx.stroke(); }
+    cx=pcx; W=model; R=model*.49; CX=model*.5; CY=model*.5;
     para.x=CX; para.y=CY; para.a=-.12;
     const scale=scaleCodexPortraitScale(idx);
     drawRetinue(idx,t||0,'back',scale,1);
@@ -5721,6 +5787,46 @@ function renderAchievements(){
 }
 
 /* ── 躍遷按鈕 ── */
+function transitionFact(label,value,kind){
+  return `<div class="transition-fact ${kind||''}"><small>${label}</small><b>${value}</b></div>`;
+}
+function setTransitionProgress(brief,value){
+  if (!brief||!brief.style) return;
+  if (typeof brief.style.setProperty==='function') brief.style.setProperty('--transition-progress',value);
+  else brief.style['--transition-progress']=value;
+}
+function renderTransitionBrief(mode,next,thr,reconstruction){
+  const brief=$('transition-brief'); if (!brief) return;
+  const current=STAGES[S.stage];
+  if (mode==='ready'){
+    setTransitionProgress(brief,'100%');
+    brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'FINAL SCALE':'最終尺度'}</span><span class="to">${isEn()?'Singularity':'奇點'}</span><span class="threshold">10<sup>68</sup> · ${isEn()?'journey complete':'尺度之路完成'}</span></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'NEXT':'下一步',isEn()?'Creation replaces growth':'以創造取代生長','reward')}${transitionFact(isEn()?'PRESERVED':'永遠保留',isEn()?'Legacy · Codex · achievements':'傳承 · 圖鑑 · 成就')}${transitionFact(isEn()?'FORM':'形態',isEn()?'All discovered memories remain':'已發現形態皆保留')}${transitionFact(isEn()?'RESET':'轉化',isEn()?'Mortal structures end here':'凡人構造在此終結')}</div>`;
+    return;
+  }
+  if (mode==='fold'){
+    const exponent=Math.floor(Math.log10(Math.max(S.lifetime,1)));
+    const folds=Math.max(0,Math.min(42,exponent-26));
+    const pct=folds/42*100;
+    setTransitionProgress(brief,`${pct.toFixed(2)}%`);
+    brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'HUBBLE-VOLUME FOLDING':'哈伯體積折疊'}</span><span class="to">${folds} / 42</span><span class="threshold">10<sup>${exponent}</sup> → 10<sup>68</sup></span></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'EACH FOLD':'每次折疊',isEn()?'Equivalent accumulation ×10':'等效累積 ×10','reward')}${transitionFact(isEn()?'INTERVAL':'下一次',`${Math.ceil(mergeInterval())} ${isEn()?'sec':'秒'}`)}${transitionFact(isEn()?'PRESERVED':'永遠保留',isEn()?'Spores · legacy · Codex':'孢 · 傳承 · 圖鑑')}${transitionFact(isEn()?'DESTINATION':'終點',isEn()?'Become the singularity':'成為奇點')}</div>`;
+    return;
+  }
+  const safeThr=Math.max(1,Number(thr)||1);
+  const progress=Math.max(0,Math.min(1,S.earned/safeThr));
+  const remaining=Math.max(0,safeThr-S.earned);
+  const reward=sporeGainFor(Math.max(S.earned,safeThr),S.stage);
+  const legacy=LEGACY.find(l=>l.idx===S.stage);
+  setTransitionProgress(brief,`${(progress*100).toFixed(2)}%`);
+  const route=`${tr(current,'name')} → ${tr(next,'name')}`;
+  const threshold=remaining>0
+    ? (isEn()?`${fmt(S.earned)} / ${fmt(safeThr)} · ${fmt(remaining)} remaining`:`${fmt(S.earned)} / ${fmt(safeThr)} · 尚缺 ${fmt(remaining)}`)
+    : (isEn()?`${fmt(S.earned)} / ${fmt(safeThr)} · ready`:`${fmt(S.earned)} / ${fmt(safeThr)} · 已達標`);
+  const legacyText=legacy
+    ? `${tr(legacy,'name')} · ${tr(legacy,'ds')}`
+    : (isEn()?'No signature legacy at this crossing':'本次沒有簽名傳承');
+  const rebuild=reconstruction>1?` · ${isEn()?'rebuild':'重建'} ×${reconstruction.toFixed(2)}`:'';
+  brief.innerHTML=`<div class="transition-route"><span class="from">${isEn()?'CURRENT → NEXT':'目前 → 下一尺度'}</span><span class="to">${route}</span><span class="threshold">${threshold}</span></div><div class="transition-meter"><span></span></div><div class="transition-facts">${transitionFact(isEn()?'REWARD':'預估獲得',`+${reward} ${ui('spore')}${rebuild}`,'reward')}${transitionFact(isEn()?'LEGACY':'即將覺醒',legacyText)}${transitionFact(isEn()?'PRESERVED':'保留',isEn()?'Lifetime · spores · permanent powers':'累計生命 · 孢 · 永久強化')}${transitionFact(isEn()?'RESET':'重置',isEn()?'Spendable life-force · structures':'可用生命力 · 構造')}</div>`;
+}
 function renderCollapse(){
   const btn=$('collapse');
   const secH=$('trans-h');
@@ -5735,6 +5841,7 @@ function renderCollapse(){
     $('collapse-note').innerHTML = isEn()
       ? `Cumulative life-force has reached 「Immeasurable」. There is no larger scale ahead.`
       : `累積生命力已抵「無量大數」。尺度之路，至此走盡。`;
+    renderTransitionBrief('ready');
     return;
   }
   // 最終階：哈伯尺度折疊中
@@ -5745,6 +5852,7 @@ function renderCollapse(){
     $('collapse-note').innerHTML = isEn()
       ? `Structures are maxed. You are folding neighbouring observer-centred Hubble volumes into one scale — a game abstraction, not physical shells. Each fold multiplies equivalent accumulation by 10. Now at 10<sup>${eNow}</sup>; at 10<sup>68</sup> 「Immeasurable」 you become the singularity.`
       : `構造已至極限。如今你把相鄰觀測中心所定義的哈伯體積折入同一尺度——這是遊戲抽象，不是實體球殼。每次折疊讓等效累積十倍。目前 10<sup>${eNow}</sup>；抵達 10<sup>68</sup>「無量大數」之日，你將成為奇點。`;
+    renderTransitionBrief('fold');
     return;
   }
 
@@ -5763,6 +5871,7 @@ function renderCollapse(){
       ? (isEn()?`${verb} grants ${g} spores. Cosmic Reconstruction rises to ×${reconstruction.toFixed(2)}; structures reset, but familiar cosmic patterns rebuild faster.`:`${verb}換得 ${g} 顆孢。星海重建提升至 ×${reconstruction.toFixed(2)}；構造仍會歸零，但熟悉的宇宙圖樣將更快重現。`)
       : (isEn()?`${verb} wipes all structures for ${g} spores — permanent upgrades below.`:`${verb}抹去所有構造，換 ${g} 顆孢。孢可在下方商店永久強化。`))
     : (isEn()?`Reach ${fmt(thr)} to ${verb.toLowerCase()} into "${next.nameEn}". Spores persist.`:`累積達 ${fmt(thr)} 後可${verb}成「${next.name}」。孢跨越躍遷保留。`);
+  renderTransitionBrief('normal',next,thr,reconstruction);
 }
 
 /* ── 奇點層面板 ── */
