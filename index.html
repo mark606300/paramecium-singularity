@@ -1496,8 +1496,19 @@ const CORE_COLOR = [
    ═══════════════════════════════════════════════════════════ */
 
 let S;
+function freshStageOwned(){
+  const owned={};
+  BUILDINGS.forEach(b=>owned[b.id]=0);
+  if (BUILDINGS[0]) owned[BUILDINGS[0].id]=1;
+  return owned;
+}
+function resetStageStructures(){
+  BUILDINGS.forEach(b=>S.owned[b.id]=0);
+  if (BUILDINGS[0]) S.owned[BUILDINGS[0].id]=1;
+  if (has('presplit')) S.owned.mito=10;
+}
 function freshState(){
-  const owned = {}; BUILDINGS.forEach(b => owned[b.id] = 0);
+  const owned=freshStageOwned();
   const consts = {}; CONSTANTS.forEach(c => consts[c.id] = c.start);
   return {
     bio:0, earned:0, lifetime:0, stage:0, maxStage:0,
@@ -1902,8 +1913,7 @@ function doCollapse(bonusSporeMult){
   const st = STAGES[S.stage];
 
   S.bio=0; S.earned=0;
-  BUILDINGS.forEach(b=>S.owned[b.id]=0);
-  if (has('presplit')) S.owned.mito=10;
+  resetStageStructures();
   activeEvent=null; afterEffect=null;
   satiety={time:0,stacks:0};
 
@@ -2615,6 +2625,7 @@ async function load(){
       ? Math.max(0,Math.floor(S.lifeUniverses))
       : ((genesisComplete()||S.ended)?1:0);
     BUILDINGS.forEach(b=>{ if(typeof S.owned[b.id]!=='number') S.owned[b.id]=0; });
+    if (S.phase==='mortal' && BUILDINGS[0] && S.owned[BUILDINGS[0].id]<1) S.owned[BUILDINGS[0].id]=1;
     CONSTANTS.forEach(c=>{
       if(typeof S.consts[c.id]!=='number') S.consts[c.id]=c.start;
       if (!savedHasConstLevels && c.unlockStage<=S.universeStage){
@@ -2687,7 +2698,7 @@ const DEBUG = {
     S.phase='mortal'; S.stage=Math.max(0,Math.min(Math.floor(Number(i)||0),STAGES.length-1));
     S.maxStage=Math.max(S.maxStage,S.stage); S.bio=0; S.earned=0; S.lifetime=0;
     activeEvent=null; afterEffect=null; satiety={time:0,stacks:0}; startBoost={time:0,mult:1}; mergeTimer=0; ouroT=0;
-    BUILDINGS.forEach(b=>S.owned[b.id]=0);
+    resetStageStructures();
     const fw=typeof document!=='undefined'?document.getElementById('freedom-wrap'):null; if(fw) fw.style.display='none';
     if (typeof onStageChange==='function') onStageChange(); else renderAll();
     const selector=typeof document!=='undefined'?document.getElementById('dbg-stage'):null; if(selector) selector.value=String(S.stage);
